@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="git," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="git status可能的情况工作中我们使用git作为版本管理工具，它的确是一个强大的工具。易于学习和使用，但是要学习的面面俱到也很难，就git status就可能会出现n多种的情况。本文记录了git status可能出现的不同状态信息、状态说明、处理办法。注意，列举的情况并不全面，只是列举了工作中遇到的一些常见情况，">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git status可能的情况">
+<meta property="og:url" content="http://yoursite.com/2016/12/29/git status可能展示的几种情况/index.html">
+<meta property="og:site_name" content="一阴一阳谓之道">
+<meta property="og:description" content="git status可能的情况工作中我们使用git作为版本管理工具，它的确是一个强大的工具。易于学习和使用，但是要学习的面面俱到也很难，就git status就可能会出现n多种的情况。本文记录了git status可能出现的不同状态信息、状态说明、处理办法。注意，列举的情况并不全面，只是列举了工作中遇到的一些常见情况，同时遇到新状态，还会随时增加。 git仓库中文件的状态git仓库中所有文件可分为">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-05-23T12:18:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git status可能的情况">
+<meta name="twitter:description" content="git status可能的情况工作中我们使用git作为版本管理工具，它的确是一个强大的工具。易于学习和使用，但是要学习的面面俱到也很难，就git status就可能会出现n多种的情况。本文记录了git status可能出现的不同状态信息、状态说明、处理办法。注意，列举的情况并不全面，只是列举了工作中遇到的一些常见情况，同时遇到新状态，还会随时增加。 git仓库中文件的状态git仓库中所有文件可分为">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/29/git status可能展示的几种情况/"/>
+
+
+
+
+
+  <title>git status可能的情况 | 一阴一阳谓之道</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一阴一阳谓之道</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">合抱之木，生于毫末；九层之台，起于累土；千里之行，始于足下。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/git status可能展示的几种情况/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shaochong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一阴一阳谓之道">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">git status可能的情况</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-29T17:29:54+08:00">
+                2016-12-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="git-status可能的情况"><a href="#git-status可能的情况" class="headerlink" title="git status可能的情况"></a>git status可能的情况</h1><p>工作中我们使用git作为版本管理工具，它的确是一个强大的工具。易于学习和使用，但是要学习的面面俱到也很难，就<code>git status</code>就可能会出现n多种的情况。本文记录了<code>git status</code>可能出现的不同状态信息、状态说明、处理办法。注意，列举的情况并不全面，只是列举了工作中遇到的一些常见情况，同时遇到新状态，还会随时增加。</p>
+<p><strong>git仓库中文件的状态</strong><br>git仓库中所有文件可分为两种状态<strong>已跟踪</strong>和<strong>未跟踪</strong>。已跟踪的文件被git纳入了版本控制，git会记录它的每次更新状态。<br>状态生命周期有四种：untracked, unmodified, modified, staged</p>
+<p><strong>git status可能的情况：</strong></p>
+<h2 id="1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit"><a href="#1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit" class="headerlink" title="1. Your branch is ahead of ‘origin/master’ by 1 commit."></a>1. Your branch is ahead of ‘origin/master’ by 1 commit.</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is ahead of &apos;origin/master&apos; by 1 commit.</span><br><span class="line">  (use &quot;git push&quot; to publish your local commits)</span><br><span class="line">nothing to commit, working directory clean</span><br><span class="line">cochona@cochona:~/gitosis-admin/keydir$</span><br></pre></td></tr></table></figure>
+<p>此时说明当前目录中所有的已跟踪文件，都已经和远程保持同步，并且没有修改。刚从远程克隆的git仓库，都是这个状态。</p>
+<h2 id="2-nothing-added-to-commit-but-untracked-files-present"><a href="#2-nothing-added-to-commit-but-untracked-files-present" class="headerlink" title="2. nothing added to commit but untracked files present"></a>2. nothing added to commit but untracked files present</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Initial commit</span><br><span class="line">Untracked files:</span><br><span class="line">	(use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line">a.text</span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
+<p>表示此时目录下，有新添加的未被跟踪的文件，如果我们需要将此文件提交到仓库，可以执行git add</p>
+<h2 id="3-Changes-to-be-committed-new-file"><a href="#3-Changes-to-be-committed-new-file" class="headerlink" title="3. Changes to be committed: new file"></a>3. Changes to be committed: new file</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line">	(use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">   new file:   README</span><br></pre></td></tr></table></figure>
+<p>在“Changes to be committed”这行下面的都是已暂存的状态，此时可以执行git commit</p>
+<h2 id="4-Changes-to-be-committed-modified"><a href="#4-Changes-to-be-committed-modified" class="headerlink" title="4. Changes to be committed: modified"></a>4. Changes to be committed: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">	</span><br><span class="line">	modified:   gitosis.conf</span><br></pre></td></tr></table></figure>
+<p>有修改的文件，此时可以选择直接<code>git commit -m &quot;info&quot;</code>    </p>
+<h2 id="5-Changes-not-staged-for-commit-modified"><a href="#5-Changes-not-staged-for-commit-modified" class="headerlink" title="5. Changes not staged for commit: modified"></a>5. Changes not staged for commit: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git commit -m &quot;add shaoc@pub to admin-group&quot;</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes not staged for commit:</span><br><span class="line">	modified:   gitosis.conf</span><br><span class="line">	</span><br><span class="line">no changes added to commit</span><br></pre></td></tr></table></figure>
+<p>此时如果要保存修改，需要先<code>git add gitosis.conf</code>，然后<code>git commit -m &quot;&quot;</code>,然后<code>git push</code></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/29/ionic state命令不应该再使用了/" rel="next" title="ionic state命令将要废弃">
+                <i class="fa fa-chevron-left"></i> ionic state命令将要废弃
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/30/关于gitosis/" rel="prev" title="关于gitosis">
+                关于gitosis <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="shaochong" />
+            
+              <p class="site-author-name" itemprop="name">shaochong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-status可能的情况"><span class="nav-number">1.</span> <span class="nav-text">git status可能的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit"><span class="nav-number">1.1.</span> <span class="nav-text">1. Your branch is ahead of ‘origin/master’ by 1 commit.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-nothing-added-to-commit-but-untracked-files-present"><span class="nav-number">1.2.</span> <span class="nav-text">2. nothing added to commit but untracked files present</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Changes-to-be-committed-new-file"><span class="nav-number">1.3.</span> <span class="nav-text">3. Changes to be committed: new file</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Changes-to-be-committed-modified"><span class="nav-number">1.4.</span> <span class="nav-text">4. Changes to be committed: modified</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Changes-not-staged-for-commit-modified"><span class="nav-number">1.5.</span> <span class="nav-text">5. Changes not staged for commit: modified</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shaochong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

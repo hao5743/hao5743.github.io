@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Angular," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介属性型指令用于改变DOM元素的外观或行为。 在Angular中有三种类型的指令：  组件 — 拥有模板的指令 属性型指令 — 改变元素外观或行为，例如内置的 NgStyle 指令可以同时修改元素的多个样式 结构型指令 — 通过添加和移除dom元素改变视图结构，例如，NgFor 和 NgIf。  一个简单的属性型指令">
+<meta name="keywords" content="Angular">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular笔记 - 属性型指令">
+<meta property="og:url" content="http://yoursite.com/2017/02/22/Angular笔记 - 属性型指令/index.html">
+<meta property="og:site_name" content="一阴一阳谓之道">
+<meta property="og:description" content="简介属性型指令用于改变DOM元素的外观或行为。 在Angular中有三种类型的指令：  组件 — 拥有模板的指令 属性型指令 — 改变元素外观或行为，例如内置的 NgStyle 指令可以同时修改元素的多个样式 结构型指令 — 通过添加和移除dom元素改变视图结构，例如，NgFor 和 NgIf。  一个简单的属性型指令我们这里实现了一个简单的属性型指令，说一下几个重点的内容 功能：当用户鼠标悬浮在">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-05-23T12:18:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Angular笔记 - 属性型指令">
+<meta name="twitter:description" content="简介属性型指令用于改变DOM元素的外观或行为。 在Angular中有三种类型的指令：  组件 — 拥有模板的指令 属性型指令 — 改变元素外观或行为，例如内置的 NgStyle 指令可以同时修改元素的多个样式 结构型指令 — 通过添加和移除dom元素改变视图结构，例如，NgFor 和 NgIf。  一个简单的属性型指令我们这里实现了一个简单的属性型指令，说一下几个重点的内容 功能：当用户鼠标悬浮在">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/22/Angular笔记 - 属性型指令/"/>
+
+
+
+
+
+  <title>Angular笔记 - 属性型指令 | 一阴一阳谓之道</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一阴一阳谓之道</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">合抱之木，生于毫末；九层之台，起于累土；千里之行，始于足下。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/22/Angular笔记 - 属性型指令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shaochong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一阴一阳谓之道">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Angular笔记 - 属性型指令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-22T16:52:47+08:00">
+                2017-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>属性型指令用于改变DOM元素的外观或行为。</p>
+<p>在Angular中有三种类型的指令：</p>
+<ol>
+<li>组件 — 拥有模板的指令</li>
+<li>属性型指令 — 改变元素外观或行为，例如内置的 <code>NgStyle</code> 指令可以同时修改元素的多个样式</li>
+<li>结构型指令 — 通过添加和移除dom元素改变视图结构，例如，<code>NgFor</code> 和 <code>NgIf</code>。</li>
+</ol>
+<h2 id="一个简单的属性型指令"><a href="#一个简单的属性型指令" class="headerlink" title="一个简单的属性型指令"></a>一个简单的属性型指令</h2><p>我们这里实现了一个简单的属性型指令，说一下几个重点的内容</p>
+<p>功能：当用户鼠标悬浮在元素上时，改变它的背景颜色</p>
+<p>代码：</p>
+<p>highlight.directive.ts</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Directive, ElementRef, HostListener, Input, Renderer &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="meta">@Directive</span>(&#123;</span><br><span class="line">  selector: <span class="string">'[myHighlight]'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HighlightDirective &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> el: ElementRef, <span class="keyword">private</span> renderer: Renderer</span>) &#123; &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseenter'</span>) onMouseEnter() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="string">'yellow'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseleave'</span>) onMouseLeave() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">private</span> highlight(color: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.renderer.setElementStyle(<span class="keyword">this</span>.el.nativeElement, <span class="string">'backgroundColor'</span>, color);  </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>a.html</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>My First Attribute Directive<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">myHighlight</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li><code>@Directive</code>装饰器需要一个 CSS 选择器，以便从模板中识别出关联到这个指令的 HTML，这里指令的选择器是<code>[myHighlight]</code>，Angular 将会在模板中找到所有带<code>myHighlight属性</code>的元素。</li>
+<li>需要把 Angular 的<code>ElementRef</code>和<code>Renderer</code>注入进构造函数。<code>ElementRef</code>是一个服务，它赋予我们通过它的<code>nativeElement</code>属性直接访问 DOM 元素的能力。 <code>Renderer</code>服务允许通过代码设置元素的样式。</li>
+<li>需要把这个类添加到 NgModule 元数据的<code>declarations数组</code>中</li>
+</ul>
+<blockquote>
+<p>EXCEPTION: Template parse errors:<br>  Can’t bind to ‘myHighlight’ since it isn’t a known property of ‘p’.</p>
+</blockquote>
+<p>  错误原因:你记着设置<code>@NgModule</code>的<code>declarations数组</code>了吗？它很容易被忘掉</p>
+<ul>
+<li><code>@HostListener</code>装饰器引用属性型指令的宿主元素，在这个例子中就是<code>&lt;p&gt;</code></li>
+</ul>
+<h2 id="高级点的属性型指令"><a href="#高级点的属性型指令" class="headerlink" title="高级点的属性型指令"></a>高级点的属性型指令</h2><p>对上面的那个指令添加功能：</p>
+<ol>
+<li>通过绑定从外部设定这个颜色 </li>
+<li>从外部设定一个默认颜色，如果没有传入颜色，则使用这个默认颜色</li>
+<li><p>这样使用这个指令</p>
+ <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span> [<span class="attr">defaultColor</span>]=<span class="string">"'violet'"</span>&gt;</span></span><br><span class="line">    Highlight me too!</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>代码：</p>
+<p>highlight.directive.ts</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Directive, ElementRef, HostListener, Input, Renderer &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="meta">@Directive</span>(&#123;</span><br><span class="line">  selector: <span class="string">'[myHighlight]'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HighlightDirective &#123;</span><br><span class="line">  <span class="keyword">private</span> _defaultColor = <span class="string">'red'</span>;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> el: ElementRef, <span class="keyword">private</span> renderer: Renderer</span>) &#123; &#125;</span><br><span class="line">  <span class="meta">@Input</span>() <span class="keyword">set</span> defaultColor(colorName: <span class="built_in">string</span>)&#123;</span><br><span class="line">    <span class="keyword">this</span>._defaultColor = colorName || <span class="keyword">this</span>._defaultColor;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Input</span>(<span class="string">'myHighlight'</span>) highlightColor: <span class="built_in">string</span>;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseenter'</span>) onMouseEnter() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="keyword">this</span>.highlightColor || <span class="keyword">this</span>._defaultColor);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseleave'</span>) onMouseLeave() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">private</span> highlight(color: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.renderer.setElementStyle(<span class="keyword">this</span>.el.nativeElement, <span class="string">'backgroundColor'</span>, color);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>a.html</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='lightgreen'"</span>&gt;</span>Green</span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='yellow'"</span>&gt;</span>Yellow</span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='cyan'"</span>&gt;</span>Cyan</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span> [<span class="attr">defaultColor</span>]=<span class="string">"'violet'"</span>&gt;</span></span><br><span class="line">  Highlight me too!</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>新的<code>highlightColor</code>属性被称为输入属性，因为数据是从绑定表达式流入指令中。 注意，在定义这个属性的时候，我们调用了<code>@Input()</code>装饰器，<code>@Input</code>向类添加元数据，使<code>highlightColor</code>属性能以<code>myHighlight</code>为别名进行绑定</li>
+<li>你可以通过重命名属性名到myHighlight来移除这个区别，像这样：<code>@Input() myHighlight: string;</code></li>
+<li><code>defaultColor</code>属性是一个 <code>setter</code> 函数，它代替了硬编码的默认颜色 “red”,它不需要 getter 函数。这里，把字符串字面量<code>&#39;violet&#39;</code>绑定到了<code>defaultColor</code>上。</li>
+</ul>
+<h2 id="关于-输入属性的源和目标"><a href="#关于-输入属性的源和目标" class="headerlink" title="关于 输入属性的源和目标"></a>关于 输入属性的源和目标</h2><p>Angular 在绑定的源和目标之间的区别：</p>
+<ul>
+<li><p>如果属性出现在了模板表达式等号 (=) 的右侧，它就是一个<code>源</code>。</p>
+</li>
+<li><p>如果它出现在了方括号 ([ ]) 中，并且出现在等号 (=) 的左侧，它就是一个<code>目标</code>， 就像在绑定到HighlightDirective的myHighlight属性时所做的那样。</p>
+</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>[myHighlight]=&quot;color&quot;</code>中的 <code>&#39;color&#39;</code>是绑定源。 源属性不需要声明。</p>
+<p><code>[myHighlight]=&quot;color&quot;</code>中的 <code>&#39;myHighlight&#39;</code> 是绑定目标。 必须把它定义为一个输入属性，否则，Angular 就会拒绝绑定，并给出一个明确的错误。</p>
+<p>Angular 这样区别对待目标属性有充分的理由。 作为目标的组件或指令需要保护。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Angular/" rel="tag"># Angular</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/22/TypeScript - 类/" rel="next" title="TypeScript - 类">
+                <i class="fa fa-chevron-left"></i> TypeScript - 类
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/24/node版本管理 n和nvm说明/" rel="prev" title="node版本管理 n和nvm说明">
+                node版本管理 n和nvm说明 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="shaochong" />
+            
+              <p class="site-author-name" itemprop="name">shaochong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个简单的属性型指令"><span class="nav-number">2.</span> <span class="nav-text">一个简单的属性型指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级点的属性型指令"><span class="nav-number">3.</span> <span class="nav-text">高级点的属性型指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-输入属性的源和目标"><span class="nav-number">4.</span> <span class="nav-text">关于 输入属性的源和目标</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shaochong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

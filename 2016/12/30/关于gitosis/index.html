@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="git," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="关于gitosis在工作中，我们有自己的git服务器，但是随着git项目的增多和项目成员的增多，我们开始使用了Gitosis软件。使用它可以方便的管理与git相关的如成员公钥、权限、项目成员等问题，这里我只对我项目中用到一些简单配置做了整理和记录，并非全面的介绍gitosis。这里提供一份更为详尽介绍的文档。 Git是">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于gitosis">
+<meta property="og:url" content="http://yoursite.com/2016/12/30/关于gitosis/index.html">
+<meta property="og:site_name" content="一阴一阳谓之道">
+<meta property="og:description" content="关于gitosis在工作中，我们有自己的git服务器，但是随着git项目的增多和项目成员的增多，我们开始使用了Gitosis软件。使用它可以方便的管理与git相关的如成员公钥、权限、项目成员等问题，这里我只对我项目中用到一些简单配置做了整理和记录，并非全面的介绍gitosis。这里提供一份更为详尽介绍的文档。 Git是非常著名的分布式版本控制系统。 Gitosis则是方便通过Git与ssh架设中央">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-05-23T12:18:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于gitosis">
+<meta name="twitter:description" content="关于gitosis在工作中，我们有自己的git服务器，但是随着git项目的增多和项目成员的增多，我们开始使用了Gitosis软件。使用它可以方便的管理与git相关的如成员公钥、权限、项目成员等问题，这里我只对我项目中用到一些简单配置做了整理和记录，并非全面的介绍gitosis。这里提供一份更为详尽介绍的文档。 Git是非常著名的分布式版本控制系统。 Gitosis则是方便通过Git与ssh架设中央">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/30/关于gitosis/"/>
+
+
+
+
+
+  <title>关于gitosis | 一阴一阳谓之道</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一阴一阳谓之道</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">合抱之木，生于毫末；九层之台，起于累土；千里之行，始于足下。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/30/关于gitosis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shaochong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一阴一阳谓之道">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于gitosis</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-30T10:29:00+08:00">
+                2016-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="关于gitosis"><a href="#关于gitosis" class="headerlink" title="关于gitosis"></a>关于gitosis</h1><p>在工作中，我们有自己的git服务器，但是随着git项目的增多和项目成员的增多，我们开始使用了<code>Gitosis</code>软件。使用它可以方便的管理与git相关的如成员公钥、权限、项目成员等问题，这里我只对我项目中用到一些简单配置做了整理和记录，并非全面的介绍gitosis。这里提供一份更为详尽介绍的<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">文档</a>。</p>
+<p>Git是非常著名的分布式版本控制系统。</p>
+<p><strong>Gitosis则是方便通过Git与ssh架设中央服务器的软件。</strong></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>已经配置安装好，故没有从头介绍，如需要看这个<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">安装步骤</a></p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>gitosis安装好之后的几个目录说明：</p>
+<p><code>/home/git</code>目录: gitosis默认把这里作为存储所有 Git 仓库的根目录</p>
+<p><code>/home/git/repositories</code>目录: 这里是存放需要管理的git项目（无需直接操作这个目录，要用gitosis来管理） </p>
+<h3 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h3><p>远程克隆gitosis到本地，方便管理</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在你的本地计算机上</span></span><br><span class="line">git@gitserver:gitosis-admin.git</span><br></pre></td></tr></table></figure>
+<p>如果你无法克隆，说明你没有权限，也就是<code>gitosis.conf</code>中<code>[group gitosis-admin]</code>没有存储你的公钥。你需要联系管理员给你管理权限。</p>
+<h3 id="创建者或管理员新增一个管理员权限"><a href="#创建者或管理员新增一个管理员权限" class="headerlink" title="创建者或管理员新增一个管理员权限"></a>创建者或管理员新增一个管理员权限</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在创建者或管理员的机器上（如有略过）</span></span><br><span class="line">$ git <span class="built_in">clone</span> git@gitserver:gitosis-admin.git</span><br><span class="line">$ <span class="built_in">cd</span> gitosis-admin.git</span><br><span class="line"><span class="comment"># 被添加者上传自己公钥（如有略过）</span></span><br><span class="line">$ scp ~/.ssh/id_rsa.pub 用户名@主机:/tmp</span><br><span class="line"><span class="comment"># 管理员拷贝公钥到keydir,并重命名（如有略过）</span></span><br><span class="line">$ cp /tmp/id_rsa.pub keydir/tom.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始配置</span></span><br><span class="line"><span class="comment"># 编辑gitosis.conf,在[group gitosis-admin]下members中添加成员tom</span></span><br><span class="line">$ vim gitosis.conf</span><br><span class="line"><span class="comment"># ...编辑操作...wq...</span></span><br><span class="line"><span class="comment"># [group gitosis-admin]</span></span><br><span class="line"><span class="comment"># members = admin tom</span></span><br><span class="line"><span class="comment"># writable = gitosis-admin</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 提交更改（有可能需要先git add）</span></span><br><span class="line">$ git commit</span><br><span class="line">$ git push</span><br><span class="line"></span><br><span class="line"><span class="comment"># OK！tom用户现在已经有gitosis的管理权限了，</span></span><br><span class="line"><span class="comment"># 它可以克隆gitosis-admin.git它的个人电脑上，并执行管理操作</span></span><br></pre></td></tr></table></figure>
+<p>目录说明：</p>
+<p><code>gitosis.conf</code>文件: 此处用于项目配置，包括gitosis管理员、git项目读写权限</p>
+<p><code>keydir</code>目录: 此处存放着相关用户的公钥</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/29/git status可能展示的几种情况/" rel="next" title="git status可能的情况">
+                <i class="fa fa-chevron-left"></i> git status可能的情况
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/19/2017-01-19/" rel="prev" title="为本地git仓库新增github远程仓库">
+                为本地git仓库新增github远程仓库 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="shaochong" />
+            
+              <p class="site-author-name" itemprop="name">shaochong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于gitosis"><span class="nav-number">1.</span> <span class="nav-text">关于gitosis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">1.0.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">1.0.2.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管理"><span class="nav-number">1.0.3.</span> <span class="nav-text">管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建者或管理员新增一个管理员权限"><span class="nav-number">1.0.4.</span> <span class="nav-text">创建者或管理员新增一个管理员权限</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shaochong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
