@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next gemini use-motion" lang="en">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -79,13 +79,16 @@
 
 
 
+<meta name="description" content="Make more time">
 <meta property="og:type" content="website">
-<meta property="og:title" content="一阴一阳谓之道">
+<meta property="og:title" content="易天行">
 <meta property="og:url" content="http://yoursite.com/page/2/index.html">
-<meta property="og:site_name" content="一阴一阳谓之道">
-<meta property="og:locale" content="en">
+<meta property="og:site_name" content="易天行">
+<meta property="og:description" content="Make more time">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="一阴一阳谓之道">
+<meta name="twitter:title" content="易天行">
+<meta name="twitter:description" content="Make more time">
 
 
 
@@ -101,7 +104,7 @@
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
-      author: 'Author'
+      author: '博主'
     },
     algolia: {
       applicationID: '',
@@ -121,7 +124,7 @@
 
 
 
-  <title>一阴一阳谓之道</title>
+  <title>易天行</title>
   
 
 
@@ -133,7 +136,7 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -152,12 +155,12 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">一阴一阳谓之道</span>
+        <span class="site-title">易天行</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <p class="site-subtitle">合抱之木，生于毫末；九层之台，起于累土；千里之行，始于足下。</p>
+        <p class="site-subtitle">积累点滴，汇聚江河</p>
       
   </div>
 
@@ -182,7 +185,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            首页
           </a>
         </li>
       
@@ -192,7 +195,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
-            About
+            关于
           </a>
         </li>
       
@@ -229,1082 +232,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/08/ionic2页面page的生命周期钩子函数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/08/ionic2页面page的生命周期钩子函数/" itemprop="url">ionic2页面page的生命周期钩子函数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-08T11:45:54+08:00">
-                2017-02-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ionic2页面page的生命周期钩子函数"><a href="#ionic2页面page的生命周期钩子函数" class="headerlink" title="ionic2页面page的生命周期钩子函数"></a>ionic2页面page的生命周期钩子函数</h1><ul>
-<li><p>Page Event    Returns    Description</p>
-</li>
-<li><p><code>ionViewDidLoad</code>    void    Runs when the page has loaded. This event only happens once per page being created. If a page leaves but is cached, then this event will not fire again on a subsequent viewing. The ionViewDidLoad event is good place to put your setup code for the page.</p>
-</li>
-<li><code>ionViewWillEnter</code>    void    Runs when the page is about to enter and become the active      page.</li>
-<li><code>ionViewDidEnter</code>    void    Runs when the page has fully entered and is now the active page. This event will fire, whether it was the first load or a cached page.</li>
-<li><code>ionViewWillLeave</code>    void    Runs when the page is about to leave and no longer be the active page.</li>
-<li><code>ionViewDidLeave</code>    void    Runs when the page has finished leaving and is no longer the active page.</li>
-<li><code>ionViewWillUnload</code>    void    Runs when the page is about to be destroyed and have its elements removed.</li>
-<li><code>ionViewCanEnter</code>    boolean/Promise<void>    Runs before the view can enter. This can be used as a sort of “guard” in authenticated views where you need to check permissions before the view can enter</void></li>
-<li><code>ionViewCanLeave</code>    boolean/Promise<void>    Runs before the view can leave. This can be used as a sort of “guard” in authenticated views where you need to check permissions before the view can leave</void></li>
-</ul>
-<hr>
-<p>end 2017-02-08 11:44:47</p>
-<p>参考文档：<a href="http://ionicframework.com/docs/v2/api/navigation/NavController/" target="_blank" rel="noopener">http://ionicframework.com/docs/v2/api/navigation/NavController/</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/08/2017-02-08-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/08/2017-02-08-1/" itemprop="url">ionic2使用根导航（rootNav）跳转</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-08T11:32:13+08:00">
-                2017-02-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ionic2使用根导航（rootNav）跳转"><a href="#ionic2使用根导航（rootNav）跳转" class="headerlink" title="ionic2使用根导航（rootNav）跳转"></a>ionic2使用根导航（rootNav）跳转</h1><p>在一个使用tab构建的ionic2应用程序中，如果我们直接使用<code>NavController</code>进行导航跳转，会将新的page压入当前tab的导航栈中。但login、signin、setting等page在业务上不应该属于当前tab，而应该从根组件进行导航，那么此时该如何做呢？<br>看下面的例子即可：</p>
-<h2 id="在一个组件中跳转到根导航中"><a href="#在一个组件中跳转到根导航中" class="headerlink" title="在一个组件中跳转到根导航中"></a>在一个组件中跳转到根导航中</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Component &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; App, ViewController &#125; <span class="keyword">from</span> <span class="string">'ionic-angular'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">    template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;ion-content&gt;</span></span><br><span class="line"><span class="string">      &lt;h1&gt;My PopoverPage&lt;/h1&gt;</span></span><br><span class="line"><span class="string">      &lt;button ion-button (click)="pushPage()"&gt;Call pushPage&lt;/button&gt;</span></span><br><span class="line"><span class="string">     &lt;/ion-content&gt;</span></span><br><span class="line"><span class="string">    `</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">class</span> PopoverPage &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">      <span class="keyword">public</span> viewCtrl: ViewController</span></span><br><span class="line"><span class="params">      <span class="keyword">public</span> appCtrl: App</span></span><br><span class="line"><span class="params">    </span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    pushPage() &#123;</span><br><span class="line">      <span class="keyword">this</span>.viewCtrl.dismiss();</span><br><span class="line">      <span class="keyword">this</span>.appCtrl.getRootNav().push(SecondPage);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="在主组件中跳转到一个根导航"><a href="#在主组件中跳转到一个根导航" class="headerlink" title="在主组件中跳转到一个根导航"></a>在主组件中跳转到一个根导航</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Component, ViewChild &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; NavController &#125; <span class="keyword">from</span> <span class="string">'ionic-angular'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">   template: <span class="string">'&lt;ion-nav #myNav [root]="rootPage"&gt;&lt;/ion-nav&gt;'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> MyApp &#123;</span><br><span class="line">   <span class="meta">@ViewChild</span>(<span class="string">'myNav'</span>) nav: NavController</span><br><span class="line">   <span class="keyword">public</span> rootPage = TabsPage;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Wait for the components in MyApp's template to be initialized</span></span><br><span class="line">   <span class="comment">// In this case, we are waiting for the Nav with reference variable of "#myNav"</span></span><br><span class="line">   ngOnInit() &#123;</span><br><span class="line">      <span class="comment">// Let's navigate from TabsPage to Page1</span></span><br><span class="line">      <span class="keyword">this</span>.nav.push(Page1);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<p>end 2017-02-08 11:32:08<br>参考文档： <a href="http://ionicframework.com/docs/v2/api/navigation/NavController/" target="_blank" rel="noopener">http://ionicframework.com/docs/v2/api/navigation/NavController/</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/08/2017-02-08/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/08/2017-02-08/" itemprop="url">Angular组件生命周期和钩子函数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-08T10:28:36+08:00">
-                2017-02-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Angular组件生命周期和钩子函数"><a href="#Angular组件生命周期和钩子函数" class="headerlink" title="Angular组件生命周期和钩子函数"></a>Angular组件生命周期和钩子函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>angular2中每个组件都有其生命周期，包括创建组件、渲染组件、创建渲染子组件、绑定的属性发生变化时检查它、从dom中移除。<br>angular2提供了<strong>声明周期钩子函数</strong>，把这些关键的周期暴露给我们，以便我们做一些自定义的操作。</p>
-<p><img src="http://ol1ftyec4.bkt.clouddn.com/2017-02-08-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-02-08%2010.49.03-1.png" alt="屏幕快照 2017-02-08 10.49.03"></p>
-<h2 id="声明周期顺序解释"><a href="#声明周期顺序解释" class="headerlink" title="声明周期顺序解释"></a>声明周期顺序解释</h2><ul>
-<li><code>ngOnChanges</code> 当angular绑定的输入属性发生变化时响应，首次调用一定会发生在ngOnInit之前</li>
-<li><code>ngOnInit</code> 初始化指令/组件，在第一轮ngOnChanges完成之后调用，<strong>只调用一次</strong></li>
-<li><code>ngDoCheck</code>在每个angular变更检测周期中调用，在ngOnChanges和ngOnInit之后调用</li>
-<li><code>ngAfterContentInit</code> 把内容渲染到组件之后调用，第一次ngDoCheck之后调用，只适用于组件，<strong>只调用一次</strong></li>
-<li><code>ngAfterContentChecked</code> 每次完成内容到组件的渲染的变更检测后调用，ngAfterContentInit和每次NgDoCheck之后调用，只适用于组件</li>
-<li><code>ngAfterViewInit</code> 组件视图及其子视图初始化完成之后调用，第一次ngAfterContentChecked之后调用，<strong>只调用一次</strong>，只适合组件</li>
-<li><code>ngAfterViewChecked</code> 每次做完组件视图和子视图的变更检测之后调用，ngAfterViewInit和每次ngAfterContentChecked之后调用，<br>只适合组件</li>
-<li><code>ngOnDestroy</code> 在Angular销毁指令/组件之前调用。</li>
-</ul>
-<h2 id="钩子函数执行顺序的例子"><a href="#钩子函数执行顺序的例子" class="headerlink" title="钩子函数执行顺序的例子"></a>钩子函数执行顺序的例子</h2><p><img src="http://ol1ftyec4.bkt.clouddn.com/2017-02-08-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-02-08%2011.17.24.png" alt="屏幕快照 2017-02-08 11.17.24"></p>
-<blockquote>
-<p>当输入属性发生变化时，就会看到<code>OnChanges</code>和至少两组<code>DoCheck</code>、<code>AfterContentChecked</code>和<code>AfterViewChecked</code>钩子执行。这四个钩子会执行很多次，应该让它们的逻辑尽可能精简，否则可能会影响用户体验。</p>
-</blockquote>
-<h2 id="再详细解释几个钩子函数"><a href="#再详细解释几个钩子函数" class="headerlink" title="再详细解释几个钩子函数"></a>再详细解释几个钩子函数</h2><h3 id="ngOnInit"><a href="#ngOnInit" class="headerlink" title="ngOnInit"></a>ngOnInit</h3><ul>
-<li>ngOnInit是组件获取初始数据的好地方</li>
-<li>在构造函数中只执行简单的局部变量初始化工作，其他什么都不要做</li>
-<li>在component中，构造函数完成之前，那些绑定的输入属性还都没有值；在<code>ngOnInit</code>执行的时候，这些属性都已经被正确赋值过了</li>
-</ul>
-<blockquote>
-<p>我们访问这些属性的第一次机会，实际上是ngOnChanges方法，Angular会在ngOnInit之前调用它。 但是在那之后，Angular还会调用ngOnChanges很多次。而ngOnInit只会被调用一次</p>
-</blockquote>
-<h3 id="ngDoCheck"><a href="#ngDoCheck" class="headerlink" title="ngDoCheck"></a>ngDoCheck</h3><ul>
-<li>使用DoCheck钩子来检测那些Angular自身无法捕获的变更并采取行动</li>
-<li>这个钩子被调用的十分频繁，应该使其实现尽可能的精简</li>
-</ul>
-<h3 id="AfterView"><a href="#AfterView" class="headerlink" title="AfterView"></a>AfterView</h3><p><code>AfterViewInit</code>和<code>AfterViewChecked</code>钩子，Angular会在每次创建了组件的子视图后调用它们。</p>
-<h2 id="最后说明"><a href="#最后说明" class="headerlink" title="最后说明"></a>最后说明</h2><p>这是angular2组件自带的生命周期钩子函数，每个基于angular2的框架还可能会有自己的钩子函数，用以方便程序的编程。比如ionic2框架的view就有自己的生命周期钩子函数。</p>
-<hr>
-<p>end 2017-02-08 11:32:00</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/22/2017-01-22/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/22/2017-01-22/" itemprop="url">git tag 标签使用说明</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-22T15:37:22+08:00">
-                2017-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="git-tag-标签使用说明"><a href="#git-tag-标签使用说明" class="headerlink" title="git tag 标签使用说明"></a>git tag 标签使用说明</h1><p><code>git tag</code>命令可以对某一时间点做标记，常用于版本发布。</p>
-<h2 id="查看标签"><a href="#查看标签" class="headerlink" title="查看标签"></a>查看标签</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git tag           <span class="comment"># 查看所有标签</span></span><br><span class="line">$ git tag -l <span class="string">'v1.'</span>  <span class="comment"># 搜索符合模式的标签</span></span><br><span class="line">$ git show v1.0     <span class="comment"># 查看某个标签详情</span></span><br></pre></td></tr></table></figure>
-<h2 id="添加标签"><a href="#添加标签" class="headerlink" title="添加标签"></a>添加标签</h2><h3 id="附注标签（推荐）"><a href="#附注标签（推荐）" class="headerlink" title="附注标签（推荐）"></a>附注标签（推荐）</h3><p>附注标签则是仓库中的一个独立对象,建议使用附注标签:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git tag -a v1.1 -m <span class="string">"1.1版本"</span></span><br></pre></td></tr></table></figure>
-<p>参数a即annotated的缩写，指定标签类型，后面是标签名，参数m指定标签说明，说明信息会保存在标签对象中</p>
-<h3 id="轻量级标签"><a href="#轻量级标签" class="headerlink" title="轻量级标签"></a>轻量级标签</h3><p>轻量标签是指向提交对象的引用:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git tag v0.1 -light</span><br></pre></td></tr></table></figure>
-<h3 id="为某次commit打标签"><a href="#为某次commit打标签" class="headerlink" title="为某次commit打标签"></a>为某次commit打标签</h3><p>上面的命令默认将标签打在head上，如果需要我们也可以为之前的提交版本打标签：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">log</span> --oneline        <span class="comment"># 显示版本提交历史</span></span><br><span class="line">$ git tag -a v0.1 c8cbe39  <span class="comment"># 为c8cbe39添加标签</span></span><br></pre></td></tr></table></figure>
-<h2 id="切换标签"><a href="#切换标签" class="headerlink" title="切换标签"></a>切换标签</h2><p>与切换分支命令相同：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git tag                 <span class="comment"># 显示当前分支下的标签</span></span><br><span class="line">$ git checkout [tagname]  <span class="comment"># 此时指向标签指向的代码状态（此时处于空分支）</span></span><br><span class="line">$ cat a.txt               <span class="comment"># 查看某个文件</span></span><br><span class="line">$ git checkout master     <span class="comment"># 切换回master</span></span><br></pre></td></tr></table></figure>
-<h2 id="删除标签"><a href="#删除标签" class="headerlink" title="删除标签"></a>删除标签</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git tag -d v0.1 <span class="comment"># 删除标签v0.1</span></span><br></pre></td></tr></table></figure>
-<p>注意：误打或需要修改标签时，需要先将标签删除，再打新标签。</p>
-<h2 id="标签发布"><a href="#标签发布" class="headerlink" title="标签发布"></a>标签发布</h2><p><code>git push</code>不会将标签信息提交到远程服务器，需要显示更新标签：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git push origin v0.1   <span class="comment">#将v0.1标签提交到git服务器</span></span><br><span class="line">$ git push origin –tags  <span class="comment">#将本地所有标签一次性提交到git服务器</span></span><br></pre></td></tr></table></figure>
-<hr>
-<p>end 2017-01-22 15:38:33</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/19/2017-01-19/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/19/2017-01-19/" itemprop="url">为本地git仓库新增github远程仓库</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T17:54:05+08:00">
-                2017-01-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="为本地git仓库新增github远程仓库"><a href="#为本地git仓库新增github远程仓库" class="headerlink" title="为本地git仓库新增github远程仓库"></a>为本地git仓库新增github远程仓库</h1><p>人已新建过几个github仓库，但每次用的方法不一样，这里整理一个简单的方法流程，供以后参考。</p>
-<ol>
-<li>登录github，新建一个空repository</li>
-<li><p>为本地项目添加远程地址</p>
- <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git remote add origin git@github.com:hao5743/gittest.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>推送到远程</p>
- <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git push -u origin master</span><br></pre></td></tr></table></figure>
-<p> 第一次推送的时候，需要加上<code>-u</code>参数，Git不但会把本地的<code>master</code>分支内容推送的远程新的<code>master</code>分支，还会把本地的<code>master</code>分支和远程的<code>master</code>分支关联起来，以后就可以简化命令</p>
-<p> 之后使用<code>git push</code>,<code>git pull</code>命令就行了</p>
-</li>
-</ol>
-<hr>
-<p>end. 2017-01-19 17:55:57</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/30/关于gitosis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/30/关于gitosis/" itemprop="url">关于gitosis</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-30T10:29:00+08:00">
-                2016-12-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="关于gitosis"><a href="#关于gitosis" class="headerlink" title="关于gitosis"></a>关于gitosis</h1><p>在工作中，我们有自己的git服务器，但是随着git项目的增多和项目成员的增多，我们开始使用了<code>Gitosis</code>软件。使用它可以方便的管理与git相关的如成员公钥、权限、项目成员等问题，这里我只对我项目中用到一些简单配置做了整理和记录，并非全面的介绍gitosis。这里提供一份更为详尽介绍的<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">文档</a>。</p>
-<p>Git是非常著名的分布式版本控制系统。</p>
-<p><strong>Gitosis则是方便通过Git与ssh架设中央服务器的软件。</strong></p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>已经配置安装好，故没有从头介绍，如需要看这个<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">安装步骤</a></p>
-<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>gitosis安装好之后的几个目录说明：</p>
-<p><code>/home/git</code>目录: gitosis默认把这里作为存储所有 Git 仓库的根目录</p>
-<p><code>/home/git/repositories</code>目录: 这里是存放需要管理的git项目（无需直接操作这个目录，要用gitosis来管理） </p>
-<h3 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h3><p>远程克隆gitosis到本地，方便管理</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在你的本地计算机上</span></span><br><span class="line">git@gitserver:gitosis-admin.git</span><br></pre></td></tr></table></figure>
-<p>如果你无法克隆，说明你没有权限，也就是<code>gitosis.conf</code>中<code>[group gitosis-admin]</code>没有存储你的公钥。你需要联系管理员给你管理权限。</p>
-<h3 id="创建者或管理员新增一个管理员权限"><a href="#创建者或管理员新增一个管理员权限" class="headerlink" title="创建者或管理员新增一个管理员权限"></a>创建者或管理员新增一个管理员权限</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在创建者或管理员的机器上（如有略过）</span></span><br><span class="line">$ git <span class="built_in">clone</span> git@gitserver:gitosis-admin.git</span><br><span class="line">$ <span class="built_in">cd</span> gitosis-admin.git</span><br><span class="line"><span class="comment"># 被添加者上传自己公钥（如有略过）</span></span><br><span class="line">$ scp ~/.ssh/id_rsa.pub 用户名@主机:/tmp</span><br><span class="line"><span class="comment"># 管理员拷贝公钥到keydir,并重命名（如有略过）</span></span><br><span class="line">$ cp /tmp/id_rsa.pub keydir/tom.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始配置</span></span><br><span class="line"><span class="comment"># 编辑gitosis.conf,在[group gitosis-admin]下members中添加成员tom</span></span><br><span class="line">$ vim gitosis.conf</span><br><span class="line"><span class="comment"># ...编辑操作...wq...</span></span><br><span class="line"><span class="comment"># [group gitosis-admin]</span></span><br><span class="line"><span class="comment"># members = admin tom</span></span><br><span class="line"><span class="comment"># writable = gitosis-admin</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 提交更改（有可能需要先git add）</span></span><br><span class="line">$ git commit</span><br><span class="line">$ git push</span><br><span class="line"></span><br><span class="line"><span class="comment"># OK！tom用户现在已经有gitosis的管理权限了，</span></span><br><span class="line"><span class="comment"># 它可以克隆gitosis-admin.git它的个人电脑上，并执行管理操作</span></span><br></pre></td></tr></table></figure>
-<p>目录说明：</p>
-<p><code>gitosis.conf</code>文件: 此处用于项目配置，包括gitosis管理员、git项目读写权限</p>
-<p><code>keydir</code>目录: 此处存放着相关用户的公钥</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/git status可能展示的几种情况/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/29/git status可能展示的几种情况/" itemprop="url">git status可能的情况</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-29T17:29:54+08:00">
-                2016-12-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="git-status可能的情况"><a href="#git-status可能的情况" class="headerlink" title="git status可能的情况"></a>git status可能的情况</h1><p>工作中我们使用git作为版本管理工具，它的确是一个强大的工具。易于学习和使用，但是要学习的面面俱到也很难，就<code>git status</code>就可能会出现n多种的情况。本文记录了<code>git status</code>可能出现的不同状态信息、状态说明、处理办法。注意，列举的情况并不全面，只是列举了工作中遇到的一些常见情况，同时遇到新状态，还会随时增加。</p>
-<p><strong>git仓库中文件的状态</strong><br>git仓库中所有文件可分为两种状态<strong>已跟踪</strong>和<strong>未跟踪</strong>。已跟踪的文件被git纳入了版本控制，git会记录它的每次更新状态。<br>状态生命周期有四种：untracked, unmodified, modified, staged</p>
-<p><strong>git status可能的情况：</strong></p>
-<h2 id="1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit"><a href="#1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit" class="headerlink" title="1. Your branch is ahead of ‘origin/master’ by 1 commit."></a>1. Your branch is ahead of ‘origin/master’ by 1 commit.</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is ahead of &apos;origin/master&apos; by 1 commit.</span><br><span class="line">  (use &quot;git push&quot; to publish your local commits)</span><br><span class="line">nothing to commit, working directory clean</span><br><span class="line">cochona@cochona:~/gitosis-admin/keydir$</span><br></pre></td></tr></table></figure>
-<p>此时说明当前目录中所有的已跟踪文件，都已经和远程保持同步，并且没有修改。刚从远程克隆的git仓库，都是这个状态。</p>
-<h2 id="2-nothing-added-to-commit-but-untracked-files-present"><a href="#2-nothing-added-to-commit-but-untracked-files-present" class="headerlink" title="2. nothing added to commit but untracked files present"></a>2. nothing added to commit but untracked files present</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Initial commit</span><br><span class="line">Untracked files:</span><br><span class="line">	(use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line">a.text</span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
-<p>表示此时目录下，有新添加的未被跟踪的文件，如果我们需要将此文件提交到仓库，可以执行git add</p>
-<h2 id="3-Changes-to-be-committed-new-file"><a href="#3-Changes-to-be-committed-new-file" class="headerlink" title="3. Changes to be committed: new file"></a>3. Changes to be committed: new file</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line">	(use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">   new file:   README</span><br></pre></td></tr></table></figure>
-<p>在“Changes to be committed”这行下面的都是已暂存的状态，此时可以执行git commit</p>
-<h2 id="4-Changes-to-be-committed-modified"><a href="#4-Changes-to-be-committed-modified" class="headerlink" title="4. Changes to be committed: modified"></a>4. Changes to be committed: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">	</span><br><span class="line">	modified:   gitosis.conf</span><br></pre></td></tr></table></figure>
-<p>有修改的文件，此时可以选择直接<code>git commit -m &quot;info&quot;</code>    </p>
-<h2 id="5-Changes-not-staged-for-commit-modified"><a href="#5-Changes-not-staged-for-commit-modified" class="headerlink" title="5. Changes not staged for commit: modified"></a>5. Changes not staged for commit: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git commit -m &quot;add shaoc@pub to admin-group&quot;</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes not staged for commit:</span><br><span class="line">	modified:   gitosis.conf</span><br><span class="line">	</span><br><span class="line">no changes added to commit</span><br></pre></td></tr></table></figure>
-<p>此时如果要保存修改，需要先<code>git add gitosis.conf</code>，然后<code>git commit -m &quot;&quot;</code>,然后<code>git push</code></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/ionic state命令不应该再使用了/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/29/ionic state命令不应该再使用了/" itemprop="url">ionic state命令将要废弃</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-29T11:29:00+08:00">
-                2016-12-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ionic-state命令将要废弃"><a href="#ionic-state命令将要废弃" class="headerlink" title="ionic state命令将要废弃"></a>ionic state命令将要废弃</h1><p>参考自官方网站</p>
-<p><a href="https://github.com/driftyco/ionic-cli/issues/904" target="_blank" rel="noopener">Discuss: Deprecate/Remove state command #904</a></p>
-<p><a href="https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html" target="_blank" rel="noopener">cordova说明</a></p>
-<blockquote>
-<p>The state command was created to manage Cordova plugins before it was supported in Cordova. Cordova now manages plugins and platforms in config.xml: <a href="https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html" target="_blank" rel="noopener">https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html</a> so there is a decent amount of confusion between the Ionic and Cordova behavior. As Cordova platforms and plugins are not an Ionic concern, let’s deprecate the state command and document the existing Cordova command workflow, ie plugin add –save.</p>
-</blockquote>
-<p>state命令是之前用来管理cordova插件的。现在Cordova自身已经开始通过<code>config.xml</code>来支持插件和平台管理（<a href="https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html" target="_blank" rel="noopener">官方说明</a>），这会让我们对ionic和cordova的不同的管理方式感到困惑。因为cordova的平台和插件是ionic所不关心的，所以建议停止使用<code>state</code>命令，而使用cordova的管理方式，比如<code>plugin add --save</code></p>
-<h2 id="对于插件我们应该这样管理"><a href="#对于插件我们应该这样管理" class="headerlink" title="对于插件我们应该这样管理"></a>对于插件我们应该这样管理</h2><p>重装所有插件</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rm -rf plugins</span><br><span class="line"><span class="comment"># 更新插件,执行时会自动安装在config.xml中的插件</span></span><br><span class="line">cordova prepare</span><br></pre></td></tr></table></figure>
-<p>从工程中彻底删除一个插件，–save命令会将删除或更改影响到<code>config.xml</code>,与<code>package.json</code>无关</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cordova plugin reomve ionic-plugin-keyboard --save</span><br><span class="line">cordova plugin add ionic-plugin-keyboard --save</span><br></pre></td></tr></table></figure>
-<p>platform add的时候会自动检测<code>config.xml</code>，并安装记录的插件</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cordova platform add android</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/研究了oh-my-zsh中环境变量的配置办法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1314,7 +241,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
+      <meta itemprop="name" content="易天行">
     </span>
 
     
@@ -1334,9 +261,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T00:00:00+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-28T00:00:00+08:00">
                 2016-12-28
               </time>
             
@@ -1462,7 +389,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
+      <meta itemprop="name" content="易天行">
     </span>
 
     
@@ -1482,9 +409,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-26T23:08:09+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-26T23:08:09+08:00">
                 2016-12-26
               </time>
             
@@ -1589,7 +516,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
+      <meta itemprop="name" content="易天行">
     </span>
 
     
@@ -1609,9 +536,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-17T13:04:53+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-17T13:04:53+08:00">
                 2016-12-17
               </time>
             
@@ -1728,7 +655,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
+      <meta itemprop="name" content="易天行">
     </span>
 
     
@@ -1748,9 +675,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-08T19:16:19+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-08T19:16:19+08:00">
                 2016-12-08
               </time>
             
@@ -1769,7 +696,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">分类于</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1891,7 +818,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
+      <meta itemprop="name" content="易天行">
     </span>
 
     
@@ -1911,9 +838,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-05T16:33:38+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-05T16:33:38+08:00">
                 2016-12-05
               </time>
             
@@ -1932,7 +859,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">分类于</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2100,7 +1027,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一阴一阳谓之道">
+      <meta itemprop="name" content="易天行">
     </span>
 
     
@@ -2120,9 +1047,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-03T18:38:17+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-03T18:38:17+08:00">
                 2016-12-03
               </time>
             
@@ -2141,7 +1068,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">分类于</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2340,7 +1267,7 @@
                 alt="Ethan Hunt" />
             
               <p class="site-author-name" itemprop="name">Ethan Hunt</p>
-              <p class="site-description motion-element" itemprop="description"></p>
+              <p class="site-description motion-element" itemprop="description">Make more time</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -2350,8 +1277,8 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">34</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
@@ -2362,7 +1289,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">分类</span>
                 
               </div>
             
@@ -2373,7 +1300,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">20</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">标签</span>
                 
               </div>
             
@@ -2411,7 +1338,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -2421,7 +1348,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
 
 
 
@@ -2429,7 +1356,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
 
 
 

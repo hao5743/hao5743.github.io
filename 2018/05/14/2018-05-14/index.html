@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="项目中存在大量的es5回调的代码，而且生产环境对原生Promise、awati/async 支持不够好，所以使用then.js作为异步解决方案，避免回调地狱的问题，也能兼容老代码。本文简要介绍了then.js异步框架的特点、安装和基本用法。 它是什么一个解决js异步回调问题的方案，它可以将“回调地狱”处理成并列的the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="node.js异步框架thenjs">
+<meta property="og:url" content="http://yoursite.com/2018/05/14/2018-05-14/index.html">
+<meta property="og:site_name" content="易天行">
+<meta property="og:description" content="项目中存在大量的es5回调的代码，而且生产环境对原生Promise、awati/async 支持不够好，所以使用then.js作为异步解决方案，避免回调地狱的问题，也能兼容老代码。本文简要介绍了then.js异步框架的特点、安装和基本用法。 它是什么一个解决js异步回调问题的方案，它可以将“回调地狱”处理成并列的then链，方便代码的阅读和维护。官网地址 特点 可以像标准的 Promise 那样，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-15T02:36:05.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="node.js异步框架thenjs">
+<meta name="twitter:description" content="项目中存在大量的es5回调的代码，而且生产环境对原生Promise、awati/async 支持不够好，所以使用then.js作为异步解决方案，避免回调地狱的问题，也能兼容老代码。本文简要介绍了then.js异步框架的特点、安装和基本用法。 它是什么一个解决js异步回调问题的方案，它可以将“回调地狱”处理成并列的then链，方便代码的阅读和维护。官网地址 特点 可以像标准的 Promise 那样，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/14/2018-05-14/"/>
+
+
+
+
+
+  <title>node.js异步框架thenjs | 易天行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">易天行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">积累点滴，汇聚江河</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/14/2018-05-14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">node.js异步框架thenjs</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-14T00:00:00+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>项目中存在大量的es5回调的代码，而且生产环境对原生Promise、awati/async 支持不够好，所以使用then.js作为异步解决方案，避免回调地狱的问题，也能兼容老代码。本文简要介绍了then.js异步框架的特点、安装和基本用法。</p>
+<h2 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h2><p>一个解决js异步回调问题的方案，它可以将“回调地狱”处理成并列的then链，方便代码的阅读和维护。<br><a href="https://www.npmjs.com/package/thenjs" target="_blank" rel="noopener">官网地址</a></p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li><p>可以像标准的 Promise 那样，把N多异步回调函数写成一个长长的 then 链，并且比 Promise 更简洁自然。因为如果使用标准 Promise 的 then 链，其中的异步函数都必须转换成 Promise，Thenjs 则无需转换，像使用 callback 一样执行异步函数即可。</p>
+</li>
+<li><p>强大的 Error 机制，可以捕捉任何同步或异步的异常错误，甚至是位于异步函数中的语法错误。并且捕捉的错误任君处置。</p>
+</li>
+<li><p>开启debug模式，可以把每一个then链运行结果输出到debug函数（未定义debug函数则用 console.log），方便调试。</p>
+</li>
+</ul>
+<h2 id="安装-amp-使用"><a href="#安装-amp-使用" class="headerlink" title="安装&amp;使用"></a>安装&amp;使用</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install thenjs --save</span><br><span class="line">var Thenjs = require(&quot;thenjs&quot;);</span><br></pre></td></tr></table></figure>
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Thenjs(<span class="function"><span class="keyword">function</span> (<span class="params">cont</span>) </span>&#123;</span><br><span class="line">  cont(<span class="literal">null</span>, result);</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">cont</span>) </span>&#123;</span><br><span class="line">  cont(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'error!'</span>), <span class="number">123</span>);</span><br><span class="line">&#125;)</span><br><span class="line">.fin(<span class="function"><span class="keyword">function</span> (<span class="params">cont, error, result</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error, result);</span><br><span class="line">  cont();</span><br><span class="line">&#125;)</span><br><span class="line">.each([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>], <span class="function"><span class="keyword">function</span> (<span class="params">cont, value</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//do sth with value</span></span><br><span class="line">  cont(<span class="literal">null</span>);  <span class="comment">// 并行执行队列任务，把队列 list 中的每一个值输入到 task 中运行</span></span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">cont, result</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(result);</span><br><span class="line">  cont();</span><br><span class="line">&#125;)</span><br><span class="line">.series([ <span class="comment">// 串行执行队列任务</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> (<span class="params">cont</span>) </span>&#123; task(<span class="number">88</span>, cont); &#125;, <span class="comment">// 队列第一个是异步任务</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> (<span class="params">cont</span>) </span>&#123; cont(<span class="literal">null</span>, <span class="number">99</span>); &#125; <span class="comment">// 第二个是同步任务</span></span><br><span class="line">])</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">cont, result</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(result);</span><br><span class="line">  cont(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'error!!'</span>));</span><br><span class="line">&#125;)</span><br><span class="line">.fail(<span class="function"><span class="keyword">function</span> (<span class="params">cont, error</span>) </span>&#123; <span class="comment">// 通常应该在链的最后放置一个 `fail` 方法收集异常</span></span><br><span class="line">  <span class="built_in">console</span>.log(error);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'DEMO END!'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="两种方式定义"><a href="#两种方式定义" class="headerlink" title="两种方式定义"></a>两种方式定义</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Thenjs().then(<span class="function"><span class="keyword">function</span>(<span class="params">cont</span>) </span>&#123; </span><br><span class="line">    cont(<span class="literal">null</span>); </span><br><span class="line">&#125;);</span><br><span class="line">Thenjs(<span class="function"><span class="keyword">function</span>(<span class="params">cont, result</span>) </span>&#123; </span><br><span class="line">    cont(result); </span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span>(<span class="params">cont, result</span>) </span>&#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Thenjs-each-array-iterator"><a href="#Thenjs-each-array-iterator" class="headerlink" title="Thenjs.each(array, iterator)"></a>Thenjs.each(array, iterator)</h3><p>将 array 中的值应用于 iterator 函数（同步或异步），并行执行。返回一个新的 Thenjs 对象。<br>返回结果result是一个数组，包含每个cont返回的值</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Thenjs.each([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>], <span class="function"><span class="keyword">function</span> (<span class="params">cont, value</span>) </span>&#123;</span><br><span class="line">  task(value * <span class="number">2</span>, cont);</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">cont, result</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(result);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Thenjs-eachSeries-array-iterator"><a href="#Thenjs-eachSeries-array-iterator" class="headerlink" title="Thenjs.eachSeries(array, iterator)"></a>Thenjs.eachSeries(array, iterator)</h3><p>同上，串行执行</p>
+<h3 id="Thenjs-parallel-tasksArray"><a href="#Thenjs-parallel-tasksArray" class="headerlink" title="Thenjs.parallel(tasksArray)"></a>Thenjs.parallel(tasksArray)</h3><p>tasksArray 是一个函数（同步或异步）数组，<strong>并行执行</strong>。返回一个新的 Thenjs 对象。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Thenjs.parallel([</span><br><span class="line">  <span class="function"><span class="keyword">function</span> (<span class="params">cont</span>) </span>&#123; task(<span class="number">88</span>, cont); &#125;,</span><br><span class="line">  <span class="function"><span class="keyword">function</span> (<span class="params">cont</span>) </span>&#123; cont(<span class="literal">null</span>, <span class="number">99</span>); &#125;</span><br><span class="line">])</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">cont, result</span>) </span>&#123;  <span class="comment">//result 是返回结果的数组</span></span><br><span class="line">  <span class="built_in">console</span>.log(result);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Thenjs-series-tasksArray"><a href="#Thenjs-series-tasksArray" class="headerlink" title="Thenjs.series(tasksArray)"></a>Thenjs.series(tasksArray)</h3><p>同上，接受函数数组参数，<strong>串行执行</strong></p>
+<h3 id="Thenjs-parallelLimit-tasksArray-limit"><a href="#Thenjs-parallelLimit-tasksArray-limit" class="headerlink" title="Thenjs.parallelLimit(tasksArray, limit)"></a>Thenjs.parallelLimit(tasksArray, limit)</h3><p>同parallel，并行执行，不过限制最大并发数为limit</p>
+<h3 id="Thenjs-eachLimit-array-iterator-limit"><a href="#Thenjs-eachLimit-array-iterator-limit" class="headerlink" title="Thenjs.eachLimit(array, iterator, limit)"></a>Thenjs.eachLimit(array, iterator, limit)</h3><p>同each，并行执行，限制最大并发数为limit</p>
+<h3 id="Thenjs-prototype-then-successHandler-errorHandler"><a href="#Thenjs-prototype-then-successHandler-errorHandler" class="headerlink" title="Thenjs.prototype.then(successHandler, [errorHandler])"></a>Thenjs.prototype.then(successHandler, [errorHandler])</h3><p>如果上一链正确，则进入 successHandler 执行，否则进入 errorHandler 执行。返回一个新的 Thenjs 对象。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Thenjs(<span class="function"><span class="keyword">function</span> (<span class="params">cont</span>) </span>&#123;</span><br><span class="line">  task(<span class="number">10</span>, cont);</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">cont, arg</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(arg);</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">cont, error</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.error(error);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Thenjs-prototype-finally-finallyHandler"><a href="#Thenjs-prototype-finally-finallyHandler" class="headerlink" title="Thenjs.prototype.finally(finallyHandler)"></a>Thenjs.prototype.finally(finallyHandler)</h3><p>别名<code>fin</code><br>无论上一链是否存在 error，均进入 finallyHandler 执行，等效于 .then(successHandler, errorHandler)。返回一个新的 Thenjs 对象。</p>
+<h3 id="Thenjs-prototype-fail-errorHandler"><a href="#Thenjs-prototype-fail-errorHandler" class="headerlink" title="Thenjs.prototype.fail(errorHandler)"></a>Thenjs.prototype.fail(errorHandler)</h3><p>fail 用于捕捉 error，如果在它之前的任意一个链上产生了 error，并且未被 then, finally 等捕获，则会跳过中间链，直接进入 fail。返回一个新的 Thenjs 对象。</p>
+<h3 id="prototype也有each-eachSeries-parallel-series"><a href="#prototype也有each-eachSeries-parallel-series" class="headerlink" title="prototype也有each eachSeries parallel series"></a>prototype也有each eachSeries parallel series</h3><p>Thenjs.prototype.each(array, iterator)<br>参数类似 Thenjs.each，返回一个新的 Thenjs 对象。</p>
+<p>不同在于，参数可省略，如果没有参数，则会查找上一个链的输出结果作为参数，即上一个链可以这样 cont(null, array, iterator) 传输参数到each。下面三个队列方法行为类似。</p>
+<p>Thenjs.prototype.eachSeries(array, iterator)<br>参数类似 Thenjs.eachSeries，返回一个新的 Thenjs 对象。</p>
+<p>Thenjs.prototype.parallel(tasksArray)<br>参数类似 Thenjs.parallel，返回一个新的 Thenjs 对象。</p>
+<p>Thenjs.prototype.series(tasksArray)<br>参数类似 Thenjs.series，返回一个新的 Thenjs 对象。</p>
+<p>Thenjs.prototype.parallelLimit(tasksArray, limit)<br>参数类似 Thenjs.parallelLimit，返回一个新的 Thenjs 对象。</p>
+<p>Thenjs.prototype.eachLimit(array, iterator, limit)<br>参数类似 Thenjs.eachLimit，返回一个新的 Thenjs 对象。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/05/2017-12-05/" rel="next" title="设计模式6原则">
+                <i class="fa fa-chevron-left"></i> 设计模式6原则
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/15/2018-05-15/" rel="prev" title="node.js中的module.exports和exports">
+                node.js中的module.exports和exports <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="Ethan Hunt" />
+            
+              <p class="site-author-name" itemprop="name">Ethan Hunt</p>
+              <p class="site-description motion-element" itemprop="description">Make more time</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#它是什么"><span class="nav-number">1.</span> <span class="nav-text">它是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-amp-使用"><span class="nav-number">3.</span> <span class="nav-text">安装&使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方式"><span class="nav-number">4.</span> <span class="nav-text">使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo"><span class="nav-number">4.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两种方式定义"><span class="nav-number">4.2.</span> <span class="nav-text">两种方式定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-each-array-iterator"><span class="nav-number">4.3.</span> <span class="nav-text">Thenjs.each(array, iterator)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-eachSeries-array-iterator"><span class="nav-number">4.4.</span> <span class="nav-text">Thenjs.eachSeries(array, iterator)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-parallel-tasksArray"><span class="nav-number">4.5.</span> <span class="nav-text">Thenjs.parallel(tasksArray)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-series-tasksArray"><span class="nav-number">4.6.</span> <span class="nav-text">Thenjs.series(tasksArray)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-parallelLimit-tasksArray-limit"><span class="nav-number">4.7.</span> <span class="nav-text">Thenjs.parallelLimit(tasksArray, limit)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-eachLimit-array-iterator-limit"><span class="nav-number">4.8.</span> <span class="nav-text">Thenjs.eachLimit(array, iterator, limit)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-prototype-then-successHandler-errorHandler"><span class="nav-number">4.9.</span> <span class="nav-text">Thenjs.prototype.then(successHandler, [errorHandler])</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-prototype-finally-finallyHandler"><span class="nav-number">4.10.</span> <span class="nav-text">Thenjs.prototype.finally(finallyHandler)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thenjs-prototype-fail-errorHandler"><span class="nav-number">4.11.</span> <span class="nav-text">Thenjs.prototype.fail(errorHandler)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prototype也有each-eachSeries-parallel-series"><span class="nav-number">4.12.</span> <span class="nav-text">prototype也有each eachSeries parallel series</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ethan Hunt</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
