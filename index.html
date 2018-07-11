@@ -242,6 +242,275 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/2018-07-11-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/12/2018-07-11-1/" itemprop="url">nginx入门使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T00:00:00+08:00">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文综合介绍了Nginx的概念、特性、配置文件说明、常用命令等。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Nginx是一个<strong>轻量级、高性能的HTTP和反向代理服务器</strong>，也是一个IMAP/POP3/SMTP服务器。它是由c语言开发，由俄罗斯人<code>伊戈尔·赛索耶夫</code>开发的，第一个公开版本发布于2004年10月4日。因它的稳定性、丰富的功能集、示例配置文件和低系统资源的消耗而闻名。其特点是<strong>占有内存少，并发能力强</strong>，事实上nginx是并发能力最好的web服务器，中国大陆使用nginx网站用户有：百度、京东、新浪、网易、腾讯、淘宝等。</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li><p>作为 Web 服务器：相比 Apache，Nginx 使用更少的资源，支持更多的并发连接，这点使 Nginx 尤其受到虚拟主机提供商的欢迎，能够支持高达 50,000 个并发连接数的响应。</p>
+</li>
+<li><p>作为反向代理和负载均衡服务器：Nginx 既可以在内部直接支持 Rails 和 PHP，也可以支持作为 HTTP代理服务器 对外进行服务。</p>
+</li>
+<li><p>作为邮件代理服务器: Nginx 同时也是一个非常优秀的邮件代理服务器（最早开发这个产品的目的之一也是作为邮件代理服务器）。</p>
+</li>
+<li><p>Nginx 安装非常简单，配置文件非常简洁，Bugs非常少，资源占用低: Nginx 启动特别容易，并且几乎可以做到7*24不间断运行，即使运行数个月也不需要重新启动。</p>
+</li>
+</ul>
+<h2 id="安装步骤（Mac）"><a href="#安装步骤（Mac）" class="headerlink" title="安装步骤（Mac）"></a>安装步骤（Mac）</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew update</span><br><span class="line">brew search nginx   <span class="comment"># 检查是否存在</span></span><br><span class="line">brew info nginx     <span class="comment"># 查看要安装的信息</span></span><br><span class="line">brew install nginx  <span class="comment"># 默认port 8080，访问：localhost:8080</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认的配置文件目录：<code>/usr/local/etc/nginx/nginx.conf</code></li>
+<li>默认安装目录：<code>/usr/local/Cellar/nginx/1.13.9</code>，里面会有以nginx版本号命名的文件夹，这里就是安装的根目录。进入<code>1.13.9/bin</code>可以看到nginx的可执行文件。</li>
+<li>在<code>1.13.9</code>目录下，还有一个名字为html的快捷方式文件夹，它指向的是<code>/usr/local/var/www</code>目录，该目录下包含<code>50x.html</code>和<code>index.html</code>文件，是nginx服务器默认的显示页面。当它不存在时，访问出现<code>403错误</code>。</li>
+<li>使用<code>nginx</code>命令后台启动服务器</li>
+</ul>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nginx            <span class="comment">#打开 nginx</span></span><br><span class="line">nginx -s reload  <span class="comment">#重新加载配置</span></span><br><span class="line">nginx -s reopen  <span class="comment">#重启nginx</span></span><br><span class="line">nginx -s stop    <span class="comment">#停止nginx</span></span><br><span class="line">nginx -s quit    <span class="comment">#退出nginx</span></span><br><span class="line">nginx -t         <span class="comment">#测试配置是否有语法错误</span></span><br></pre></td></tr></table></figure>
+<h2 id="配置文件示例"><a href="#配置文件示例" class="headerlink" title="配置文件示例"></a>配置文件示例</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#运行用户</span></span><br><span class="line">user nobody;</span><br><span class="line"><span class="comment">#启动进程,通常设置成和cpu的数量相等</span></span><br><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line"><span class="comment">#全局错误日志及PID文件</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  info;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pid        logs/nginx.pid;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#工作模式及连接数上限</span></span><br><span class="line">events &#123;</span><br><span class="line">    <span class="comment">#epoll是多路复用IO(I/O Multiplexing)中的一种方式,</span></span><br><span class="line">    <span class="comment">#仅用于linux2.6以上内核,可以大大提高nginx的性能</span></span><br><span class="line">    use   epoll; </span><br><span class="line"></span><br><span class="line">    <span class="comment">#单个后台worker process进程的最大并发链接数    </span></span><br><span class="line">    worker_connections  1024;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 并发总数是 worker_processes 和 worker_connections 的乘积</span></span><br><span class="line">    <span class="comment"># 即 max_clients = worker_processes * worker_connections</span></span><br><span class="line">    <span class="comment"># 在设置了反向代理的情况下，max_clients = worker_processes * worker_connections / 4  为什么</span></span><br><span class="line">    <span class="comment"># 为什么上面反向代理要除以4，应该说是一个经验值</span></span><br><span class="line">    <span class="comment"># 根据以上条件，正常情况下的Nginx Server可以应付的最大连接数为：4 * 8000 = 32000</span></span><br><span class="line">    <span class="comment"># worker_connections 值的设置跟物理内存大小有关</span></span><br><span class="line">    <span class="comment"># 因为并发受IO约束，max_clients的值须小于系统可以打开的最大文件数</span></span><br><span class="line">    <span class="comment"># 而系统可以打开的最大文件数和内存大小成正比，一般1GB内存的机器上可以打开的文件数大约是10万左右</span></span><br><span class="line">    <span class="comment"># 我们来看看360M内存的VPS可以打开的文件句柄数是多少：</span></span><br><span class="line">    <span class="comment"># $ cat /proc/sys/fs/file-max</span></span><br><span class="line">    <span class="comment"># 输出 34336</span></span><br><span class="line">    <span class="comment"># 32000 &lt; 34336，即并发连接总数小于系统可以打开的文件句柄总数，这样就在操作系统可以承受的范围之内</span></span><br><span class="line">    <span class="comment"># 所以，worker_connections 的值需根据 worker_processes 进程数目和系统可以打开的最大文件总数进行适当地进行设置</span></span><br><span class="line">    <span class="comment"># 使得并发总数小于操作系统可以打开的最大文件数目</span></span><br><span class="line">    <span class="comment"># 其实质也就是根据主机的物理CPU和内存进行配置</span></span><br><span class="line">    <span class="comment"># 当然，理论上的并发总数可能会和实际有所偏差，因为主机还有其他的工作进程需要消耗系统资源。</span></span><br><span class="line">    <span class="comment"># ulimit -SHn 65535</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    <span class="comment">#设定mime类型,类型由mime.type文件定义</span></span><br><span class="line">    include    mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    <span class="comment">#设定日志格式</span></span><br><span class="line">    log_format  main  <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></span><br><span class="line">                      <span class="string">'$status $body_bytes_sent "$http_referer" '</span></span><br><span class="line">                      <span class="string">'"$http_user_agent" "$http_x_forwarded_for"'</span>;</span><br><span class="line"></span><br><span class="line">    access_log  logs/access.log  main;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#sendfile 指令指定 nginx 是否调用 sendfile 函数（zero copy 方式）来输出文件，</span></span><br><span class="line">    <span class="comment">#对于普通应用，必须设为 on,</span></span><br><span class="line">    <span class="comment">#如果用来进行下载等应用磁盘IO重负载应用，可设置为 off，</span></span><br><span class="line">    <span class="comment">#以平衡磁盘与网络I/O处理速度，降低系统的uptime.</span></span><br><span class="line">    sendfile     on;</span><br><span class="line">    <span class="comment">#tcp_nopush     on;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#连接超时时间</span></span><br><span class="line">    <span class="comment">#keepalive_timeout  0;</span></span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    tcp_nodelay     on;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#开启gzip压缩</span></span><br><span class="line">    gzip  on;</span><br><span class="line">    gzip_disable <span class="string">"MSIE [1-6]."</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#设定请求缓冲</span></span><br><span class="line">    client_header_buffer_size    128k;</span><br><span class="line">    large_client_header_buffers  4 128k;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">#设定虚拟主机配置</span></span><br><span class="line">    server &#123;</span><br><span class="line">        <span class="comment">#侦听80端口</span></span><br><span class="line">        listen    80;</span><br><span class="line">        <span class="comment">#定义使用 www.nginx.cn访问</span></span><br><span class="line">        server_name  www.nginx.cn;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#定义服务器的默认网站根目录位置</span></span><br><span class="line">        root html;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#设定本虚拟主机的访问日志</span></span><br><span class="line">        access_log  logs/nginx.access.log  main;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#默认请求</span></span><br><span class="line">        location / &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#定义首页索引文件的名称</span></span><br><span class="line">            index index.php index.html index.htm;   </span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 定义错误提示页面</span></span><br><span class="line">        error_page   500 502 503 504 /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#静态文件，nginx自己处理</span></span><br><span class="line">        location ~ ^/(images|javascript|js|css|flash|media|static)/ &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#过期30天，静态文件不怎么更新，过期可以设大一点，</span></span><br><span class="line">            <span class="comment">#如果频繁更新，则可以设置得小一点。</span></span><br><span class="line">            expires 30d;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#PHP 脚本请求全部转发到 FastCGI处理. 使用FastCGI默认配置.</span></span><br><span class="line">        location ~ .php$ &#123;</span><br><span class="line">            fastcgi_pass 127.0.0.1:9000;</span><br><span class="line">            fastcgi_index index.php;</span><br><span class="line">            fastcgi_param  SCRIPT_FILENAME  <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">            include fastcgi_params;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#禁止访问 .htxxx 文件</span></span><br><span class="line">            location ~ /.ht &#123;</span><br><span class="line">            deny all;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/2018-07-11-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/12/2018-07-11-2/" itemprop="url">mongo原子性和事务</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T00:00:00+08:00">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>关于mongodb原子性和事务的说明，大部分翻译自官方文档<code>(https://docs.mongodb.com/manual/tutorial)</code></p>
+</blockquote>
+<h1 id="原子性和事务"><a href="#原子性和事务" class="headerlink" title="原子性和事务"></a>原子性和事务</h1><p>在MongoDb中，写操作在<code>文档级别</code>是原子性的，即使该文档包含多个嵌入的子文档。</p>
+<p>当一次写操作修改多个文档时，对每个文档的更新时原子性的，但整个写入操作不是原子性的，而且中间可能会插入多个其他操作。</p>
+<h2 id="模拟事务"><a href="#模拟事务" class="headerlink" title="模拟事务"></a>模拟事务</h2><p>因为一个文档可以包含多个子文档，所以文档级别的原子性可以满足大部分的应用场景。如果你想把多个操作作为一个事务来处理，你可以实现一个<code>two-phase commit</code>。</p>
+<p>然而，<code>two-phase commit</code>仅仅可以提供类事务语义。使用它可以保证数据的一致性，但是在<code>two-phase commit</code>或回滚进行时可能会返回中间数据。关于two-phase commit的更多信息，请看这里<a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/" target="_blank" rel="noopener"> Perform Two Phase Commits</a></p>
+<h2 id="并发控制-Concurrency-Control"><a href="#并发控制-Concurrency-Control" class="headerlink" title="并发控制  Concurrency Control"></a>并发控制  Concurrency Control</h2><p>并发控制可以保证多个应用运行时的一致性，避免导致数据不一致或数据冲突问题。</p>
+<p>方法一是在一个有唯一数据值的字段上创建一个唯一索引<a href="https://docs.mongodb.com/manual/core/index-unique/#index-type-unique" target="_blank" rel="noopener">unique index</a>。这样可以防止插入或更新产生重复数据。在多个字段上创建唯一索引，来保证这多个字段组合值的唯一性。示例操作请看，<a href="https://docs.mongodb.com/manual/reference/method/db.collection.update/#update-with-unique-indexes" target="_blank" rel="noopener">update() and Unique Index</a>, <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/#upsert-and-unique-index" target="_blank" rel="noopener">findAndModify() and Unique Index</a>。</p>
+<p>方法二是，在查询条件上对指定字段的当前值进行判断。在写操作中，<code>two-phase commit</code>模式提供了一个变量，其中的查询条件包含了应用标识<a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/#phase-commits-concurrency" target="_blank" rel="noopener">application identifier</a>和写操作中数据的预期状态。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/11/2018-07-11/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +530,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/11/2018-07-11/" itemprop="url">node 错误类型总结</a></h1>
+                <a class="post-title-link" href="/2018/07/11/2018-07-11/" itemprop="url">node.js错误类型总结</a></h1>
         
 
         <div class="post-meta">
@@ -313,7 +582,10 @@
       
         
           
-            <p>node中的错误、异常主要分为以下四类</p>
+            <blockquote>
+<p>本文大致介绍了node.js中四种常见的错误类型，列举了常见的标准错误，比如<code>SyntaxError``ReferenceError</code>等等，然后列举了自定义error和assertError的实例及错误的捕获和处理的几种方式。</p>
+</blockquote>
+<p>四种错误类型：</p>
 <h2 id="1-标准错误"><a href="#1-标准错误" class="headerlink" title="1.标准错误"></a>1.标准错误</h2><p>这些错误在开发中都很常见，错误类型的有</p>
 <ul>
 <li><code>SyntaxError</code> js语法错误</li>
@@ -2016,144 +2288,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/ES6中5种遍历对象属性的方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/22/ES6中5种遍历对象属性的方法/" itemprop="url">ES6中5种遍历对象属性的方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-22T00:00:00+08:00">
-                2017-03-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ES6中5种遍历对象属性的方法"><a href="#ES6中5种遍历对象属性的方法" class="headerlink" title="ES6中5种遍历对象属性的方法"></a>ES6中5种遍历对象属性的方法</h1><h3 id="5种遍历对象属性的方法："><a href="#5种遍历对象属性的方法：" class="headerlink" title="5种遍历对象属性的方法："></a>5种遍历对象属性的方法：</h3><ul>
-<li><p>for…in<br><code>for...in</code>循环遍历自身的和继承的可枚举属性（不含Symbol属性）</p>
-</li>
-<li><p>Object.keys(obj)<br><code>Object.keys(obj)</code>返回一个数组，包括对象自身的（不含继承）所有可枚举属性（不含Symbol属性）</p>
-</li>
-<li><p>Object.getOwnPropertyNames(obj)<br><code>Object.getOwnPropertyNames(obj)</code>返回一个数组，包括对象自身（不含继承）所有属性（包括不可枚举的属性，不含Symbol属性）</p>
-</li>
-<li><p>Object.getOwnPropertySymbols(obj)<br><code>Object.getOwnPropertySymbols(obj)</code>返回一个数组，包括对象自身所有的Symbol属性</p>
-</li>
-<li><p>Reflect.ownKeys(obj)<br><code>Reflect.ownKeys(obj)</code>返回一个数组，包含对象自身的所有属性，不管属性名是Symbol或字符串，也不管是否可枚举</p>
-</li>
-</ul>
-<p>###通过比较，可以得到结论：</p>
-<ol>
-<li>要想获得对象自身和它所继承的属性（可枚举的），必须用<code>for...in</code>，其它只与对象自身有关。</li>
-<li><code>Object.keys(obj)</code>返回自身的<strong>可枚举属性</strong>。</li>
-<li><code>Object.getOwnPropertyNames(obj)</code>比<code>Object.keys(obj)</code>多包含了对象自身的不可枚举属性。</li>
-<li><code>Reflect.ownKeys(obj)</code>的返回结果是<code>Object.getOwnPropertyNames(obj)</code>和<code>Object.getOwnPropertySymbols(obj)</code>的合集。</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/babel-cli入门使用步骤/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2247,6 +2381,144 @@
 <p>然后，改写<code>package.json</code>。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"script-name"</span>: <span class="string">"babel-node script.js"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面代码中，使用babel-node替代node，这样script.js本身就不用做任何转码处理。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/ES6中5种遍历对象属性的方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/22/ES6中5种遍历对象属性的方法/" itemprop="url">ES6中5种遍历对象属性的方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-22T00:00:00+08:00">
+                2017-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ES6中5种遍历对象属性的方法"><a href="#ES6中5种遍历对象属性的方法" class="headerlink" title="ES6中5种遍历对象属性的方法"></a>ES6中5种遍历对象属性的方法</h1><h3 id="5种遍历对象属性的方法："><a href="#5种遍历对象属性的方法：" class="headerlink" title="5种遍历对象属性的方法："></a>5种遍历对象属性的方法：</h3><ul>
+<li><p>for…in<br><code>for...in</code>循环遍历自身的和继承的可枚举属性（不含Symbol属性）</p>
+</li>
+<li><p>Object.keys(obj)<br><code>Object.keys(obj)</code>返回一个数组，包括对象自身的（不含继承）所有可枚举属性（不含Symbol属性）</p>
+</li>
+<li><p>Object.getOwnPropertyNames(obj)<br><code>Object.getOwnPropertyNames(obj)</code>返回一个数组，包括对象自身（不含继承）所有属性（包括不可枚举的属性，不含Symbol属性）</p>
+</li>
+<li><p>Object.getOwnPropertySymbols(obj)<br><code>Object.getOwnPropertySymbols(obj)</code>返回一个数组，包括对象自身所有的Symbol属性</p>
+</li>
+<li><p>Reflect.ownKeys(obj)<br><code>Reflect.ownKeys(obj)</code>返回一个数组，包含对象自身的所有属性，不管属性名是Symbol或字符串，也不管是否可枚举</p>
+</li>
+</ul>
+<p>###通过比较，可以得到结论：</p>
+<ol>
+<li>要想获得对象自身和它所继承的属性（可枚举的），必须用<code>for...in</code>，其它只与对象自身有关。</li>
+<li><code>Object.keys(obj)</code>返回自身的<strong>可枚举属性</strong>。</li>
+<li><code>Object.getOwnPropertyNames(obj)</code>比<code>Object.keys(obj)</code>多包含了对象自身的不可枚举属性。</li>
+<li><code>Reflect.ownKeys(obj)</code>的返回结果是<code>Object.getOwnPropertyNames(obj)</code>和<code>Object.getOwnPropertySymbols(obj)</code>的合集。</li>
+</ol>
 
           
         
@@ -4539,271 +4811,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/30/关于gitosis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/30/关于gitosis/" itemprop="url">关于gitosis</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-30T10:29:00+08:00">
-                2016-12-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="关于gitosis"><a href="#关于gitosis" class="headerlink" title="关于gitosis"></a>关于gitosis</h1><p>在工作中，我们有自己的git服务器，但是随着git项目的增多和项目成员的增多，我们开始使用了<code>Gitosis</code>软件。使用它可以方便的管理与git相关的如成员公钥、权限、项目成员等问题，这里我只对我项目中用到一些简单配置做了整理和记录，并非全面的介绍gitosis。这里提供一份更为详尽介绍的<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">文档</a>。</p>
-<p>Git是非常著名的分布式版本控制系统。</p>
-<p><strong>Gitosis则是方便通过Git与ssh架设中央服务器的软件。</strong></p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>已经配置安装好，故没有从头介绍，如需要看这个<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">安装步骤</a></p>
-<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>gitosis安装好之后的几个目录说明：</p>
-<p><code>/home/git</code>目录: gitosis默认把这里作为存储所有 Git 仓库的根目录</p>
-<p><code>/home/git/repositories</code>目录: 这里是存放需要管理的git项目（无需直接操作这个目录，要用gitosis来管理） </p>
-<h3 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h3><p>远程克隆gitosis到本地，方便管理</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在你的本地计算机上</span></span><br><span class="line">git@gitserver:gitosis-admin.git</span><br></pre></td></tr></table></figure>
-<p>如果你无法克隆，说明你没有权限，也就是<code>gitosis.conf</code>中<code>[group gitosis-admin]</code>没有存储你的公钥。你需要联系管理员给你管理权限。</p>
-<h3 id="创建者或管理员新增一个管理员权限"><a href="#创建者或管理员新增一个管理员权限" class="headerlink" title="创建者或管理员新增一个管理员权限"></a>创建者或管理员新增一个管理员权限</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在创建者或管理员的机器上（如有略过）</span></span><br><span class="line">$ git <span class="built_in">clone</span> git@gitserver:gitosis-admin.git</span><br><span class="line">$ <span class="built_in">cd</span> gitosis-admin.git</span><br><span class="line"><span class="comment"># 被添加者上传自己公钥（如有略过）</span></span><br><span class="line">$ scp ~/.ssh/id_rsa.pub 用户名@主机:/tmp</span><br><span class="line"><span class="comment"># 管理员拷贝公钥到keydir,并重命名（如有略过）</span></span><br><span class="line">$ cp /tmp/id_rsa.pub keydir/tom.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始配置</span></span><br><span class="line"><span class="comment"># 编辑gitosis.conf,在[group gitosis-admin]下members中添加成员tom</span></span><br><span class="line">$ vim gitosis.conf</span><br><span class="line"><span class="comment"># ...编辑操作...wq...</span></span><br><span class="line"><span class="comment"># [group gitosis-admin]</span></span><br><span class="line"><span class="comment"># members = admin tom</span></span><br><span class="line"><span class="comment"># writable = gitosis-admin</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 提交更改（有可能需要先git add）</span></span><br><span class="line">$ git commit</span><br><span class="line">$ git push</span><br><span class="line"></span><br><span class="line"><span class="comment"># OK！tom用户现在已经有gitosis的管理权限了，</span></span><br><span class="line"><span class="comment"># 它可以克隆gitosis-admin.git它的个人电脑上，并执行管理操作</span></span><br></pre></td></tr></table></figure>
-<p>目录说明：</p>
-<p><code>gitosis.conf</code>文件: 此处用于项目配置，包括gitosis管理员、git项目读写权限</p>
-<p><code>keydir</code>目录: 此处存放着相关用户的公钥</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/git status可能展示的几种情况/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/29/git status可能展示的几种情况/" itemprop="url">git status可能的情况</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-29T17:29:54+08:00">
-                2016-12-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="git-status可能的情况"><a href="#git-status可能的情况" class="headerlink" title="git status可能的情况"></a>git status可能的情况</h1><p>工作中我们使用git作为版本管理工具，它的确是一个强大的工具。易于学习和使用，但是要学习的面面俱到也很难，就<code>git status</code>就可能会出现n多种的情况。本文记录了<code>git status</code>可能出现的不同状态信息、状态说明、处理办法。注意，列举的情况并不全面，只是列举了工作中遇到的一些常见情况，同时遇到新状态，还会随时增加。</p>
-<p><strong>git仓库中文件的状态</strong><br>git仓库中所有文件可分为两种状态<strong>已跟踪</strong>和<strong>未跟踪</strong>。已跟踪的文件被git纳入了版本控制，git会记录它的每次更新状态。<br>状态生命周期有四种：untracked, unmodified, modified, staged</p>
-<p><strong>git status可能的情况：</strong></p>
-<h2 id="1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit"><a href="#1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit" class="headerlink" title="1. Your branch is ahead of ‘origin/master’ by 1 commit."></a>1. Your branch is ahead of ‘origin/master’ by 1 commit.</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is ahead of &apos;origin/master&apos; by 1 commit.</span><br><span class="line">  (use &quot;git push&quot; to publish your local commits)</span><br><span class="line">nothing to commit, working directory clean</span><br><span class="line">cochona@cochona:~/gitosis-admin/keydir$</span><br></pre></td></tr></table></figure>
-<p>此时说明当前目录中所有的已跟踪文件，都已经和远程保持同步，并且没有修改。刚从远程克隆的git仓库，都是这个状态。</p>
-<h2 id="2-nothing-added-to-commit-but-untracked-files-present"><a href="#2-nothing-added-to-commit-but-untracked-files-present" class="headerlink" title="2. nothing added to commit but untracked files present"></a>2. nothing added to commit but untracked files present</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Initial commit</span><br><span class="line">Untracked files:</span><br><span class="line">	(use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line">a.text</span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
-<p>表示此时目录下，有新添加的未被跟踪的文件，如果我们需要将此文件提交到仓库，可以执行git add</p>
-<h2 id="3-Changes-to-be-committed-new-file"><a href="#3-Changes-to-be-committed-new-file" class="headerlink" title="3. Changes to be committed: new file"></a>3. Changes to be committed: new file</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line">	(use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">   new file:   README</span><br></pre></td></tr></table></figure>
-<p>在“Changes to be committed”这行下面的都是已暂存的状态，此时可以执行git commit</p>
-<h2 id="4-Changes-to-be-committed-modified"><a href="#4-Changes-to-be-committed-modified" class="headerlink" title="4. Changes to be committed: modified"></a>4. Changes to be committed: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">	</span><br><span class="line">	modified:   gitosis.conf</span><br></pre></td></tr></table></figure>
-<p>有修改的文件，此时可以选择直接<code>git commit -m &quot;info&quot;</code>    </p>
-<h2 id="5-Changes-not-staged-for-commit-modified"><a href="#5-Changes-not-staged-for-commit-modified" class="headerlink" title="5. Changes not staged for commit: modified"></a>5. Changes not staged for commit: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git commit -m &quot;add shaoc@pub to admin-group&quot;</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes not staged for commit:</span><br><span class="line">	modified:   gitosis.conf</span><br><span class="line">	</span><br><span class="line">no changes added to commit</span><br></pre></td></tr></table></figure>
-<p>此时如果要保存修改，需要先<code>git add gitosis.conf</code>，然后<code>git commit -m &quot;&quot;</code>,然后<code>git push</code></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4858,7 +4865,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -242,6 +242,271 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/30/关于gitosis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/30/关于gitosis/" itemprop="url">关于gitosis</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-30T10:29:00+08:00">
+                2016-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="关于gitosis"><a href="#关于gitosis" class="headerlink" title="关于gitosis"></a>关于gitosis</h1><p>在工作中，我们有自己的git服务器，但是随着git项目的增多和项目成员的增多，我们开始使用了<code>Gitosis</code>软件。使用它可以方便的管理与git相关的如成员公钥、权限、项目成员等问题，这里我只对我项目中用到一些简单配置做了整理和记录，并非全面的介绍gitosis。这里提供一份更为详尽介绍的<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">文档</a>。</p>
+<p>Git是非常著名的分布式版本控制系统。</p>
+<p><strong>Gitosis则是方便通过Git与ssh架设中央服务器的软件。</strong></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>已经配置安装好，故没有从头介绍，如需要看这个<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="noopener">安装步骤</a></p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>gitosis安装好之后的几个目录说明：</p>
+<p><code>/home/git</code>目录: gitosis默认把这里作为存储所有 Git 仓库的根目录</p>
+<p><code>/home/git/repositories</code>目录: 这里是存放需要管理的git项目（无需直接操作这个目录，要用gitosis来管理） </p>
+<h3 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h3><p>远程克隆gitosis到本地，方便管理</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在你的本地计算机上</span></span><br><span class="line">git@gitserver:gitosis-admin.git</span><br></pre></td></tr></table></figure>
+<p>如果你无法克隆，说明你没有权限，也就是<code>gitosis.conf</code>中<code>[group gitosis-admin]</code>没有存储你的公钥。你需要联系管理员给你管理权限。</p>
+<h3 id="创建者或管理员新增一个管理员权限"><a href="#创建者或管理员新增一个管理员权限" class="headerlink" title="创建者或管理员新增一个管理员权限"></a>创建者或管理员新增一个管理员权限</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在创建者或管理员的机器上（如有略过）</span></span><br><span class="line">$ git <span class="built_in">clone</span> git@gitserver:gitosis-admin.git</span><br><span class="line">$ <span class="built_in">cd</span> gitosis-admin.git</span><br><span class="line"><span class="comment"># 被添加者上传自己公钥（如有略过）</span></span><br><span class="line">$ scp ~/.ssh/id_rsa.pub 用户名@主机:/tmp</span><br><span class="line"><span class="comment"># 管理员拷贝公钥到keydir,并重命名（如有略过）</span></span><br><span class="line">$ cp /tmp/id_rsa.pub keydir/tom.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始配置</span></span><br><span class="line"><span class="comment"># 编辑gitosis.conf,在[group gitosis-admin]下members中添加成员tom</span></span><br><span class="line">$ vim gitosis.conf</span><br><span class="line"><span class="comment"># ...编辑操作...wq...</span></span><br><span class="line"><span class="comment"># [group gitosis-admin]</span></span><br><span class="line"><span class="comment"># members = admin tom</span></span><br><span class="line"><span class="comment"># writable = gitosis-admin</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 提交更改（有可能需要先git add）</span></span><br><span class="line">$ git commit</span><br><span class="line">$ git push</span><br><span class="line"></span><br><span class="line"><span class="comment"># OK！tom用户现在已经有gitosis的管理权限了，</span></span><br><span class="line"><span class="comment"># 它可以克隆gitosis-admin.git它的个人电脑上，并执行管理操作</span></span><br></pre></td></tr></table></figure>
+<p>目录说明：</p>
+<p><code>gitosis.conf</code>文件: 此处用于项目配置，包括gitosis管理员、git项目读写权限</p>
+<p><code>keydir</code>目录: 此处存放着相关用户的公钥</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/git status可能展示的几种情况/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/29/git status可能展示的几种情况/" itemprop="url">git status可能的情况</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-29T17:29:54+08:00">
+                2016-12-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="git-status可能的情况"><a href="#git-status可能的情况" class="headerlink" title="git status可能的情况"></a>git status可能的情况</h1><p>工作中我们使用git作为版本管理工具，它的确是一个强大的工具。易于学习和使用，但是要学习的面面俱到也很难，就<code>git status</code>就可能会出现n多种的情况。本文记录了<code>git status</code>可能出现的不同状态信息、状态说明、处理办法。注意，列举的情况并不全面，只是列举了工作中遇到的一些常见情况，同时遇到新状态，还会随时增加。</p>
+<p><strong>git仓库中文件的状态</strong><br>git仓库中所有文件可分为两种状态<strong>已跟踪</strong>和<strong>未跟踪</strong>。已跟踪的文件被git纳入了版本控制，git会记录它的每次更新状态。<br>状态生命周期有四种：untracked, unmodified, modified, staged</p>
+<p><strong>git status可能的情况：</strong></p>
+<h2 id="1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit"><a href="#1-Your-branch-is-ahead-of-‘origin-master’-by-1-commit" class="headerlink" title="1. Your branch is ahead of ‘origin/master’ by 1 commit."></a>1. Your branch is ahead of ‘origin/master’ by 1 commit.</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is ahead of &apos;origin/master&apos; by 1 commit.</span><br><span class="line">  (use &quot;git push&quot; to publish your local commits)</span><br><span class="line">nothing to commit, working directory clean</span><br><span class="line">cochona@cochona:~/gitosis-admin/keydir$</span><br></pre></td></tr></table></figure>
+<p>此时说明当前目录中所有的已跟踪文件，都已经和远程保持同步，并且没有修改。刚从远程克隆的git仓库，都是这个状态。</p>
+<h2 id="2-nothing-added-to-commit-but-untracked-files-present"><a href="#2-nothing-added-to-commit-but-untracked-files-present" class="headerlink" title="2. nothing added to commit but untracked files present"></a>2. nothing added to commit but untracked files present</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Initial commit</span><br><span class="line">Untracked files:</span><br><span class="line">	(use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line">a.text</span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
+<p>表示此时目录下，有新添加的未被跟踪的文件，如果我们需要将此文件提交到仓库，可以执行git add</p>
+<h2 id="3-Changes-to-be-committed-new-file"><a href="#3-Changes-to-be-committed-new-file" class="headerlink" title="3. Changes to be committed: new file"></a>3. Changes to be committed: new file</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line">	(use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">   new file:   README</span><br></pre></td></tr></table></figure>
+<p>在“Changes to be committed”这行下面的都是已暂存的状态，此时可以执行git commit</p>
+<h2 id="4-Changes-to-be-committed-modified"><a href="#4-Changes-to-be-committed-modified" class="headerlink" title="4. Changes to be committed: modified"></a>4. Changes to be committed: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">	</span><br><span class="line">	modified:   gitosis.conf</span><br></pre></td></tr></table></figure>
+<p>有修改的文件，此时可以选择直接<code>git commit -m &quot;info&quot;</code>    </p>
+<h2 id="5-Changes-not-staged-for-commit-modified"><a href="#5-Changes-not-staged-for-commit-modified" class="headerlink" title="5. Changes not staged for commit: modified"></a>5. Changes not staged for commit: modified</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cochona@cochona:~/gitosis-admin$ git commit -m &quot;add shaoc@pub to admin-group&quot;</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Changes not staged for commit:</span><br><span class="line">	modified:   gitosis.conf</span><br><span class="line">	</span><br><span class="line">no changes added to commit</span><br></pre></td></tr></table></figure>
+<p>此时如果要保存修改，需要先<code>git add gitosis.conf</code>，然后<code>git commit -m &quot;&quot;</code>,然后<code>git push</code></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/ionic state命令不应该再使用了/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1419,7 +1684,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
