@@ -199,6 +199,16 @@
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
 
       
     </ul>
@@ -218,6 +228,153 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/11/2018-07-11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/11/2018-07-11/" itemprop="url">node 错误类型总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-11T00:00:00+08:00">
+                2018-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>node中的错误、异常主要分为以下四类</p>
+<h2 id="1-标准错误"><a href="#1-标准错误" class="headerlink" title="1.标准错误"></a>1.标准错误</h2><p>这些错误在开发中都很常见，错误类型的有</p>
+<ul>
+<li><code>SyntaxError</code> js语法错误</li>
+<li><code>ReferenceError</code> 使用未定义变量时抛出</li>
+<li><code>RangeError</code> 当一个值不在指定范围内时抛出</li>
+<li><code>TypeError</code> 传递错误的参数类型时抛出</li>
+<li><code>EvalError</code> 调用<code>eval()</code>失败时抛出</li>
+<li><code>URIError</code> 当一个全局的URI函数被错误使用时抛出</li>
+</ul>
+<h2 id="2-自定义错误"><a href="#2-自定义错误" class="headerlink" title="2.自定义错误"></a>2.自定义错误</h2><p>使用Error构造函数抛出错误信息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = 1;</span><br><span class="line">if(a&lt;2)&#123;</span><br><span class="line">  throw Error(&quot;less than 2&quot;);</span><br><span class="line">&#125;</span><br><span class="line">console.log(&apos;last&apos;)  //这里不会在执行</span><br><span class="line"></span><br><span class="line">/Users/shaoc/svn/npmtest/src/tableheader/b.js:4</span><br><span class="line">  throw Error(&quot;less than 2&quot;);</span><br><span class="line">  ^</span><br><span class="line"></span><br><span class="line">Error: less than 2</span><br><span class="line">    at Error (native)</span><br><span class="line">    at Object.&lt;anonymous&gt; (/Users/shaoc/svn/npmtest/src/tableheader/b.js:4:9)</span><br><span class="line">    at Module._compile (module.js:570:32)</span><br><span class="line">    at Object.Module._extensions..js (module.js:579:10)</span><br><span class="line">    at Module.load (module.js:487:32)</span><br><span class="line">    at tryModuleLoad (module.js:446:12)</span><br><span class="line">    at Function.Module._load (module.js:438:3)</span><br><span class="line">    at Module.runMain (module.js:604:10)</span><br><span class="line">    at run (bootstrap_node.js:394:7)</span><br><span class="line">    at startup (bootstrap_node.js:149:9)</span><br></pre></td></tr></table></figure>
+<h2 id="3-断言错误"><a href="#3-断言错误" class="headerlink" title="3.断言错误"></a>3.断言错误</h2><p>当代码违反业务逻辑时，由<code>assert</code>模块触发 </p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> assert = <span class="built_in">require</span>(<span class="string">"assert"</span>)</span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">assert(a &gt; <span class="number">10</span>, <span class="string">"a不能小于10"</span>)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'last'</span>)</span><br><span class="line">assert.js:<span class="number">85</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> assert.AssertionError(&#123;</span><br><span class="line">  ^</span><br><span class="line">AssertionError: a不能小于<span class="number">10</span></span><br><span class="line">    at <span class="built_in">Object</span>.&lt;anonymous&gt; (<span class="regexp">/Users/</span>shaoc/svn/npmtest/src/tableheader/b.js:<span class="number">5</span>:<span class="number">1</span>)</span><br><span class="line">    at Module._compile (<span class="built_in">module</span>.js:<span class="number">570</span>:<span class="number">32</span>)</span><br><span class="line">    at <span class="built_in">Object</span>.Module._extensions..js (<span class="built_in">module</span>.js:<span class="number">579</span>:<span class="number">10</span>)</span><br><span class="line">    at Module.load (<span class="built_in">module</span>.js:<span class="number">487</span>:<span class="number">32</span>)</span><br><span class="line">    at tryModuleLoad (<span class="built_in">module</span>.js:<span class="number">446</span>:<span class="number">12</span>)</span><br><span class="line">    at <span class="built_in">Function</span>.Module._load (<span class="built_in">module</span>.js:<span class="number">438</span>:<span class="number">3</span>)</span><br><span class="line">    at Module.runMain (<span class="built_in">module</span>.js:<span class="number">604</span>:<span class="number">10</span>)</span><br><span class="line">    at run (bootstrap_node.js:<span class="number">394</span>:<span class="number">7</span>)</span><br><span class="line">    at startup (bootstrap_node.js:<span class="number">149</span>:<span class="number">9</span>)</span><br><span class="line">    at bootstrap_node.js:<span class="number">509</span>:<span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h2 id="4-系统错误"><a href="#4-系统错误" class="headerlink" title="4.系统错误"></a>4.系统错误</h2><p>系统错误是对JavaScript错误Error对象的一个扩展，它们表示程序能够处理的操作错误，这些错误信息都是在系统级别生成的。系统错误实例中除Error实例中的属性外，还包括以下几个属性：</p>
+<p>1、error.syscall - 一个表示失败的系统调用信息的字符串<br>2、error.errno - 一个整数的错误码<br>3、error.code - 表示错误字符串，通常是大写字母E开头</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><ul>
+<li>node可以使用try catch 捕获异常，但是没有办法捕获到异步调用中发生的异常</li>
+<li>使用错误优先的回调函数，function(err, data) //优先处理错误信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const fs = require(&apos;fs&apos;);</span><br><span class="line">fs.readFile(&apos;一个不存在的文件&apos;, (err, data) =&gt; &#123;</span><br><span class="line"> if (err) &#123;</span><br><span class="line">  console.error(&apos;读取文件错误&apos;, err);</span><br><span class="line">  return;</span><br><span class="line"> &#125;</span><br><span class="line"> // 其它处理</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用事件机制捕获异常</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const net = require(&apos;net&apos;);</span><br><span class="line">const connection = net.connect(&apos;localhost&apos;);</span><br><span class="line"> </span><br><span class="line">// 为stream添加一个 &apos;error&apos; 事件处理器:</span><br><span class="line">connection.on(&apos;error&apos;, (err) =&gt; &#123;</span><br><span class="line"> // 如果连接被服务器重置或连接不到指定的服务器</span><br><span class="line"> // 或其它连接错误时，错误会被传递到这里</span><br><span class="line"> console.error(err);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">connection.pipe(process.stdout);</span><br><span class="line"></span><br><span class="line">//全局</span><br><span class="line">process.on(&apos;uncaughtException&apos;, function (err) &#123;</span><br><span class="line">  log.app.error(&quot;Caught exception:-----&gt;&quot;, err);</span><br><span class="line">  process.exit(8);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用domain</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1859,6 +2016,144 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/ES6中5种遍历对象属性的方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/22/ES6中5种遍历对象属性的方法/" itemprop="url">ES6中5种遍历对象属性的方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-22T00:00:00+08:00">
+                2017-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ES6中5种遍历对象属性的方法"><a href="#ES6中5种遍历对象属性的方法" class="headerlink" title="ES6中5种遍历对象属性的方法"></a>ES6中5种遍历对象属性的方法</h1><h3 id="5种遍历对象属性的方法："><a href="#5种遍历对象属性的方法：" class="headerlink" title="5种遍历对象属性的方法："></a>5种遍历对象属性的方法：</h3><ul>
+<li><p>for…in<br><code>for...in</code>循环遍历自身的和继承的可枚举属性（不含Symbol属性）</p>
+</li>
+<li><p>Object.keys(obj)<br><code>Object.keys(obj)</code>返回一个数组，包括对象自身的（不含继承）所有可枚举属性（不含Symbol属性）</p>
+</li>
+<li><p>Object.getOwnPropertyNames(obj)<br><code>Object.getOwnPropertyNames(obj)</code>返回一个数组，包括对象自身（不含继承）所有属性（包括不可枚举的属性，不含Symbol属性）</p>
+</li>
+<li><p>Object.getOwnPropertySymbols(obj)<br><code>Object.getOwnPropertySymbols(obj)</code>返回一个数组，包括对象自身所有的Symbol属性</p>
+</li>
+<li><p>Reflect.ownKeys(obj)<br><code>Reflect.ownKeys(obj)</code>返回一个数组，包含对象自身的所有属性，不管属性名是Symbol或字符串，也不管是否可枚举</p>
+</li>
+</ul>
+<p>###通过比较，可以得到结论：</p>
+<ol>
+<li>要想获得对象自身和它所继承的属性（可枚举的），必须用<code>for...in</code>，其它只与对象自身有关。</li>
+<li><code>Object.keys(obj)</code>返回自身的<strong>可枚举属性</strong>。</li>
+<li><code>Object.getOwnPropertyNames(obj)</code>比<code>Object.keys(obj)</code>多包含了对象自身的不可枚举属性。</li>
+<li><code>Reflect.ownKeys(obj)</code>的返回结果是<code>Object.getOwnPropertyNames(obj)</code>和<code>Object.getOwnPropertySymbols(obj)</code>的合集。</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/babel-cli入门使用步骤/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1952,144 +2247,6 @@
 <p>然后，改写<code>package.json</code>。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"script-name"</span>: <span class="string">"babel-node script.js"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面代码中，使用babel-node替代node，这样script.js本身就不用做任何转码处理。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/ES6中5种遍历对象属性的方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/22/ES6中5种遍历对象属性的方法/" itemprop="url">ES6中5种遍历对象属性的方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-22T00:00:00+08:00">
-                2017-03-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ES6中5种遍历对象属性的方法"><a href="#ES6中5种遍历对象属性的方法" class="headerlink" title="ES6中5种遍历对象属性的方法"></a>ES6中5种遍历对象属性的方法</h1><h3 id="5种遍历对象属性的方法："><a href="#5种遍历对象属性的方法：" class="headerlink" title="5种遍历对象属性的方法："></a>5种遍历对象属性的方法：</h3><ul>
-<li><p>for…in<br><code>for...in</code>循环遍历自身的和继承的可枚举属性（不含Symbol属性）</p>
-</li>
-<li><p>Object.keys(obj)<br><code>Object.keys(obj)</code>返回一个数组，包括对象自身的（不含继承）所有可枚举属性（不含Symbol属性）</p>
-</li>
-<li><p>Object.getOwnPropertyNames(obj)<br><code>Object.getOwnPropertyNames(obj)</code>返回一个数组，包括对象自身（不含继承）所有属性（包括不可枚举的属性，不含Symbol属性）</p>
-</li>
-<li><p>Object.getOwnPropertySymbols(obj)<br><code>Object.getOwnPropertySymbols(obj)</code>返回一个数组，包括对象自身所有的Symbol属性</p>
-</li>
-<li><p>Reflect.ownKeys(obj)<br><code>Reflect.ownKeys(obj)</code>返回一个数组，包含对象自身的所有属性，不管属性名是Symbol或字符串，也不管是否可枚举</p>
-</li>
-</ul>
-<p>###通过比较，可以得到结论：</p>
-<ol>
-<li>要想获得对象自身和它所继承的属性（可枚举的），必须用<code>for...in</code>，其它只与对象自身有关。</li>
-<li><code>Object.keys(obj)</code>返回自身的<strong>可枚举属性</strong>。</li>
-<li><code>Object.getOwnPropertyNames(obj)</code>比<code>Object.keys(obj)</code>多包含了对象自身的不可枚举属性。</li>
-<li><code>Reflect.ownKeys(obj)</code>的返回结果是<code>Object.getOwnPropertyNames(obj)</code>和<code>Object.getOwnPropertySymbols(obj)</code>的合集。</li>
-</ol>
 
           
         
@@ -4647,138 +4804,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/29/ionic state命令不应该再使用了/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/29/ionic state命令不应该再使用了/" itemprop="url">ionic state命令将要废弃</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-29T11:29:00+08:00">
-                2016-12-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ionic-state命令将要废弃"><a href="#ionic-state命令将要废弃" class="headerlink" title="ionic state命令将要废弃"></a>ionic state命令将要废弃</h1><p>参考自官方网站</p>
-<p><a href="https://github.com/driftyco/ionic-cli/issues/904" target="_blank" rel="noopener">Discuss: Deprecate/Remove state command #904</a></p>
-<p><a href="https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html" target="_blank" rel="noopener">cordova说明</a></p>
-<blockquote>
-<p>The state command was created to manage Cordova plugins before it was supported in Cordova. Cordova now manages plugins and platforms in config.xml: <a href="https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html" target="_blank" rel="noopener">https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html</a> so there is a decent amount of confusion between the Ionic and Cordova behavior. As Cordova platforms and plugins are not an Ionic concern, let’s deprecate the state command and document the existing Cordova command workflow, ie plugin add –save.</p>
-</blockquote>
-<p>state命令是之前用来管理cordova插件的。现在Cordova自身已经开始通过<code>config.xml</code>来支持插件和平台管理（<a href="https://cordova.apache.org/docs/en/latest/platform_plugin_versioning_ref/index.html" target="_blank" rel="noopener">官方说明</a>），这会让我们对ionic和cordova的不同的管理方式感到困惑。因为cordova的平台和插件是ionic所不关心的，所以建议停止使用<code>state</code>命令，而使用cordova的管理方式，比如<code>plugin add --save</code></p>
-<h2 id="对于插件我们应该这样管理"><a href="#对于插件我们应该这样管理" class="headerlink" title="对于插件我们应该这样管理"></a>对于插件我们应该这样管理</h2><p>重装所有插件</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rm -rf plugins</span><br><span class="line"><span class="comment"># 更新插件,执行时会自动安装在config.xml中的插件</span></span><br><span class="line">cordova prepare</span><br></pre></td></tr></table></figure>
-<p>从工程中彻底删除一个插件，–save命令会将删除或更改影响到<code>config.xml</code>,与<code>package.json</code>无关</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cordova plugin reomve ionic-plugin-keyboard --save</span><br><span class="line">cordova plugin add ionic-plugin-keyboard --save</span><br></pre></td></tr></table></figure>
-<p>platform add的时候会自动检测<code>config.xml</code>，并安装记录的插件</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cordova platform add android</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4833,7 +4858,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

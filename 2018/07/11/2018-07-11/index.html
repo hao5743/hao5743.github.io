@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Angular,ionic2," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -79,18 +79,17 @@
 
 
 
-<meta name="description" content="ionic2使用根导航（rootNav）跳转在一个使用tab构建的ionic2应用程序中，如果我们直接使用NavController进行导航跳转，会将新的page压入当前tab的导航栈中。但login、signin、setting等page在业务上不应该属于当前tab，而应该从根组件进行导航，那么此时该如何做呢？看下面">
-<meta name="keywords" content="Angular,ionic2">
+<meta name="description" content="node中的错误、异常主要分为以下四类 1.标准错误这些错误在开发中都很常见，错误类型的有  SyntaxError js语法错误 ReferenceError 使用未定义变量时抛出 RangeError 当一个值不在指定范围内时抛出 TypeError 传递错误的参数类型时抛出 EvalError 调用eval()失">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ionic2使用根导航（rootNav）跳转">
-<meta property="og:url" content="http://yoursite.com/2017/02/08/2017-02-08-1/index.html">
+<meta property="og:title" content="node 错误类型总结">
+<meta property="og:url" content="http://yoursite.com/2018/07/11/2018-07-11/index.html">
 <meta property="og:site_name" content="易天行">
-<meta property="og:description" content="ionic2使用根导航（rootNav）跳转在一个使用tab构建的ionic2应用程序中，如果我们直接使用NavController进行导航跳转，会将新的page压入当前tab的导航栈中。但login、signin、setting等page在业务上不应该属于当前tab，而应该从根组件进行导航，那么此时该如何做呢？看下面的例子即可： 在一个组件中跳转到根导航中import &amp;#123; Compon">
+<meta property="og:description" content="node中的错误、异常主要分为以下四类 1.标准错误这些错误在开发中都很常见，错误类型的有  SyntaxError js语法错误 ReferenceError 使用未定义变量时抛出 RangeError 当一个值不在指定范围内时抛出 TypeError 传递错误的参数类型时抛出 EvalError 调用eval()失败时抛出 URIError 当一个全局的URI函数被错误使用时抛出  2.自定义">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-05-23T12:18:02.000Z">
+<meta property="og:updated_time" content="2018-07-11T03:25:42.927Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ionic2使用根导航（rootNav）跳转">
-<meta name="twitter:description" content="ionic2使用根导航（rootNav）跳转在一个使用tab构建的ionic2应用程序中，如果我们直接使用NavController进行导航跳转，会将新的page压入当前tab的导航栈中。但login、signin、setting等page在业务上不应该属于当前tab，而应该从根组件进行导航，那么此时该如何做呢？看下面的例子即可： 在一个组件中跳转到根导航中import &amp;#123; Compon">
+<meta name="twitter:title" content="node 错误类型总结">
+<meta name="twitter:description" content="node中的错误、异常主要分为以下四类 1.标准错误这些错误在开发中都很常见，错误类型的有  SyntaxError js语法错误 ReferenceError 使用未定义变量时抛出 RangeError 当一个值不在指定范围内时抛出 TypeError 传递错误的参数类型时抛出 EvalError 调用eval()失败时抛出 URIError 当一个全局的URI函数被错误使用时抛出  2.自定义">
 
 
 
@@ -120,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/02/08/2017-02-08-1/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/07/11/2018-07-11/"/>
 
 
 
 
 
-  <title>ionic2使用根导航（rootNav）跳转 | 易天行</title>
+  <title>node 错误类型总结 | 易天行</title>
   
 
 
@@ -243,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/08/2017-02-08-1/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/11/2018-07-11/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ethan Hunt">
@@ -260,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">ionic2使用根导航（rootNav）跳转</h1>
+          <h1 class="post-title" itemprop="name headline">node 错误类型总结</h1>
         
 
         <div class="post-meta">
@@ -272,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-08T11:32:13+08:00">
-                2017-02-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-11T00:00:00+08:00">
+                2018-07-11
               </time>
             
 
@@ -310,11 +309,34 @@
       
 
       
-        <h1 id="ionic2使用根导航（rootNav）跳转"><a href="#ionic2使用根导航（rootNav）跳转" class="headerlink" title="ionic2使用根导航（rootNav）跳转"></a>ionic2使用根导航（rootNav）跳转</h1><p>在一个使用tab构建的ionic2应用程序中，如果我们直接使用<code>NavController</code>进行导航跳转，会将新的page压入当前tab的导航栈中。但login、signin、setting等page在业务上不应该属于当前tab，而应该从根组件进行导航，那么此时该如何做呢？<br>看下面的例子即可：</p>
-<h2 id="在一个组件中跳转到根导航中"><a href="#在一个组件中跳转到根导航中" class="headerlink" title="在一个组件中跳转到根导航中"></a>在一个组件中跳转到根导航中</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Component &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; App, ViewController &#125; <span class="keyword">from</span> <span class="string">'ionic-angular'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">    template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;ion-content&gt;</span></span><br><span class="line"><span class="string">      &lt;h1&gt;My PopoverPage&lt;/h1&gt;</span></span><br><span class="line"><span class="string">      &lt;button ion-button (click)="pushPage()"&gt;Call pushPage&lt;/button&gt;</span></span><br><span class="line"><span class="string">     &lt;/ion-content&gt;</span></span><br><span class="line"><span class="string">    `</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">class</span> PopoverPage &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">      <span class="keyword">public</span> viewCtrl: ViewController</span></span><br><span class="line"><span class="params">      <span class="keyword">public</span> appCtrl: App</span></span><br><span class="line"><span class="params">    </span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    pushPage() &#123;</span><br><span class="line">      <span class="keyword">this</span>.viewCtrl.dismiss();</span><br><span class="line">      <span class="keyword">this</span>.appCtrl.getRootNav().push(SecondPage);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="在主组件中跳转到一个根导航"><a href="#在主组件中跳转到一个根导航" class="headerlink" title="在主组件中跳转到一个根导航"></a>在主组件中跳转到一个根导航</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Component, ViewChild &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; NavController &#125; <span class="keyword">from</span> <span class="string">'ionic-angular'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">   template: <span class="string">'&lt;ion-nav #myNav [root]="rootPage"&gt;&lt;/ion-nav&gt;'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> MyApp &#123;</span><br><span class="line">   <span class="meta">@ViewChild</span>(<span class="string">'myNav'</span>) nav: NavController</span><br><span class="line">   <span class="keyword">public</span> rootPage = TabsPage;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Wait for the components in MyApp's template to be initialized</span></span><br><span class="line">   <span class="comment">// In this case, we are waiting for the Nav with reference variable of "#myNav"</span></span><br><span class="line">   ngOnInit() &#123;</span><br><span class="line">      <span class="comment">// Let's navigate from TabsPage to Page1</span></span><br><span class="line">      <span class="keyword">this</span>.nav.push(Page1);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<p>end 2017-02-08 11:32:08<br>参考文档： <a href="http://ionicframework.com/docs/v2/api/navigation/NavController/" target="_blank" rel="noopener">http://ionicframework.com/docs/v2/api/navigation/NavController/</a></p>
+        <p>node中的错误、异常主要分为以下四类</p>
+<h2 id="1-标准错误"><a href="#1-标准错误" class="headerlink" title="1.标准错误"></a>1.标准错误</h2><p>这些错误在开发中都很常见，错误类型的有</p>
+<ul>
+<li><code>SyntaxError</code> js语法错误</li>
+<li><code>ReferenceError</code> 使用未定义变量时抛出</li>
+<li><code>RangeError</code> 当一个值不在指定范围内时抛出</li>
+<li><code>TypeError</code> 传递错误的参数类型时抛出</li>
+<li><code>EvalError</code> 调用<code>eval()</code>失败时抛出</li>
+<li><code>URIError</code> 当一个全局的URI函数被错误使用时抛出</li>
+</ul>
+<h2 id="2-自定义错误"><a href="#2-自定义错误" class="headerlink" title="2.自定义错误"></a>2.自定义错误</h2><p>使用Error构造函数抛出错误信息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = 1;</span><br><span class="line">if(a&lt;2)&#123;</span><br><span class="line">  throw Error(&quot;less than 2&quot;);</span><br><span class="line">&#125;</span><br><span class="line">console.log(&apos;last&apos;)  //这里不会在执行</span><br><span class="line"></span><br><span class="line">/Users/shaoc/svn/npmtest/src/tableheader/b.js:4</span><br><span class="line">  throw Error(&quot;less than 2&quot;);</span><br><span class="line">  ^</span><br><span class="line"></span><br><span class="line">Error: less than 2</span><br><span class="line">    at Error (native)</span><br><span class="line">    at Object.&lt;anonymous&gt; (/Users/shaoc/svn/npmtest/src/tableheader/b.js:4:9)</span><br><span class="line">    at Module._compile (module.js:570:32)</span><br><span class="line">    at Object.Module._extensions..js (module.js:579:10)</span><br><span class="line">    at Module.load (module.js:487:32)</span><br><span class="line">    at tryModuleLoad (module.js:446:12)</span><br><span class="line">    at Function.Module._load (module.js:438:3)</span><br><span class="line">    at Module.runMain (module.js:604:10)</span><br><span class="line">    at run (bootstrap_node.js:394:7)</span><br><span class="line">    at startup (bootstrap_node.js:149:9)</span><br></pre></td></tr></table></figure>
+<h2 id="3-断言错误"><a href="#3-断言错误" class="headerlink" title="3.断言错误"></a>3.断言错误</h2><p>当代码违反业务逻辑时，由<code>assert</code>模块触发 </p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> assert = <span class="built_in">require</span>(<span class="string">"assert"</span>)</span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">assert(a &gt; <span class="number">10</span>, <span class="string">"a不能小于10"</span>)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'last'</span>)</span><br><span class="line">assert.js:<span class="number">85</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> assert.AssertionError(&#123;</span><br><span class="line">  ^</span><br><span class="line">AssertionError: a不能小于<span class="number">10</span></span><br><span class="line">    at <span class="built_in">Object</span>.&lt;anonymous&gt; (<span class="regexp">/Users/</span>shaoc/svn/npmtest/src/tableheader/b.js:<span class="number">5</span>:<span class="number">1</span>)</span><br><span class="line">    at Module._compile (<span class="built_in">module</span>.js:<span class="number">570</span>:<span class="number">32</span>)</span><br><span class="line">    at <span class="built_in">Object</span>.Module._extensions..js (<span class="built_in">module</span>.js:<span class="number">579</span>:<span class="number">10</span>)</span><br><span class="line">    at Module.load (<span class="built_in">module</span>.js:<span class="number">487</span>:<span class="number">32</span>)</span><br><span class="line">    at tryModuleLoad (<span class="built_in">module</span>.js:<span class="number">446</span>:<span class="number">12</span>)</span><br><span class="line">    at <span class="built_in">Function</span>.Module._load (<span class="built_in">module</span>.js:<span class="number">438</span>:<span class="number">3</span>)</span><br><span class="line">    at Module.runMain (<span class="built_in">module</span>.js:<span class="number">604</span>:<span class="number">10</span>)</span><br><span class="line">    at run (bootstrap_node.js:<span class="number">394</span>:<span class="number">7</span>)</span><br><span class="line">    at startup (bootstrap_node.js:<span class="number">149</span>:<span class="number">9</span>)</span><br><span class="line">    at bootstrap_node.js:<span class="number">509</span>:<span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h2 id="4-系统错误"><a href="#4-系统错误" class="headerlink" title="4.系统错误"></a>4.系统错误</h2><p>系统错误是对JavaScript错误Error对象的一个扩展，它们表示程序能够处理的操作错误，这些错误信息都是在系统级别生成的。系统错误实例中除Error实例中的属性外，还包括以下几个属性：</p>
+<p>1、error.syscall - 一个表示失败的系统调用信息的字符串<br>2、error.errno - 一个整数的错误码<br>3、error.code - 表示错误字符串，通常是大写字母E开头</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><ul>
+<li>node可以使用try catch 捕获异常，但是没有办法捕获到异步调用中发生的异常</li>
+<li>使用错误优先的回调函数，function(err, data) //优先处理错误信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const fs = require(&apos;fs&apos;);</span><br><span class="line">fs.readFile(&apos;一个不存在的文件&apos;, (err, data) =&gt; &#123;</span><br><span class="line"> if (err) &#123;</span><br><span class="line">  console.error(&apos;读取文件错误&apos;, err);</span><br><span class="line">  return;</span><br><span class="line"> &#125;</span><br><span class="line"> // 其它处理</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用事件机制捕获异常</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const net = require(&apos;net&apos;);</span><br><span class="line">const connection = net.connect(&apos;localhost&apos;);</span><br><span class="line"> </span><br><span class="line">// 为stream添加一个 &apos;error&apos; 事件处理器:</span><br><span class="line">connection.on(&apos;error&apos;, (err) =&gt; &#123;</span><br><span class="line"> // 如果连接被服务器重置或连接不到指定的服务器</span><br><span class="line"> // 或其它连接错误时，错误会被传递到这里</span><br><span class="line"> console.error(err);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">connection.pipe(process.stdout);</span><br><span class="line"></span><br><span class="line">//全局</span><br><span class="line">process.on(&apos;uncaughtException&apos;, function (err) &#123;</span><br><span class="line">  log.app.error(&quot;Caught exception:-----&gt;&quot;, err);</span><br><span class="line">  process.exit(8);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用domain</li>
+</ul>
 
       
     </div>
@@ -330,14 +352,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Angular/" rel="tag"># Angular</a>
-          
-            <a href="/tags/ionic2/" rel="tag"># ionic2</a>
-          
-        </div>
-      
 
       
       
@@ -347,8 +361,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/08/2017-02-08/" rel="next" title="Angular组件生命周期和钩子函数">
-                <i class="fa fa-chevron-left"></i> Angular组件生命周期和钩子函数
+              <a href="/2018/05/15/2018-05-15/" rel="next" title="node.js中的module.exports和exports">
+                <i class="fa fa-chevron-left"></i> node.js中的module.exports和exports
               </a>
             
           </div>
@@ -356,10 +370,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/08/ionic2页面page的生命周期钩子函数/" rel="prev" title="ionic2页面page的生命周期钩子函数">
-                ionic2页面page的生命周期钩子函数 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -497,7 +507,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ionic2使用根导航（rootNav）跳转"><span class="nav-number">1.</span> <span class="nav-text">ionic2使用根导航（rootNav）跳转</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在一个组件中跳转到根导航中"><span class="nav-number">1.1.</span> <span class="nav-text">在一个组件中跳转到根导航中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在主组件中跳转到一个根导航"><span class="nav-number">1.2.</span> <span class="nav-text">在主组件中跳转到一个根导航</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-标准错误"><span class="nav-number">1.</span> <span class="nav-text">1.标准错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-自定义错误"><span class="nav-number">2.</span> <span class="nav-text">2.自定义错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-断言错误"><span class="nav-number">3.</span> <span class="nav-text">3.断言错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-系统错误"><span class="nav-number">4.</span> <span class="nav-text">4.系统错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#错误处理"><span class="nav-number">5.</span> <span class="nav-text">错误处理</span></a></li></ol></div>
             
 
           </div>
