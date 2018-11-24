@@ -81,14 +81,14 @@
 
 <meta name="description" content="HashMap线程安全ConcurrentHashMap//使用ConcurrentHashMapimport java.util.concurrent.ConcurrentHashMap;public static Map&amp;lt;String, LinkedHashSet&amp;lt;String&amp;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线程安全容器">
+<meta property="og:title" content="Java线程安全容器">
 <meta property="og:url" content="http://yoursite.com/2018/08/22/2018-08-22/index.html">
 <meta property="og:site_name" content="易天行">
 <meta property="og:description" content="HashMap线程安全ConcurrentHashMap//使用ConcurrentHashMapimport java.util.concurrent.ConcurrentHashMap;public static Map&amp;lt;String, LinkedHashSet&amp;lt;String&amp;gt;&amp;gt; peerAssignHistoryMap = new ConcurrentHashMap">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-30T15:58:11.792Z">
+<meta property="og:updated_time" content="2018-11-24T01:34:53.935Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="线程安全容器">
+<meta name="twitter:title" content="Java线程安全容器">
 <meta name="twitter:description" content="HashMap线程安全ConcurrentHashMap//使用ConcurrentHashMapimport java.util.concurrent.ConcurrentHashMap;public static Map&amp;lt;String, LinkedHashSet&amp;lt;String&amp;gt;&amp;gt; peerAssignHistoryMap = new ConcurrentHashMap">
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title>线程安全容器 | 易天行</title>
+  <title>Java线程安全容器 | 易天行</title>
   
 
 
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">线程安全容器</h1>
+          <h1 class="post-title" itemprop="name headline">Java线程安全容器</h1>
         
 
         <div class="post-meta">
@@ -322,6 +322,10 @@
 <p>  Map m = Collections.synchronizedMap(new HashMap());<br>      …<br>  Set s = m.keySet();  // Needn’t be in synchronized block<br>      …<br>  synchronized(m) {  // Synchronizing on m, not s!<br>      Iterator i = s.iterator(); // Must be in synchronized block<br>      while (i.hasNext())<br>          foo(i.next());<br>  }</p>
 <p>不遵从此建议将导致无法确定的行为。</p>
 <h4 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h4><h3 id="Set线程安全"><a href="#Set线程安全" class="headerlink" title="Set线程安全"></a>Set线程安全</h3><h4 id="Collections-synchronizedSet"><a href="#Collections-synchronizedSet" class="headerlink" title="Collections.synchronizedSet"></a>Collections.synchronizedSet</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">返回指定 set 支持的同步（线程安全的）set。为了保证按顺序访问，必须通过返回的 set 完成对 所有底层实现 set 的访问。</span><br><span class="line">在返回的 set 上进行迭代时，用户必须手工在返回的 set 上进行同步：</span><br><span class="line"></span><br><span class="line">  Set s = Collections.synchronizedSet(<span class="keyword">new</span> HashSet());</span><br><span class="line">      ...</span><br><span class="line">  <span class="keyword">synchronized</span>(s) &#123;</span><br><span class="line">      Iterator i = s.iterator(); <span class="comment">// Must be in the synchronized block</span></span><br><span class="line">      <span class="keyword">while</span> (i.hasNext())</span><br><span class="line">          foo(i.next());</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">不遵从此建议将导致无法确定的行为。</span><br></pre></td></tr></table></figure>
+<h3 id="ConcurrentLinkedDeque"><a href="#ConcurrentLinkedDeque" class="headerlink" title="ConcurrentLinkedDeque"></a>ConcurrentLinkedDeque</h3><p>Java7中引入的非阻塞并发列表<br>参考：<a href="https://blog.csdn.net/sprita1/article/details/58609070" target="_blank" rel="noopener">https://blog.csdn.net/sprita1/article/details/58609070</a></p>
+<h3 id="AtomicInteger"><a href="#AtomicInteger" class="headerlink" title="AtomicInteger"></a>AtomicInteger</h3><p>原子操作基本数据类型</p>
+<p>以上两段代码，在使用Integer的时候，必须加上synchronized保证不会出现并发线程同时访问的情况，而在AtomicInteger中却不用加上synchronized，在这里AtomicInteger是提供原子操作的，下面就对这进行相应的介绍。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//正常</span><br><span class="line">public class Sample1 &#123;</span><br><span class="line">    private static Integer count = 0;</span><br><span class="line">    synchronized public static void increment() &#123;</span><br><span class="line">        count++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//AtomicInteger</span><br><span class="line">public class Sample2 &#123;</span><br><span class="line">    private static AtomicInteger count = new AtomicInteger(0);</span><br><span class="line">    public static void increment() &#123;</span><br><span class="line">        count.getAndIncrement();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -346,8 +350,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/26/2018-07-26/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2018/07/26/2018-07-26/" rel="next" title="node退出进程时关闭mongo连接">
+                <i class="fa fa-chevron-left"></i> node退出进程时关闭mongo连接
               </a>
             
           </div>
@@ -439,7 +443,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">50</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -496,7 +500,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap线程安全"><span class="nav-number">1.</span> <span class="nav-text">HashMap线程安全</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ConcurrentHashMap"><span class="nav-number">1.1.</span> <span class="nav-text">ConcurrentHashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#putIfAbsent"><span class="nav-number">1.1.1.</span> <span class="nav-text">putIfAbsent</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collections-synchronizedMap"><span class="nav-number">1.2.</span> <span class="nav-text">Collections.synchronizedMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HashTable"><span class="nav-number">1.3.</span> <span class="nav-text">HashTable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set线程安全"><span class="nav-number">2.</span> <span class="nav-text">Set线程安全</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Collections-synchronizedSet"><span class="nav-number">2.1.</span> <span class="nav-text">Collections.synchronizedSet</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap线程安全"><span class="nav-number">1.</span> <span class="nav-text">HashMap线程安全</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ConcurrentHashMap"><span class="nav-number">1.1.</span> <span class="nav-text">ConcurrentHashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#putIfAbsent"><span class="nav-number">1.1.1.</span> <span class="nav-text">putIfAbsent</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collections-synchronizedMap"><span class="nav-number">1.2.</span> <span class="nav-text">Collections.synchronizedMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HashTable"><span class="nav-number">1.3.</span> <span class="nav-text">HashTable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set线程安全"><span class="nav-number">2.</span> <span class="nav-text">Set线程安全</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Collections-synchronizedSet"><span class="nav-number">2.1.</span> <span class="nav-text">Collections.synchronizedSet</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConcurrentLinkedDeque"><span class="nav-number">3.</span> <span class="nav-text">ConcurrentLinkedDeque</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AtomicInteger"><span class="nav-number">4.</span> <span class="nav-text">AtomicInteger</span></a></li></ol></div>
             
 
           </div>

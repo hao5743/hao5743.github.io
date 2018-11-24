@@ -242,6 +242,627 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/js面试题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/27/js面试题/" itemprop="url">函数闭包、IIFE、JS解释器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-27T09:53:44+08:00">
+                2017-02-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在掘金上看到了篇文章，里面讲了几个js代码片段，觉得很有意思，其中考察了关于<code>setTimeout</code>、<code>函数闭包</code>、<code>IIFE（立即执行函数表达式）</code>、<code>promise</code>、<code>js解释器</code>等概念的理解</p>
+<p>A：下面的程序输出啥？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我：没有坑，别想多了。输出<code>0 1 2 3 4</code></p>
+<p>A：恩，那下面这个呢？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;, <span class="number">1000</span>*i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我：<code>settimeout</code>时间到后，会在下一个tick中执行程序，所以程序打印的时候，i已经变成5了，输出<code>5 5 5 5 5</code>。</p>
+<p>A：不错，那我想输出的结果是<code>0 1 2 3 4</code>，应该怎么办呢？</p>
+<p>我：用闭包就解决了，如下</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;, <span class="number">1000</span>*i);</span><br><span class="line">    &#125;)(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为函数作用域内，保存着对于变量i的引用，故函数执行的时候仍能访问到当初的i。</p>
+<p>A：很好。那如果去掉参数i呢？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;, <span class="number">1000</span>*i);</span><br><span class="line">    &#125;)(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我：这样的话，函数闭包内没有存储对i保持引用，所以输出结果又会变成<code>5 5 5 5 5</code></p>
+<p>A： 对。那我再给你改一下程序，你看看输出啥？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//给setTimeout传递一个立即执行函数 </span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">     setTimeout((<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(i);</span><br><span class="line">     &#125;)(i), <span class="number">1000</span>*i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我：这里给<code>setTimeout</code>传递的是一个立即执行函数表达式，它会马上运行，执行结果是<code>undefined</code>，所以<code>setTimeout</code>输出0之后，应该会报错吧，因为参数传递不对，应该接受一个函数类型的参数。</p>
+<p>上面的代码差不多等于：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//其实等价于</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">     setTimeout(<span class="literal">undefined</span>, <span class="number">1000</span>*i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>A：恩！再看下面的这个程序输出什么？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>);</span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> <span class="title">executor</span>(<span class="params">resolve</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span>( <span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">10000</span>;i++)&#123;</span><br><span class="line">        i == <span class="number">9999</span> &amp;&amp; resolve();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">3</span>);</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">4</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+<p>我：思考半天…，应该输出<code>2 3 5 4 1</code>。这个题目是关于js解释器理解的。<code>setTimeout</code>中的函数会在下一个时钟周期运行，肯定比较靠后。<code>2，3</code>在立即执行函数中，所以他会立马打印。<code>4</code>在<code>then</code>中输出，它会放在当前周期的最后执行。最后<code>5</code>会立马打印。所以会这样<code>2 3 5 4 1</code>。</p>
+<p>疑问：关于setTimeout和promise.then执行先后的问题，上网找了一下原因，setTimeout属于<code>Macrotask</code>，而promise属于<code>Microtask</code>，<code>Microtask</code>在当前周期队列执行，<code>Macrotask</code>在下一周期执行。</p>
+<p>参考自：<a href="https://gold.xitu.io/entry/58b21e6c570c3500692805f1" target="_blank" rel="noopener">Excuse me？这个前端面试在搞事！</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/24/node版本管理 n和nvm说明/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/24/node版本管理 n和nvm说明/" itemprop="url">node版本管理 n和nvm说明</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-24T10:33:54+08:00">
+                2017-02-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>项目中我们有时需要使用不同版本 的node来调试或测试程序，最本的方法当然是手动下载不同的版本，并卸载之前的版本，这样可以达到目的，但是无疑是麻烦时间的，在node中有“node版本管理器”来实现类似的功能需要。这里介绍比较流行的两个，“<code>n</code>”和“<code>nvm</code>”.<br>先说说n。<br>n是node一个模块，可以用来管理和切换node版本，其作者是TJ Holowaychuk（出名的Express框架作者），使用非常之简单。<br>安装 方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm install -g n</span><br></pre></td></tr></table></figure>
+<p>常用命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$n</span> //查看已安装版本  </span><br><span class="line"><span class="variable">$n</span> latest  //安装最新版本并使用  </span><br><span class="line"><span class="variable">$n</span> latest -d   //下载最新版但不使用，-d参数表示为仅下载  </span><br><span class="line"><span class="variable">$n</span> stable  //安装最新稳定版本并使用  </span><br><span class="line"><span class="variable">$n</span> &lt;version&gt;  //安装某个版本并使用，如<span class="variable">$n</span> 6.2.2  </span><br><span class="line"><span class="variable">$n</span> rm &lt;version ...&gt; //删除某些版本  </span><br><span class="line"><span class="variable">$n</span> ls    //查看可用版本  </span><br><span class="line"><span class="variable">$n</span> --latest    //查看最新版本  </span><br><span class="line"><span class="variable">$n</span> --stable    //查看最新稳定版  </span><br><span class="line"><span class="variable">$n</span> -h    //查看帮助信息，更多命令在这里查看  </span><br><span class="line">[plain] view plain copy <span class="built_in">print</span>?在CODE上查看代码片派生到我的代码片</span><br><span class="line">$ n use 0.10.21 some.js   //&lt;span style=<span class="string">"font-family: Arial, Helvetica, sans-serif;"</span>&gt;以指定的版本来执行脚本&lt;/span&gt;</span><br></pre></td></tr></table></figure>
+<p>下面说说<code>nvm</code>。<br>问题来了，既然有这么简单好用的n，那么nvm为什么还会大肆流行呢？这个问题一会回答，先说说nvm。<br>nvm全称Node Version Manager，不同于 n，nvm 不是一个 npm package，而是一个独立软件包。这意味着我们需要单独使用它的安装逻辑：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget -qO- https://raw.github.com/creationix/nvm/v0.4.0/install.sh | sh </span><br><span class="line">``` </span><br><span class="line">独立的安装包，因此当你机器上没有安装node时仍可以使用它。</span><br><span class="line">常用命令：</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">$ nvm install 0.10    </span><br><span class="line">$ nvm use 0.10         //使用指定的版本   </span><br><span class="line">$ nvm ls               //查看当前已经安装的版本  </span><br><span class="line">.nvm  </span><br><span class="line">-&gt;  v0.10.24  </span><br><span class="line">$ nvm current         //查看正在使用的版本  </span><br><span class="line">v0.10.24  </span><br><span class="line">$ nvm run 0.10.24 myApp.js      //以指定版本执行脚本  </span><br><span class="line">$ rm -rf ~/.nvm     //卸载nvm</span><br></pre></td></tr></table></figure>
+<p>对比说明：<br>我们在使用 n 管理 node 版本前，首先需要一个 node 环境。我们或者用 Homebrew 来安装一个 node，或者从官网下载 pkg 来安装，总之我们得先自己装一个 node —— n 本身是没法给你装的。<br>然后我们可以使用 n 来安装不同版本的 node。<br>在安装的时候，n 会先将指定版本的 node 存储下来，然后将其复制到我们熟知的路径 /usr/local/bin，非常简单明了。当然由于 n 会操作到非用户目录，所以需要加 sudo 来执行命令。<br>两者区别:<br>安装简易度。nvm 安装起来显然是要麻烦不少；n 这种安装方式更符合 node 的惯性思维。见仁见智吧。<br>系统支持。注意， nvm 不支持 Windows。<br>对全局模块的管理。n 对全局模块毫无作为，因此有可能在切换了 node 版本后发生全局模块执行出错的问题；nvm 的全局模块存在于各自版本的沙箱中，切换版本后需要重新安装，不同版本间也不存在任何冲突。<br>关于 node 路径。n 是万年不变的 /usr/local/bin；nvm 需要手动指定路径。</p>
+<p>参考地址：<br><a href="http://taobaofed.org/blog/2015/11/17/nvm-or-n/" target="_blank" rel="noopener">http://taobaofed.org/blog/2015/11/17/nvm-or-n/</a>     管理 node 版本，选择 nvm 还是 n？<br><a href="http://it.taocms.org/03/3079.htm" target="_blank" rel="noopener">http://it.taocms.org/03/3079.htm</a>      利用n和nvm管理Node的版本</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/22/Angular笔记 - 属性型指令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/22/Angular笔记 - 属性型指令/" itemprop="url">Angular笔记 - 属性型指令</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-22T16:52:47+08:00">
+                2017-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>属性型指令用于改变DOM元素的外观或行为。</p>
+<p>在Angular中有三种类型的指令：</p>
+<ol>
+<li>组件 — 拥有模板的指令</li>
+<li>属性型指令 — 改变元素外观或行为，例如内置的 <code>NgStyle</code> 指令可以同时修改元素的多个样式</li>
+<li>结构型指令 — 通过添加和移除dom元素改变视图结构，例如，<code>NgFor</code> 和 <code>NgIf</code>。</li>
+</ol>
+<h2 id="一个简单的属性型指令"><a href="#一个简单的属性型指令" class="headerlink" title="一个简单的属性型指令"></a>一个简单的属性型指令</h2><p>我们这里实现了一个简单的属性型指令，说一下几个重点的内容</p>
+<p>功能：当用户鼠标悬浮在元素上时，改变它的背景颜色</p>
+<p>代码：</p>
+<p>highlight.directive.ts</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Directive, ElementRef, HostListener, Input, Renderer &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="meta">@Directive</span>(&#123;</span><br><span class="line">  selector: <span class="string">'[myHighlight]'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HighlightDirective &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> el: ElementRef, <span class="keyword">private</span> renderer: Renderer</span>) &#123; &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseenter'</span>) onMouseEnter() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="string">'yellow'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseleave'</span>) onMouseLeave() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">private</span> highlight(color: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.renderer.setElementStyle(<span class="keyword">this</span>.el.nativeElement, <span class="string">'backgroundColor'</span>, color);  </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>a.html</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>My First Attribute Directive<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">myHighlight</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li><code>@Directive</code>装饰器需要一个 CSS 选择器，以便从模板中识别出关联到这个指令的 HTML，这里指令的选择器是<code>[myHighlight]</code>，Angular 将会在模板中找到所有带<code>myHighlight属性</code>的元素。</li>
+<li>需要把 Angular 的<code>ElementRef</code>和<code>Renderer</code>注入进构造函数。<code>ElementRef</code>是一个服务，它赋予我们通过它的<code>nativeElement</code>属性直接访问 DOM 元素的能力。 <code>Renderer</code>服务允许通过代码设置元素的样式。</li>
+<li>需要把这个类添加到 NgModule 元数据的<code>declarations数组</code>中</li>
+</ul>
+<blockquote>
+<p>EXCEPTION: Template parse errors:<br>  Can’t bind to ‘myHighlight’ since it isn’t a known property of ‘p’.</p>
+</blockquote>
+<p>  错误原因:你记着设置<code>@NgModule</code>的<code>declarations数组</code>了吗？它很容易被忘掉</p>
+<ul>
+<li><code>@HostListener</code>装饰器引用属性型指令的宿主元素，在这个例子中就是<code>&lt;p&gt;</code></li>
+</ul>
+<h2 id="高级点的属性型指令"><a href="#高级点的属性型指令" class="headerlink" title="高级点的属性型指令"></a>高级点的属性型指令</h2><p>对上面的那个指令添加功能：</p>
+<ol>
+<li>通过绑定从外部设定这个颜色 </li>
+<li>从外部设定一个默认颜色，如果没有传入颜色，则使用这个默认颜色</li>
+<li><p>这样使用这个指令</p>
+ <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span> [<span class="attr">defaultColor</span>]=<span class="string">"'violet'"</span>&gt;</span></span><br><span class="line">    Highlight me too!</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>代码：</p>
+<p>highlight.directive.ts</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Directive, ElementRef, HostListener, Input, Renderer &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="meta">@Directive</span>(&#123;</span><br><span class="line">  selector: <span class="string">'[myHighlight]'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HighlightDirective &#123;</span><br><span class="line">  <span class="keyword">private</span> _defaultColor = <span class="string">'red'</span>;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> el: ElementRef, <span class="keyword">private</span> renderer: Renderer</span>) &#123; &#125;</span><br><span class="line">  <span class="meta">@Input</span>() <span class="keyword">set</span> defaultColor(colorName: <span class="built_in">string</span>)&#123;</span><br><span class="line">    <span class="keyword">this</span>._defaultColor = colorName || <span class="keyword">this</span>._defaultColor;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Input</span>(<span class="string">'myHighlight'</span>) highlightColor: <span class="built_in">string</span>;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseenter'</span>) onMouseEnter() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="keyword">this</span>.highlightColor || <span class="keyword">this</span>._defaultColor);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseleave'</span>) onMouseLeave() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">private</span> highlight(color: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.renderer.setElementStyle(<span class="keyword">this</span>.el.nativeElement, <span class="string">'backgroundColor'</span>, color);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>a.html</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='lightgreen'"</span>&gt;</span>Green</span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='yellow'"</span>&gt;</span>Yellow</span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='cyan'"</span>&gt;</span>Cyan</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span> [<span class="attr">defaultColor</span>]=<span class="string">"'violet'"</span>&gt;</span></span><br><span class="line">  Highlight me too!</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>新的<code>highlightColor</code>属性被称为输入属性，因为数据是从绑定表达式流入指令中。 注意，在定义这个属性的时候，我们调用了<code>@Input()</code>装饰器，<code>@Input</code>向类添加元数据，使<code>highlightColor</code>属性能以<code>myHighlight</code>为别名进行绑定</li>
+<li>你可以通过重命名属性名到myHighlight来移除这个区别，像这样：<code>@Input() myHighlight: string;</code></li>
+<li><code>defaultColor</code>属性是一个 <code>setter</code> 函数，它代替了硬编码的默认颜色 “red”,它不需要 getter 函数。这里，把字符串字面量<code>&#39;violet&#39;</code>绑定到了<code>defaultColor</code>上。</li>
+</ul>
+<h2 id="关于-输入属性的源和目标"><a href="#关于-输入属性的源和目标" class="headerlink" title="关于 输入属性的源和目标"></a>关于 输入属性的源和目标</h2><p>Angular 在绑定的源和目标之间的区别：</p>
+<ul>
+<li><p>如果属性出现在了模板表达式等号 (=) 的右侧，它就是一个<code>源</code>。</p>
+</li>
+<li><p>如果它出现在了方括号 ([ ]) 中，并且出现在等号 (=) 的左侧，它就是一个<code>目标</code>， 就像在绑定到HighlightDirective的myHighlight属性时所做的那样。</p>
+</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>[myHighlight]=&quot;color&quot;</code>中的 <code>&#39;color&#39;</code>是绑定源。 源属性不需要声明。</p>
+<p><code>[myHighlight]=&quot;color&quot;</code>中的 <code>&#39;myHighlight&#39;</code> 是绑定目标。 必须把它定义为一个输入属性，否则，Angular 就会拒绝绑定，并给出一个明确的错误。</p>
+<p>Angular 这样区别对待目标属性有充分的理由。 作为目标的组件或指令需要保护。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/22/TypeScript - 类/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/22/TypeScript - 类/" itemprop="url">TypeScript - 类</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-22T16:04:45+08:00">
+                2017-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="类"><a href="#类" class="headerlink" title="类"></a>类</h1><p> 从ECMAScript 2015，也就是ECMAScript 6开始，JavaScript程序员将能够使用基于类的面向对象的方式。 使用TypeScript，我们允许开发者现在就使用这些特性，并且编译后的JavaScript可以在所有主流浏览器和平台上运行，而不需要等到下个JavaScript版本。</p>
+<h2 id="创建一个类"><a href="#创建一个类" class="headerlink" title="创建一个类"></a>创建一个类</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Greeter &#123;</span><br><span class="line">    greeting: <span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">message: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.greeting = message;</span><br><span class="line">    &#125;</span><br><span class="line">    greet() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello, "</span> + <span class="keyword">this</span>.greeting;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greeter = <span class="keyword">new</span> Greeter(<span class="string">"world"</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><ul>
+<li>使用<code>extend</code>关键字来创建子类</li>
+<li>子类构造函数中使用<code>super()</code>，执行父类的构造方法</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Animal &#123;</span><br><span class="line">    name:<span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">theName: <span class="built_in">string</span></span>) &#123; <span class="keyword">this</span>.name = theName; &#125;</span><br><span class="line">    move(distanceInMeters: <span class="built_in">number</span> = <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;this.name&#125;</span> moved <span class="subst">$&#123;distanceInMeters&#125;</span>m.`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Snake <span class="keyword">extends</span> Animal &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span></span>) &#123; <span class="keyword">super</span>(name); &#125;</span><br><span class="line">    move(distanceInMeters = <span class="number">5</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"Slithering..."</span>);</span><br><span class="line">        <span class="keyword">super</span>.move(distanceInMeters);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Horse <span class="keyword">extends</span> Animal &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span></span>) &#123; <span class="keyword">super</span>(name); &#125;</span><br><span class="line">    move(distanceInMeters = <span class="number">45</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"Galloping..."</span>);</span><br><span class="line">        <span class="keyword">super</span>.move(distanceInMeters);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> sam = <span class="keyword">new</span> Snake(<span class="string">"Sammy the Python"</span>);</span><br><span class="line"><span class="keyword">let</span> tom: Animal = <span class="keyword">new</span> Horse(<span class="string">"Tommy the Palomino"</span>);</span><br><span class="line"></span><br><span class="line">sam.move();</span><br><span class="line">tom.move(<span class="number">34</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="public、private、protected修饰符"><a href="#public、private、protected修饰符" class="headerlink" title="public、private、protected修饰符"></a>public、private、protected修饰符</h2><ul>
+<li><p>在ts中，成员类型默认为<code>public</code></p>
+</li>
+<li><p>当成员被标记成<code>private</code>时，它就不能在声明它的类的外部访问</p>
+</li>
+<li><p><code>protected</code>修饰符与<code>private</code>修饰符的行为相似，但<strong><code>protected</code>成员在派生类中仍然可以访问</strong></p>
+</li>
+<li><p>构造函数可以被标记成<code>protected</code>，这是这个类不可以在类外进行实例化，但是能被继承并在子类中实例化。</p>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Person &#123;</span><br><span class="line">   <span class="keyword">protected</span> name: <span class="built_in">string</span>;</span><br><span class="line">       <span class="keyword">protected</span> <span class="keyword">constructor</span>(<span class="params">theName: <span class="built_in">string</span></span>) &#123; <span class="keyword">this</span>.name = theName; &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// Employee can extend Person</span></span><br><span class="line">   <span class="keyword">class</span> Employee <span class="keyword">extends</span> Person &#123;</span><br><span class="line">       <span class="keyword">private</span> department: <span class="built_in">string</span>;</span><br><span class="line">   </span><br><span class="line">       <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span>, department: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">           <span class="keyword">super</span>(name);</span><br><span class="line">           <span class="keyword">this</span>.department = department;</span><br><span class="line">       &#125;</span><br><span class="line">   </span><br><span class="line">       <span class="keyword">public</span> getElevatorPitch() &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="string">`Hello, my name is <span class="subst">$&#123;this.name&#125;</span> and I work in <span class="subst">$&#123;this.department&#125;</span>.`</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">let</span> howard = <span class="keyword">new</span> Employee(<span class="string">"Howard"</span>, <span class="string">"Sales"</span>);</span><br><span class="line">   <span class="keyword">let</span> john = <span class="keyword">new</span> Person(<span class="string">"John"</span>); <span class="comment">// Error: The 'Person' constructor is protected</span></span><br></pre></td></tr></table></figure>
+<h2 id="readonly修饰符"><a href="#readonly修饰符" class="headerlink" title="readonly修饰符"></a>readonly修饰符</h2><ul>
+<li><code>readnoly</code>修饰符，设置属性为只读的</li>
+<li>只读属性必须在声明时或构造函数里被初始化</li>
+</ul>
+<h2 id="参数属性"><a href="#参数属性" class="headerlink" title="参数属性"></a>参数属性</h2><p>使用参数属性可以方便地在一个地方创建并初始化一个成员,可以简化代码</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Animal &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> name: <span class="built_in">string</span></span>) &#123; &#125;</span><br><span class="line">    move(distanceInMeters: <span class="built_in">number</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面仅在构造函数里使用<code>private name: string</code>参数来创建和初始化name成员,把声明和赋值合并至一处。</p>
+<p>等价于</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Animal &#123;</span><br><span class="line">    <span class="keyword">private</span> name:<span class="built_in">string</span></span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">theName: <span class="built_in">string</span></span>) &#123; </span><br><span class="line">        <span class="keyword">this</span>.name=theName;</span><br><span class="line">    &#125;</span><br><span class="line">    move(distanceInMeters: <span class="built_in">number</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="存取器-getters-setters"><a href="#存取器-getters-setters" class="headerlink" title="存取器 getters/setters"></a>存取器 getters/setters</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Person&#123;</span><br><span class="line">    <span class="keyword">private</span> _name:<span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">get</span> name():<span class="built_in">string</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>._name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">set</span> name(name:<span class="built_in">string</span>)&#123;</span><br><span class="line">        <span class="keyword">this</span>._name=name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> Person();</span><br><span class="line">p.name=<span class="string">'tom'</span>;        <span class="comment">//调用set</span></span><br><span class="line"><span class="built_in">console</span>.log(p.name); <span class="comment">//调用get</span></span><br></pre></td></tr></table></figure>
+<p>要注意几点：</p>
+<ul>
+<li>使用<code>tsc file.ts --target es5</code>编译，因为它只支持ECMAScript 5或更高</li>
+<li>只带有 <code>get</code>不带有<code>set</code>的存取器自动被推断为readonly</li>
+</ul>
+<p>用在哪里？<br>可以用在存取时需要做一些额外操作，而不是直接赋值的地方。</p>
+<h2 id="静态属性"><a href="#静态属性" class="headerlink" title="静态属性"></a>静态属性</h2><ul>
+<li><code>static</code>可以创建类的静态成员，这些属性存在于类本身，而不是类的实例上</li>
+<li>使用<code>类名.静态成员名</code>格式访问类的静态成员</li>
+</ul>
+<h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><ul>
+<li>抽象类一般不会直接实例化，而是作为派生类的基类。</li>
+<li>与接口不同的地方：抽象类可以包含成员的实现细节。</li>
+<li><code>abstract</code>关键字是用于定义抽象类和在抽象类内部定义抽象方法。</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> Animal &#123;</span><br><span class="line">    <span class="keyword">abstract</span> makeSound(): <span class="built_in">void</span>;</span><br><span class="line">    move(): <span class="built_in">void</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'roaming the earch...'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：<br><strong>抽象类中的抽象方法不包含具体实现</strong>，而且<strong>它必须要在派生类中实现</strong></p>
+<h2 id="高级技巧"><a href="#高级技巧" class="headerlink" title="高级技巧"></a>高级技巧</h2><h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>在创建ts的一个类时，声明了几个东西：</p>
+<ul>
+<li>类的<code>实例类型</code></li>
+<li>创建了一个叫做<code>构造函数的值</code></li>
+</ul>
+<p>a.ts<br><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Greeter &#123;</span><br><span class="line">    greeting: <span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">message: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.greeting = message;</span><br><span class="line">    &#125;</span><br><span class="line">    greet() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello, "</span> + <span class="keyword">this</span>.greeting;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greeter: Greeter;</span><br><span class="line">greeter = <span class="keyword">new</span> Greeter(<span class="string">"world"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(greeter.greet());</span><br></pre></td></tr></table></figure></p>
+<p>上面的代码使用<code>tsc a.ts</code> 编译后得到的js代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> Greeter = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Greeter</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.greeting = message;</span><br><span class="line">    &#125;</span><br><span class="line">    Greeter.prototype.greet = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello, "</span> + <span class="keyword">this</span>.greeting;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> Greeter;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greeter;</span><br><span class="line">greeter = <span class="keyword">new</span> Greeter(<span class="string">"world"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(greeter.greet());</span><br></pre></td></tr></table></figure>
+<h3 id="把类当做接口使用"><a href="#把类当做接口使用" class="headerlink" title="把类当做接口使用"></a>把类当做接口使用</h3><p>类定义会创建两个东西：<code>类的实例类型</code>和<code>一个构造函数</code>。 因为<strong>类可以创建出类型</strong>，所以你能够在允许使用接口的地方使用类。</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Point &#123;</span><br><span class="line">    x: <span class="built_in">number</span>;</span><br><span class="line">    y: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> Point3d <span class="keyword">extends</span> Point &#123;</span><br><span class="line">    z: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> point3d: Point3d = &#123;x: <span class="number">1</span>, y: <span class="number">2</span>, z: <span class="number">3</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/21/天使时代 - 刘慈欣/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2863,7 +3484,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">50</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

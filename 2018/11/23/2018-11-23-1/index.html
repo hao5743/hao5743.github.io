@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="HelloConcurrentLinkedDequeJava7中引入的非阻塞并发列表 AtomicInteger//正常public class Sample1 &amp;#123;    private static Integer count = 0;    synchronized public static v">
+<meta name="description" content="常见的树结构B-/+ 平衡二叉树 红黑树">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello">
-<meta property="og:url" content="http://yoursite.com/2018/08/22/2018-08-17/index.html">
+<meta property="og:title" content="易天行">
+<meta property="og:url" content="http://yoursite.com/2018/11/23/2018-11-23-1/index.html">
 <meta property="og:site_name" content="易天行">
-<meta property="og:description" content="HelloConcurrentLinkedDequeJava7中引入的非阻塞并发列表 AtomicInteger//正常public class Sample1 &amp;#123;    private static Integer count = 0;    synchronized public static void increment() &amp;#123;        count++;    &amp;#">
+<meta property="og:description" content="常见的树结构B-/+ 平衡二叉树 红黑树">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-30T15:58:39.570Z">
+<meta property="og:updated_time" content="2018-11-23T14:58:48.636Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello">
-<meta name="twitter:description" content="HelloConcurrentLinkedDequeJava7中引入的非阻塞并发列表 AtomicInteger//正常public class Sample1 &amp;#123;    private static Integer count = 0;    synchronized public static void increment() &amp;#123;        count++;    &amp;#">
+<meta name="twitter:title" content="易天行">
+<meta name="twitter:description" content="常见的树结构B-/+ 平衡二叉树 红黑树">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/08/22/2018-08-17/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/11/23/2018-11-23-1/"/>
 
 
 
 
 
-  <title>Hello | 易天行</title>
+  <title> | 易天行</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/22/2018-08-17/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/2018-11-23-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ethan Hunt">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello</h1>
+          <h1 class="post-title" itemprop="name headline"></h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-22T00:00:00+08:00">
-                2018-08-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T22:57:51+08:00">
+                2018-11-23
               </time>
             
 
@@ -309,8 +309,9 @@
       
 
       
-        <h1 id="Hello"><a href="#Hello" class="headerlink" title="Hello"></a>Hello</h1><h2 id="ConcurrentLinkedDeque"><a href="#ConcurrentLinkedDeque" class="headerlink" title="ConcurrentLinkedDeque"></a>ConcurrentLinkedDeque</h2><p>Java7中引入的非阻塞并发列表</p>
-<h2 id="AtomicInteger"><a href="#AtomicInteger" class="headerlink" title="AtomicInteger"></a>AtomicInteger</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">//正常</span><br><span class="line">public class Sample1 &#123;</span><br><span class="line">    private static Integer count = 0;</span><br><span class="line">    synchronized public static void increment() &#123;</span><br><span class="line">        count++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//AtomicInteger</span><br><span class="line">public class Sample2 &#123;</span><br><span class="line">    private static AtomicInteger count = new AtomicInteger(0);</span><br><span class="line">    public static void increment() &#123;</span><br><span class="line">        count.getAndIncrement();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">以上两段代码，在使用Integer的时候，必须加上synchronized保证不会出现并发线程同时访问的情况，而在AtomicInteger中却不用加上synchronized，在这里AtomicInteger是提供原子操作的，下面就对这进行相应的介绍。</span><br></pre></td></tr></table></figure>
+        <h1 id="常见的树结构"><a href="#常见的树结构" class="headerlink" title="常见的树结构"></a>常见的树结构</h1><p>B-/+</p>
+<p>平衡二叉树</p>
+<p>红黑树</p>
 
       
     </div>
@@ -335,8 +336,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/22/2018-08-12/" rel="next" title="Node.js Event Loop，Timers定时器和process.nextTick()">
-                <i class="fa fa-chevron-left"></i> Node.js Event Loop，Timers定时器和process.nextTick()
+              <a href="/2018/11/23/2018-11-23-2/" rel="next" title="嘿嘿，mongoDB也有索引">
+                <i class="fa fa-chevron-left"></i> 嘿嘿，mongoDB也有索引
               </a>
             
           </div>
@@ -344,10 +345,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/08/23/2018-08-23/" rel="prev" title="linux查看内存">
-                linux查看内存 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -428,7 +425,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">50</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -485,7 +482,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hello"><span class="nav-number">1.</span> <span class="nav-text">Hello</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentLinkedDeque"><span class="nav-number">1.1.</span> <span class="nav-text">ConcurrentLinkedDeque</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AtomicInteger"><span class="nav-number">1.2.</span> <span class="nav-text">AtomicInteger</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常见的树结构"><span class="nav-number">1.</span> <span class="nav-text">常见的树结构</span></a></li></ol></div>
             
 
           </div>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="$type操作符用来查询某个字段是否是的指定BSON类型。当文档的数据类型是高度的非结构化时，这非常的有用{ field: { $type: &amp;lt;BSON type&amp;gt; } }，你可以通过数组或别名来指定BSON的type{ field: { $type: [ &amp;lt;BSON type">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mongo中使用$type查询字段的BSON类型">
+<meta property="og:url" content="http://yoursite.com/2018/10/09/2018-10-09/index.html">
+<meta property="og:site_name" content="易天行">
+<meta property="og:description" content="$type操作符用来查询某个字段是否是的指定BSON类型。当文档的数据类型是高度的非结构化时，这非常的有用{ field: { $type: &amp;lt;BSON type&amp;gt; } }，你可以通过数组或别名来指定BSON的type{ field: { $type: [ &amp;lt;BSON type1&amp;gt; , &amp;lt;BSON type2&amp;gt;, ... ] } }，这将匹配数组中BSON类型">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-09T06:57:47.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mongo中使用$type查询字段的BSON类型">
+<meta name="twitter:description" content="$type操作符用来查询某个字段是否是的指定BSON类型。当文档的数据类型是高度的非结构化时，这非常的有用{ field: { $type: &amp;lt;BSON type&amp;gt; } }，你可以通过数组或别名来指定BSON的type{ field: { $type: [ &amp;lt;BSON type1&amp;gt; , &amp;lt;BSON type2&amp;gt;, ... ] } }，这将匹配数组中BSON类型">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/09/2018-10-09/"/>
+
+
+
+
+
+  <title>mongo中使用$type查询字段的BSON类型 | 易天行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">易天行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">积累点滴，汇聚江河</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-09/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mongo中使用$type查询字段的BSON类型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><code>$type</code>操作符用来查询某个字段是否是的指定<code>BSON</code>类型。当文档的数据类型是高度的非结构化时，这非常的有用<br><code>{ field: { $type: &lt;BSON type&gt; } }</code>，你可以通过数组或别名来指定BSON的type<br><code>{ field: { $type: [ &lt;BSON type1&gt; , &lt;BSON type2&gt;, ... ] } }</code>，这将匹配数组中BSON类型的任意一个</p>
+</blockquote>
+<h2 id="BSON-type总结（version-3-2）"><a href="#BSON-type总结（version-3-2）" class="headerlink" title="BSON type总结（version 3.2）"></a>BSON type总结（version 3.2）</h2><p>3.2版本可以使用别名或数字来指定<code>BSON</code>类型，在3.2之前的版本只能使用数字来匹配。</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Number</th>
+<th>Alias</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Double</td>
+<td>1</td>
+<td>“double”</td>
+<td></td>
+</tr>
+<tr>
+<td>String</td>
+<td>2</td>
+<td>“string”</td>
+<td></td>
+</tr>
+<tr>
+<td>Object</td>
+<td>3</td>
+<td>“object”</td>
+<td></td>
+</tr>
+<tr>
+<td>Array</td>
+<td>4</td>
+<td>“array”</td>
+<td></td>
+</tr>
+<tr>
+<td>Binary data</td>
+<td>5</td>
+<td>“binData”</td>
+<td></td>
+</tr>
+<tr>
+<td>Undefined</td>
+<td>6</td>
+<td>“undefined”</td>
+<td>废弃</td>
+</tr>
+<tr>
+<td>ObjectId</td>
+<td>7</td>
+<td>“objectId”</td>
+<td></td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>8</td>
+<td>“bool”</td>
+<td></td>
+</tr>
+<tr>
+<td>Date</td>
+<td>9</td>
+<td>“date”</td>
+<td></td>
+</tr>
+<tr>
+<td>Null</td>
+<td>10</td>
+<td>“null”</td>
+<td></td>
+</tr>
+<tr>
+<td>RegularExpression</td>
+<td>11</td>
+<td>“regex”</td>
+<td></td>
+</tr>
+<tr>
+<td>DBPointer</td>
+<td>12</td>
+<td>“dbPointer”</td>
+<td></td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>13</td>
+<td>“javascript”</td>
+<td></td>
+</tr>
+<tr>
+<td>Sysmbol</td>
+<td>14</td>
+<td>“symbol”</td>
+<td>废弃</td>
+</tr>
+<tr>
+<td>JavaScript(with scope)</td>
+<td>15</td>
+<td>“javascriptWithScope”</td>
+<td></td>
+</tr>
+<tr>
+<td>32-bit integer</td>
+<td>16</td>
+<td>“int”</td>
+<td></td>
+</tr>
+<tr>
+<td>Timestamp</td>
+<td>17</td>
+<td>“timestamp”</td>
+<td></td>
+</tr>
+<tr>
+<td>64-bit integer</td>
+<td>18</td>
+<td>“long”</td>
+<td></td>
+</tr>
+<tr>
+<td>Decimal128</td>
+<td>19</td>
+<td>“decimal”</td>
+<td>3.4版本新增</td>
+</tr>
+<tr>
+<td>Min key</td>
+<td>-1</td>
+<td>“minKey”</td>
+<td></td>
+</tr>
+<tr>
+<td>Max Key</td>
+<td>127</td>
+<td>“maxKey”</td>
+</tr>
+</tbody>
+</table>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>源数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">      &#123; &quot;_id&quot; : 1, address : &quot;2030 Martian Way&quot;, zipCode : &quot;90698345&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 2, address: &quot;156 Lunar Place&quot;, zipCode : 43339374 &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 3, address : &quot;2324 Pluto Place&quot;, zipCode: NumberLong(3921412) &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 4, address : &quot;55 Saturn Ring&quot; , zipCode : NumberInt(88602117) &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>查询zipCode字段是string的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : 2 &#125; &#125; );</span><br><span class="line">//等价于</span><br><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : &quot;string&quot; &#125; &#125; );</span><br><span class="line"></span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 1, &quot;address&quot; : &quot;2030 Martian Way&quot;, &quot;zipCode&quot; : &quot;90698345&quot; &#125;</span><br></pre></td></tr></table></figure>
+<p>zipCode的BSON类型是double的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : 1 &#125; &#125; )</span><br><span class="line">//等价于</span><br><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : &quot;double&quot; &#125; &#125; )</span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 2, &quot;address&quot; : &quot;156 Lunar Place&quot;, &quot;zip&quot; : 43339374 &#125;</span><br></pre></td></tr></table></figure>
+<p>使用<code>number</code>类型别名匹配BSON类型是<code>double``int</code>或<code>long</code>的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : &quot;number&quot; &#125; &#125; )</span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 2, address : &quot;156 Lunar Place&quot;, zipCode : 43339374 &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 3, address : &quot;2324 Pluto Place&quot;, zipCode: NumberLong(3921412) &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 4, address : &quot;55 Saturn Ring&quot; , zipCode : 88602117 &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><p>源数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">      &#123; &quot;_id&quot; : 1, name : &quot;Alice King&quot; , classAverage : 87.333333333333333 &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 2, name : &quot;Bob Jenkins&quot;, classAverage : &quot;83.52&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 3, name : &quot;Cathy Hart&quot;, classAverage: &quot;94.06&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 4, name : &quot;Drew Williams&quot; , classAverage : 93 &#125;</span><br><span class="line">   ]</span><br></pre></td></tr></table></figure>
+<p>查询<code>classAverage</code>字段是BSON类型<code>string</code>或<code>double</code>的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.grades.find( &#123; &quot;classAverage&quot; : &#123; $type : [ 2 , 1 ] &#125; &#125; );</span><br><span class="line">//等价于</span><br><span class="line">db.grades.find( &#123; &quot;classAverage&quot; : &#123; $type : [ &quot;string&quot; , &quot;double&quot; ] &#125; &#125; );</span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 1, name : &quot;Alice King&quot; , classAverage : 87.333333333333333 &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 2, name : &quot;Bob Jenkins&quot;, classAverage : &quot;83.52&quot; &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 3, name : &quot;Cathy Hart&quot;, classAverage: &quot;94.06&quot; &#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/30/2018-08-30/" rel="next" title="ps -ef 和 ps aux">
+                <i class="fa fa-chevron-left"></i> ps -ef 和 ps aux
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/09/2018-10-10/" rel="prev" title="使用forever让node.js持久运行">
+                使用forever让node.js持久运行 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="Ethan Hunt" />
+            
+              <p class="site-author-name" itemprop="name">Ethan Hunt</p>
+              <p class="site-description motion-element" itemprop="description">Make more time</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BSON-type总结（version-3-2）"><span class="nav-number">1.</span> <span class="nav-text">BSON type总结（version 3.2）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例2"><span class="nav-number">3.</span> <span class="nav-text">示例2</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ethan Hunt</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

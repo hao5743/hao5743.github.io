@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这里我们讨论几种使node应用在后台运行的几种方式，简单的是linux后台执行，另外两种是使用进程管理工具forever pm2。 linux nohup &amp;amp; 命令使用&amp;amp;符号后台执行，并利用nohup命令实现进程禁止挂起 $ nohup node app.js &amp;amp; for">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用forever让node.js持久运行">
+<meta property="og:url" content="http://yoursite.com/2018/10/09/2018-10-10/index.html">
+<meta property="og:site_name" content="易天行">
+<meta property="og:description" content="这里我们讨论几种使node应用在后台运行的几种方式，简单的是linux后台执行，另外两种是使用进程管理工具forever pm2。 linux nohup &amp;amp; 命令使用&amp;amp;符号后台执行，并利用nohup命令实现进程禁止挂起 $ nohup node app.js &amp;amp; forever工具基本命令npm install forever -g   #安装forever start">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-24T01:27:09.426Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用forever让node.js持久运行">
+<meta name="twitter:description" content="这里我们讨论几种使node应用在后台运行的几种方式，简单的是linux后台执行，另外两种是使用进程管理工具forever pm2。 linux nohup &amp;amp; 命令使用&amp;amp;符号后台执行，并利用nohup命令实现进程禁止挂起 $ nohup node app.js &amp;amp; forever工具基本命令npm install forever -g   #安装forever start">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/09/2018-10-10/"/>
+
+
+
+
+
+  <title>使用forever让node.js持久运行 | 易天行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">易天行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">积累点滴，汇聚江河</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用forever让node.js持久运行</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这里我们讨论几种使node应用在后台运行的几种方式，简单的是<code>linux后台执行</code>，另外两种是使用进程管理工具<code>forever</code> <code>pm2</code>。</p>
+<h2 id="linux-nohup-amp-命令"><a href="#linux-nohup-amp-命令" class="headerlink" title="linux nohup &amp; 命令"></a>linux nohup &amp; 命令</h2><p>使用<code>&amp;</code>符号后台执行，并利用<code>nohup</code>命令实现进程禁止挂起</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nohup node app.js &amp;</span><br></pre></td></tr></table></figure>
+<h2 id="forever工具"><a href="#forever工具" class="headerlink" title="forever工具"></a>forever工具</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install forever -g   <span class="comment">#安装</span></span><br><span class="line">forever start app.js     <span class="comment">#启动应用</span></span><br><span class="line">forever stop app.js      <span class="comment">#关闭应用</span></span><br><span class="line">forever restartall       <span class="comment">#重启所有应用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#输出日志和错误</span></span><br><span class="line">forever start -l forever.log -o out.log -e err.log app.js   </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定forever信息输出文件，当然，默认它会放到~/.forever/forever.log</span></span><br><span class="line">forever start -l forever.log app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定app.js中的日志信息和错误日志输出文件，  </span></span><br><span class="line"><span class="comment"># -o 就是console.log输出的信息，-e 就是console.error输出的信息</span></span><br><span class="line">forever start -o out.log -e err.log app.js </span><br><span class="line"></span><br><span class="line"><span class="comment"># 追加日志，forever默认是不能覆盖上次的启动日志，  </span></span><br><span class="line"><span class="comment"># 所以如果第二次启动不加-a，则会不让运行  </span></span><br><span class="line">forever start -l forever.log -a app.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 监听当前文件夹下的所有文件改动（不太建议这样）  </span></span><br><span class="line">forever start -w app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有运行的服务 </span></span><br><span class="line">forever list  </span><br><span class="line"></span><br><span class="line"><span class="comment">######停止操作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止所有运行的node App  </span></span><br><span class="line">forever stopall  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 停止其中一个node App  </span></span><br><span class="line">forever stop app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 当然还可以这样  </span></span><br><span class="line"><span class="comment"># forever list 找到对应的id，然后：  </span></span><br><span class="line">forever stop [id]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发环境下  </span></span><br><span class="line">NODE_ENV=development forever start -l forever.log -e err.log -a app.js  </span><br><span class="line"><span class="comment"># 线上环境下  </span></span><br><span class="line">NODE_ENV=production forever start -l ~/.forever/forever.log -e ~/.forever/err.log -w -a app.js</span><br><span class="line"><span class="comment">#上面加上NODE_ENV为了让app.js辨认当前是什么环境用的</span></span><br><span class="line">The End</span><br></pre></td></tr></table></figure>
+<h2 id="PM2"><a href="#PM2" class="headerlink" title="PM2"></a>PM2</h2><p>PM2是一个内置的负载平衡器Node.js应用生产过程管理。它允许您永久地保存应用程序，并在不停机的情况下重新加载它们</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ npm install -g pm2</span><br><span class="line"><span class="comment"># 启动 --name tank是给这个进程取个名字</span></span><br><span class="line">$ pm2 start index.js --name tankName</span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用命令</span></span><br><span class="line"><span class="variable">$pm2</span> stop  &lt;app_name|id|all&gt;  停止</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> delete &lt;app_name|id|all&gt; 删除</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> restart &lt;app_name|id|all&gt; 重启</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> reload &lt;app_name|id|all&gt; 重载</span><br></pre></td></tr></table></figure>
+<p>跟多命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">$ pm2 start app.js -i 4 #后台运行pm2，启动4个app.js </span><br><span class="line">                                # 也可以把&apos;max&apos; 参数传递给 start</span><br><span class="line">                                # 正确的进程数目依赖于Cpu的核心数目</span><br><span class="line">$ pm2 start app.js --name my-api # 命名进程</span><br><span class="line">$ pm2 list               # 显示所有进程状态</span><br><span class="line">$ pm2 monit              # 监视所有进程</span><br><span class="line">$ pm2 logs               #  显示所有进程日志</span><br><span class="line">$ pm2 stop all           # 停止所有进程</span><br><span class="line">$ pm2 restart all        # 重启所有进程</span><br><span class="line">$ pm2 reload all         # 0秒停机重载进程 (用于 NETWORKED 进程)</span><br><span class="line">$ pm2 stop 0             # 停止指定的进程</span><br><span class="line">$ pm2 restart 0          # 重启指定的进程</span><br><span class="line">$ pm2 startup            # 产生 init 脚本 保持进程活着</span><br><span class="line">$ pm2 web                # 运行健壮的 computer API endpoint (http://localhost:9615)</span><br><span class="line">$ pm2 delete 0           # 杀死指定的进程</span><br><span class="line">$ pm2 delete all         # 杀死全部进程</span><br><span class="line"></span><br><span class="line">运行进程的不同方式：</span><br><span class="line">$ pm2 start app.js -i max  # 根据有效CPU数目启动最大进程数目</span><br><span class="line">$ pm2 start app.js -i 3      # 启动3个进程</span><br><span class="line">$ pm2 start app.js -x        #用fork模式启动 app.js 而不是使用 cluster</span><br><span class="line">$ pm2 start app.js -x -- -a 23   # 用fork模式启动 app.js 并且传递参数 (-a 23)</span><br><span class="line">$ pm2 start app.js --name serverone  # 启动一个进程并把它命名为 serverone</span><br><span class="line">$ pm2 stop serverone       # 停止 serverone 进程</span><br><span class="line">$ pm2 start app.json        # 启动进程, 在 app.json里设置选项</span><br><span class="line">$ pm2 start app.js -i max -- -a 23                   #在--之后给 app.js 传递参数</span><br><span class="line">$ pm2 start app.js -i max -e err.log -o out.log  # 启动 并 生成一个配置文件</span><br><span class="line">你也可以执行用其他语言编写的app  ( fork 模式):</span><br><span class="line">$ pm2 start my-bash-script.sh    -x --interpreter bash</span><br><span class="line">$ pm2 start my-python-script.py -x --interpreter python</span><br><span class="line"></span><br><span class="line">0秒停机重载:</span><br><span class="line">这项功能允许你重新载入代码而不用失去请求连接。</span><br><span class="line">注意：</span><br><span class="line">仅能用于web应用</span><br><span class="line">运行于Node 0.11.x版本</span><br><span class="line">运行于 cluster 模式（默认模式）</span><br><span class="line">$ pm2 reload all</span><br><span class="line"></span><br><span class="line">CoffeeScript:</span><br><span class="line">$ pm2 start my_app.coffee  #这就是全部</span><br><span class="line"></span><br><span class="line">PM2准备好为产品级服务了吗？</span><br><span class="line">只需在你的服务器上测试</span><br><span class="line">$ git clone https://github.com/Unitech/pm2.git</span><br><span class="line">$ cd pm2</span><br><span class="line">$ npm install  # 或者 npm install --dev ，如果devDependencies 没有安装</span><br><span class="line">$ npm test</span><br></pre></td></tr></table></figure>
+<p>错误日志位置：</p>
+<p>error log path  /root/.pm2/pids/anaweb-13.pid </p>
+<p>错误日志，出现启动 error找她就没错</p>
+<p>out log path    /root/.pm2/logs/anaweb-out-13.log </p>
+<p>参考1: <a href="https://cnodejs.org/topic/5021c2cff767cc9a51e684e3" target="_blank" rel="noopener">https://cnodejs.org/topic/5021c2cff767cc9a51e684e3</a><br>参考2: <a href="http://tcrct.iteye.com/blog/2043644" target="_blank" rel="noopener">http://tcrct.iteye.com/blog/2043644</a><br>forever github: <a href="https://github.com/foreverjs/forever" target="_blank" rel="noopener">https://github.com/foreverjs/forever</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/09/2018-10-09/" rel="next" title="mongo中使用$type查询字段的BSON类型">
+                <i class="fa fa-chevron-left"></i> mongo中使用$type查询字段的BSON类型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/19/2018-11-19/" rel="prev" title="并发策略 cas算法">
+                并发策略 cas算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="Ethan Hunt" />
+            
+              <p class="site-author-name" itemprop="name">Ethan Hunt</p>
+              <p class="site-description motion-element" itemprop="description">Make more time</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-nohup-amp-命令"><span class="nav-number">1.</span> <span class="nav-text">linux nohup & 命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forever工具"><span class="nav-number">2.</span> <span class="nav-text">forever工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本命令"><span class="nav-number">2.1.</span> <span class="nav-text">基本命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PM2"><span class="nav-number">3.</span> <span class="nav-text">PM2</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ethan Hunt</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

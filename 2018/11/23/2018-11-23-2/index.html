@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="mongo支持多种index类型，其最大的作用就是提高查询性能，可以避免对collection的逐文档扫描。index保存指定的或者多个field值，并且按照field值的顺序排序，索引条目的有序性使得“相等比较eq”、range查询等性能很高。mongo内部的索引结构采用B-/+树来实现，单次对索引的查询最多访问h（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嘿嘿，mongoDB也有索引">
+<meta property="og:url" content="http://yoursite.com/2018/11/23/2018-11-23-2/index.html">
+<meta property="og:site_name" content="易天行">
+<meta property="og:description" content="mongo支持多种index类型，其最大的作用就是提高查询性能，可以避免对collection的逐文档扫描。index保存指定的或者多个field值，并且按照field值的顺序排序，索引条目的有序性使得“相等比较eq”、range查询等性能很高。mongo内部的索引结构采用B-/+树来实现，单次对索引的查询最多访问h（层高）个节点，时间复杂度为O(logN)。  基本操作命令//创建索引db.c">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-23T16:37:46.171Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="嘿嘿，mongoDB也有索引">
+<meta name="twitter:description" content="mongo支持多种index类型，其最大的作用就是提高查询性能，可以避免对collection的逐文档扫描。index保存指定的或者多个field值，并且按照field值的顺序排序，索引条目的有序性使得“相等比较eq”、range查询等性能很高。mongo内部的索引结构采用B-/+树来实现，单次对索引的查询最多访问h（层高）个节点，时间复杂度为O(logN)。  基本操作命令//创建索引db.c">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/23/2018-11-23-2/"/>
+
+
+
+
+
+  <title>嘿嘿，mongoDB也有索引 | 易天行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">易天行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">积累点滴，汇聚江河</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/2018-11-23-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">嘿嘿，mongoDB也有索引</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T00:00:00+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>mongo支持多种index类型，其最大的作用就是提高查询性能，可以避免对collection的逐文档扫描。index保存指定的或者多个field值，并且按照field值的顺序排序，索引条目的有序性使得“相等比较eq”、range查询等性能很高。<br>mongo内部的索引结构采用<strong>B-/+</strong>树来实现，单次对索引的查询最多访问h（层高）个节点，时间复杂度为O(logN)。</p>
+</blockquote>
+<h3 id="基本操作命令"><a href="#基本操作命令" class="headerlink" title="基本操作命令"></a>基本操作命令</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建索引</span></span><br><span class="line">db.collec.createIndex(&#123;<span class="attr">age</span>:<span class="number">1</span>,<span class="attr">name</span>:<span class="number">1</span>&#125;,&#123;<span class="attr">unique</span>:<span class="literal">true</span>,<span class="attr">sparse</span>:<span class="literal">true</span>,<span class="attr">background</span>:<span class="literal">true</span>,<span class="attr">expireAfterSeconds</span>:<span class="number">10</span>,<span class="attr">name</span>:<span class="string">"index_name"</span>&#125;)</span><br><span class="line"></span><br><span class="line">db.collection.getIndexes()</span><br><span class="line">db.collection.dropIndex(<span class="string">"indexName"</span>)</span><br><span class="line">db.collection.dropIndexes() <span class="comment">//删除所有</span></span><br><span class="line">db.col.totalIndexSize()     <span class="comment">// 查看索引大小 (bytes)</span></span><br><span class="line">db.col.totalSize()          <span class="comment">//集合大小 (bytes)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//unique sparse background expireAfterSeconds参数下面会有说明</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意在 3.0.0 版本前创建索引方法为 db.collection.ensureIndex()，之后的版本使用了 db.collection.createIndex() 方法，ensureIndex() 还能用，但只是 createIndex() 的别名。</p>
+</blockquote>
+<ul>
+<li>mongo提供两种建所以的方式<code>foreground</code>和<code>background</code>。foreground（默认）即前台操作，它会阻塞用户对数据的读写操作直到index构建完毕，即任何需要获取read、write操作都会阻塞；background即后台模式，不阻塞数据读写操作，独立的后台线程异步构建索引，此时仍然允许对数据的读写操作；其中background比foreground更加耗时。</li>
+</ul>
+<h3 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h3><p>下面我们要说的mongo最常用的几种索引类型,有<code>_id索引</code> <code>单字段索引</code> <code>组合索引</code> <code>复合索引</code> <code>地理空间索引</code> <code>文本索引</code> <code>哈希索引</code>等</p>
+<ol>
+<li><strong>_id索引</strong>：每个document都必须有_id字段，如果不指定，mongodb会默认生成；_id字段为内置的“唯一索引”，整个collection中不会存在_id值相同的document，这是mongodb的内部机制，开发者无法改变，也不需要开发者显式的为_id建立索引，当然也无法remove它。通过_id字段来查询document是性能极高的，所以如果尽可能的通过_id查询或者update数据。</li>
+<li><strong>单字段索引</strong> 也叫普通索引，对单个字段建立的索引</li>
+<li><strong>组合索引Compound</strong> 对多个field建立的索引。比如{user:1,age:-1}，索引条目按user正序排列，相同user索引条目再根据age值倒序排列。需要特别注意的是<code>索引的field顺序很重要!</code>。需要结合具体的查询和排序去分析，下面会提到建组合索引的注意事项</li>
+<li><strong>复合键索引（Multikey）</strong> 对document中的数组字段创建索引，就是复合键索引</li>
+<li><strong>地理空间索引（Geospatial）</strong> 为了支持高效的地址位置数据查询，mongodb提供了2种特殊的索引，2d索引（坐标平面）和2sphere索引（经纬球面）</li>
+<li><strong>文本索引（Text）</strong> 支持对collection中的string内容进行搜索操作，即text search；mongodb内置支持几种语言的分词，不过这种文本搜索的能力与专业的搜索引擎相比，还相当简陋。不支持中文~</li>
+<li><strong>哈希索引（Hash）</strong> 主要使用场景为“hash sharding”，即在“Sharding”架构模式中，对sharding key使用hash索引，以便数据的sharding和路由操作。hash索引只支持一个字段，它不能和其他字段组合，同时也不能是“unique”，使用<code>db.&lt;collection&gt;.createIndex({a : &quot;hashed&quot;})</code>来创建hash索引。</li>
+</ol>
+<h3 id="索引属性（property）"><a href="#索引属性（property）" class="headerlink" title="索引属性（property）"></a>索引属性（property）</h3><ol>
+<li><p><strong>唯一索引（Unique）</strong>：即索引字段的值是唯一的，全局无重复；如果尝试存入重复的值（write），操作将会被拒绝。可以通过db.<collection>.createIndex({ “userid” : 1}, {unique : true})创建唯一索引。我们可以对一个组合索引使用unique属性，表示它们的组合值不能重复，默认情况下unique为false。如果插入的document不包含某个索引字段，那么此字段的值保存为null，mongodb也会用unique约束这样的文档，即不包含某个字段的文档只能保存一条。比如唯一索引{“x” : 1, “y” : 1}，只能插入一条{“x” : “content”}（等同于{“x” : “content”,”y” : null}）。对于hash索引而言，则不能使用unique属性。unique通常与sparse一起使用。</collection></p>
+</li>
+<li><p><strong>稀疏索引（Sparse）</strong> ：只有当document中包含索引字段时，才会为此文档建立索引，但是这些文档仍然能够保存成功·；因为mongodb的document结构是模式自由的，所以document中不包含某个Field也是“正常的”；稀疏索引将会忽略那些document中不包含索引字段的记录，因此稀疏索引并没有包含collection中的所有文档；非sparse索引，将会为那些缺失的字段存储为null，因此索引包含了全部文档。  我们可以将“Sparse”和“Unique”选项同时约束一个index，以避免包含重复值的document，同时还忽略那些不包含索引字段的document（不建立索引，但是文档仍然会被保存）。当sparse与unique同时约束索引时，比如createIndex({“score” : 1}, {sparse : true, unique: true})，如果文档中不包含score字段，那么文档都可以保存成功，但是不会对这些文档建立索引，但是对于包含了score字段的文档，那么score值则不能重复。</p>
+</li>
+<li><strong>TTL索引</strong> 对“date”、“timestamp”类型的字段建立TTL索引，并在索引选项中指定索引保存的时长，那么mongodb将会在一定时间之后自动移除那些“过期”的索引和documents。通过TTL索引，可以实现一个清洗数据的“定时任务”。TTL索引只能支持一个字段（同hash索引，不能对组合索引使用此特性），不能和其他字段组合，即一个索引中只能有一个字段；比如document中created字段类型为date，表示文档插入的时间，我们希望文档在3600秒后过期删除，那么可以通过db.<collection>.createIndex({ “created” : 1},{expireAfterSeconds : 3600})创建索引，其中“expireAfterSeconds”为TTL索引的必须选项。如果document中不包含索引字段，文档将不会过期。mongodb将会创建一个后台线程，读取index值并删除那些过期的document；在createIndex时，mongodb也会在构建索引的同时检测过期，删除那些过期的数据。TTL索引和众多的缓存服务一样，不能保证数据过期则立即被删除（对用户操作不可见），mongodb扫描数据（从头到尾）是有时间间隔的（60秒），因此过期数据的删除可能存在延迟问题。对于“replica Set”，这个后台线程只在primary上运行，primary上的删除操作同步给secondaries。mongodb的存储引擎的特性决定，这种大量的随机删除会导致严重的存储碎片，索引如果collection中存在TTL索引时，将会开启“usePowerOf2Sizes”选项而且不能修改，“usePowerOf2Sizes”可以降低存储碎片的可能。<code>collection.createIndex(new Document(&quot;created&quot;,1),new IndexOptions().expireAfter(15L,TimeUnit.MILLISECONDS));</code></collection></li>
+</ol>
+<h3 id="索引的基本策略"><a href="#索引的基本策略" class="headerlink" title="索引的基本策略"></a>索引的基本策略</h3><p>虽然索引可以提高query的查询效率，当然也会增加write时带来的开支，增加内存、磁盘的使用。建索引时要根据业务的<strong>查询和排序条件</strong>来合理选择。</p>
+<blockquote>
+<p>索引的选择性。是判定一个索引筛选数据的能力，越高效的索引其选择性越高，即可以排除掉更多的不匹配数据，更少的数据遍历。比如文档中有一个字段status，这个status有2个合法值“new”、“processed”，如果在status字段上建立索引，那么此索引的选择性就比较低，因为它只能筛选掉一半数据，这也意味着即使索引生效，也需要遍历整个collection中一半的数据才能得到最终结果，事实上对status建立索引是没有必要的。</p>
+</blockquote>
+<ul>
+<li><strong>索引支持匹配最左前缀</strong>，比如索引{x: 1, y : 1}能支持 {x : 1} 和 {x : 1, y : 1}两个key的查询。</li>
+<li><strong>尽量避免大量数据内存排序</strong> 设计索引时尽量能直接获取到排好序的结果，性能最好；如果不能，mongo可以将数据进行内存中的排序，在没有使用索引情况下排序操作所占用内存不得超过32M，否则将中断排序。</li>
+<li><strong>多字段索引顺序很重要</strong> sort操作使用索引时必须要和index顺序一致，比如索引{a : 1, b : 1}，将不支持sort( { b : 1, a : 1})；且排序的方向必须和index声明的保持一致，比如上述索引支持{a : 1, b : 1} 和 { a : -1, b : -1}，但无法支持{a : 1, b : -1} 和 { a : -1, b : 1}。</li>
+<li><p>查询和排序字段结合的分析</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> 如果参与排序的字段（和顺序）和索引字段一样或者是索引的前缀字段，且查询条件中也包含索引的前缀字段，那么mongodb则可以使用索引进行排序，这是一种比较高效的做法。比如索引&#123; a : 1, b : 1, c : 1&#125;，如下查询均可以利用索引排序：</span><br><span class="line">db.data.find().sort( &#123; a: 1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: -1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: 1, b: 1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: -1, b: -1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: 1, b: 1, c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; a: &#123; $gt: 4 &#125; &#125; ).sort( &#123; a: 1, b: 1 &#125; )</span><br><span class="line">    如果参与排序的字段不是索引的前缀字段，具体是否能够利用索引排序，就要求查询条件的字段需要为索引的最左前缀字段，同时查询条件的字段和sort字段的也应该构成组合索引的左前缀，比如索引 &#123; a : 1, b : 1, c: 1&#125;，那么此索引将支持如下几种排序方式：</span><br><span class="line">db.data.find( &#123; a: 5 &#125; ).sort( &#123; b: 1, c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; b: 3, a: 4 &#125; ).sort( &#123; c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; a: 5, b: &#123; $lt: 3&#125; &#125; ).sort( &#123; b: 1 &#125; )</span><br><span class="line">    如果查询字段和sort字段不能构成组合索引的左前缀，那么将不能高效的利用索引排序，或者有可能不会使用此索引，比如： </span><br><span class="line">db.data.find( &#123; a: &#123; $gt: 2 &#125; &#125; ).sort( &#123; c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; c: 5 &#125; ).sort( &#123; c: 1 &#125; )</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h3><p>1.索引覆盖查询<br>mongoDB可以做索引覆盖查询，这种查询不会访问指针指向的文档，而是直接用索引的数据返回结果。只有当要查询返回的字段，都在索引中的时候。</p>
+<p>2.常见慢查询：<br>1).不等于和不包含查询一般不使用索引 $ne 或者$nin<br>2).通配符在前面的模糊查询， like ‘%xxx’<br>3).无索引的count 查询 和 排序（复合索引顺序不匹配）<br>4).多个范围查询（范围列可以用到索引（必须是最左前缀），但是范围列后面的列无法用到索引）<br>5).skip跳过过多的行数<br>6).$where操作符</p>
+<p>3.<strong>对现有的数据大表建立索引的时候，采用后台运行方式</strong></p>
+<p><code>db.test.ensureIndex({&quot;username&quot;:1,&quot;age&quot;:-1},{&quot;background&quot;:true}) #默认情况下background是false。</code></p>
+<h3 id="查询计划explain"><a href="#查询计划explain" class="headerlink" title="查询计划explain"></a>查询计划explain</h3><p><code>db.person.find( {age： 18} ).explain()</code>可以查看mongo的查询计划，包括索引的使用、文档扫描的多少、查询步骤等信息</p>
+<p>一个例子</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mongo-9552:PRIMARY&amp;gt; db.person.find(&#123;age: 18&#125;).explain()</span><br><span class="line">&#123;</span><br><span class="line">    &quot;queryPlanner&quot; : &#123;</span><br><span class="line">        &quot;plannerVersion&quot; : 1,</span><br><span class="line">        &quot;namespace&quot; : &quot;test.person&quot;,</span><br><span class="line">        &quot;indexFilterSet&quot; : false,</span><br><span class="line">        &quot;parsedQuery&quot; : &#123;</span><br><span class="line">            &quot;age&quot; : &#123;</span><br><span class="line">                &quot;$eq&quot; : 18</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;winningPlan&quot; : &#123;</span><br><span class="line">            &quot;stage&quot; : &quot;FETCH&quot;,</span><br><span class="line">            &quot;inputStage&quot; : &#123;</span><br><span class="line">                &quot;stage&quot; : &quot;IXSCAN&quot;,</span><br><span class="line">                &quot;keyPattern&quot; : &#123;</span><br><span class="line">                    &quot;age&quot; : 1</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;indexName&quot; : &quot;age_1&quot;,</span><br><span class="line">                &quot;isMultiKey&quot; : false,</span><br><span class="line">                &quot;isUnique&quot; : false,</span><br><span class="line">                &quot;isSparse&quot; : false,</span><br><span class="line">                &quot;isPartial&quot; : false,</span><br><span class="line">                &quot;indexVersion&quot; : 1,</span><br><span class="line">                &quot;direction&quot; : &quot;forward&quot;,</span><br><span class="line">                &quot;indexBounds&quot; : &#123;</span><br><span class="line">                    &quot;age&quot; : [</span><br><span class="line">                        &quot;[18.0, 18.0]&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;rejectedPlans&quot; : [ ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;serverInfo&quot; : &#123;</span><br><span class="line">        &quot;host&quot; : &quot;localhost&quot;,</span><br><span class="line">        &quot;port&quot; : 9552,</span><br><span class="line">        &quot;version&quot; : &quot;3.2.3&quot;,</span><br><span class="line">        &quot;gitVersion&quot; : &quot;b326ba837cf6f49d65c2f85e1b70f6f31ece7937&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;ok&quot; : 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="stage常见类型"><a href="#stage常见类型" class="headerlink" title="stage常见类型"></a>stage常见类型</h4><p>如<code>explain.queryPlanner.winningPlan.stage</code>和<code>explain.queryPlanner.winningPlan.inputStage</code>等。<br>文档中仅有如下几类介绍</p>
+<p><code>COLLSCAN</code> 全表扫描</p>
+<p><code>IXSCAN</code> 索引扫描</p>
+<p><code>FETCH</code> 根据索引去检索指定document</p>
+<p><code>SHARD_MERGE</code> 将各个分片返回数据进行merge</p>
+<p>但是根据源码中的信息，个人还总结了文档中没有的如下几类(常用如下，由于是通过源码查找，可能有所遗漏)</p>
+<p><code>SORT</code> 表明在内存中进行了排序（与老版本的scanAndOrder:true一致）</p>
+<p><code>LIMIT</code> 使用limit限制返回数</p>
+<p><code>SKIP</code> 使用skip进行跳过</p>
+<p><code>IDHACK</code> 针对_id进行查询</p>
+<p><code>SHARDING_FILTER</code> 通过mongos对分片数据进行查询</p>
+<p><code>COUNT</code> 利用db.coll.explain().count()之类进行count运算</p>
+<p><code>COUNTSCAN</code> count不使用用Index进行count时的stage返回</p>
+<p><code>COUNT_SCAN</code> count使用了Index进行count时的stage返回</p>
+<p><code>SUBPLA</code> 未使用到索引的$or查询的stage返回</p>
+<p><code>TEXT</code> 使用全文索引进行查询时候的stage返回</p>
+<p> &lt;完&gt;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/19/2018-11-19/" rel="next" title="并发策略 cas算法">
+                <i class="fa fa-chevron-left"></i> 并发策略 cas算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/23/2018-11-23-1/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="Ethan Hunt" />
+            
+              <p class="site-author-name" itemprop="name">Ethan Hunt</p>
+              <p class="site-description motion-element" itemprop="description">Make more time</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本操作命令"><span class="nav-number">1.</span> <span class="nav-text">基本操作命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引分类"><span class="nav-number">2.</span> <span class="nav-text">索引分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引属性（property）"><span class="nav-number">3.</span> <span class="nav-text">索引属性（property）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引的基本策略"><span class="nav-number">4.</span> <span class="nav-text">索引的基本策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化建议"><span class="nav-number">5.</span> <span class="nav-text">优化建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询计划explain"><span class="nav-number">6.</span> <span class="nav-text">查询计划explain</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#stage常见类型"><span class="nav-number">6.1.</span> <span class="nav-text">stage常见类型</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ethan Hunt</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

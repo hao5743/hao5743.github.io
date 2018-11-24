@@ -242,6 +242,846 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/2018-11-23-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/23/2018-11-23-1/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T22:57:51+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="常见的树结构"><a href="#常见的树结构" class="headerlink" title="常见的树结构"></a>常见的树结构</h1><p>B-/+</p>
+<p>平衡二叉树</p>
+<p>红黑树</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/2018-11-23-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/23/2018-11-23-2/" itemprop="url">嘿嘿，mongoDB也有索引</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T00:00:00+08:00">
+                2018-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>mongo支持多种index类型，其最大的作用就是提高查询性能，可以避免对collection的逐文档扫描。index保存指定的或者多个field值，并且按照field值的顺序排序，索引条目的有序性使得“相等比较eq”、range查询等性能很高。<br>mongo内部的索引结构采用<strong>B-/+</strong>树来实现，单次对索引的查询最多访问h（层高）个节点，时间复杂度为O(logN)。</p>
+</blockquote>
+<h3 id="基本操作命令"><a href="#基本操作命令" class="headerlink" title="基本操作命令"></a>基本操作命令</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建索引</span></span><br><span class="line">db.collec.createIndex(&#123;<span class="attr">age</span>:<span class="number">1</span>,<span class="attr">name</span>:<span class="number">1</span>&#125;,&#123;<span class="attr">unique</span>:<span class="literal">true</span>,<span class="attr">sparse</span>:<span class="literal">true</span>,<span class="attr">background</span>:<span class="literal">true</span>,<span class="attr">expireAfterSeconds</span>:<span class="number">10</span>,<span class="attr">name</span>:<span class="string">"index_name"</span>&#125;)</span><br><span class="line"></span><br><span class="line">db.collection.getIndexes()</span><br><span class="line">db.collection.dropIndex(<span class="string">"indexName"</span>)</span><br><span class="line">db.collection.dropIndexes() <span class="comment">//删除所有</span></span><br><span class="line">db.col.totalIndexSize()     <span class="comment">// 查看索引大小 (bytes)</span></span><br><span class="line">db.col.totalSize()          <span class="comment">//集合大小 (bytes)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//unique sparse background expireAfterSeconds参数下面会有说明</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意在 3.0.0 版本前创建索引方法为 db.collection.ensureIndex()，之后的版本使用了 db.collection.createIndex() 方法，ensureIndex() 还能用，但只是 createIndex() 的别名。</p>
+</blockquote>
+<ul>
+<li>mongo提供两种建所以的方式<code>foreground</code>和<code>background</code>。foreground（默认）即前台操作，它会阻塞用户对数据的读写操作直到index构建完毕，即任何需要获取read、write操作都会阻塞；background即后台模式，不阻塞数据读写操作，独立的后台线程异步构建索引，此时仍然允许对数据的读写操作；其中background比foreground更加耗时。</li>
+</ul>
+<h3 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h3><p>下面我们要说的mongo最常用的几种索引类型,有<code>_id索引</code> <code>单字段索引</code> <code>组合索引</code> <code>复合索引</code> <code>地理空间索引</code> <code>文本索引</code> <code>哈希索引</code>等</p>
+<ol>
+<li><strong>_id索引</strong>：每个document都必须有_id字段，如果不指定，mongodb会默认生成；_id字段为内置的“唯一索引”，整个collection中不会存在_id值相同的document，这是mongodb的内部机制，开发者无法改变，也不需要开发者显式的为_id建立索引，当然也无法remove它。通过_id字段来查询document是性能极高的，所以如果尽可能的通过_id查询或者update数据。</li>
+<li><strong>单字段索引</strong> 也叫普通索引，对单个字段建立的索引</li>
+<li><strong>组合索引Compound</strong> 对多个field建立的索引。比如{user:1,age:-1}，索引条目按user正序排列，相同user索引条目再根据age值倒序排列。需要特别注意的是<code>索引的field顺序很重要!</code>。需要结合具体的查询和排序去分析，下面会提到建组合索引的注意事项</li>
+<li><strong>复合键索引（Multikey）</strong> 对document中的数组字段创建索引，就是复合键索引</li>
+<li><strong>地理空间索引（Geospatial）</strong> 为了支持高效的地址位置数据查询，mongodb提供了2种特殊的索引，2d索引（坐标平面）和2sphere索引（经纬球面）</li>
+<li><strong>文本索引（Text）</strong> 支持对collection中的string内容进行搜索操作，即text search；mongodb内置支持几种语言的分词，不过这种文本搜索的能力与专业的搜索引擎相比，还相当简陋。不支持中文~</li>
+<li><strong>哈希索引（Hash）</strong> 主要使用场景为“hash sharding”，即在“Sharding”架构模式中，对sharding key使用hash索引，以便数据的sharding和路由操作。hash索引只支持一个字段，它不能和其他字段组合，同时也不能是“unique”，使用<code>db.&lt;collection&gt;.createIndex({a : &quot;hashed&quot;})</code>来创建hash索引。</li>
+</ol>
+<h3 id="索引属性（property）"><a href="#索引属性（property）" class="headerlink" title="索引属性（property）"></a>索引属性（property）</h3><ol>
+<li><p><strong>唯一索引（Unique）</strong>：即索引字段的值是唯一的，全局无重复；如果尝试存入重复的值（write），操作将会被拒绝。可以通过db.<collection>.createIndex({ “userid” : 1}, {unique : true})创建唯一索引。我们可以对一个组合索引使用unique属性，表示它们的组合值不能重复，默认情况下unique为false。如果插入的document不包含某个索引字段，那么此字段的值保存为null，mongodb也会用unique约束这样的文档，即不包含某个字段的文档只能保存一条。比如唯一索引{“x” : 1, “y” : 1}，只能插入一条{“x” : “content”}（等同于{“x” : “content”,”y” : null}）。对于hash索引而言，则不能使用unique属性。unique通常与sparse一起使用。</collection></p>
+</li>
+<li><p><strong>稀疏索引（Sparse）</strong> ：只有当document中包含索引字段时，才会为此文档建立索引，但是这些文档仍然能够保存成功·；因为mongodb的document结构是模式自由的，所以document中不包含某个Field也是“正常的”；稀疏索引将会忽略那些document中不包含索引字段的记录，因此稀疏索引并没有包含collection中的所有文档；非sparse索引，将会为那些缺失的字段存储为null，因此索引包含了全部文档。  我们可以将“Sparse”和“Unique”选项同时约束一个index，以避免包含重复值的document，同时还忽略那些不包含索引字段的document（不建立索引，但是文档仍然会被保存）。当sparse与unique同时约束索引时，比如createIndex({“score” : 1}, {sparse : true, unique: true})，如果文档中不包含score字段，那么文档都可以保存成功，但是不会对这些文档建立索引，但是对于包含了score字段的文档，那么score值则不能重复。</p>
+</li>
+<li><strong>TTL索引</strong> 对“date”、“timestamp”类型的字段建立TTL索引，并在索引选项中指定索引保存的时长，那么mongodb将会在一定时间之后自动移除那些“过期”的索引和documents。通过TTL索引，可以实现一个清洗数据的“定时任务”。TTL索引只能支持一个字段（同hash索引，不能对组合索引使用此特性），不能和其他字段组合，即一个索引中只能有一个字段；比如document中created字段类型为date，表示文档插入的时间，我们希望文档在3600秒后过期删除，那么可以通过db.<collection>.createIndex({ “created” : 1},{expireAfterSeconds : 3600})创建索引，其中“expireAfterSeconds”为TTL索引的必须选项。如果document中不包含索引字段，文档将不会过期。mongodb将会创建一个后台线程，读取index值并删除那些过期的document；在createIndex时，mongodb也会在构建索引的同时检测过期，删除那些过期的数据。TTL索引和众多的缓存服务一样，不能保证数据过期则立即被删除（对用户操作不可见），mongodb扫描数据（从头到尾）是有时间间隔的（60秒），因此过期数据的删除可能存在延迟问题。对于“replica Set”，这个后台线程只在primary上运行，primary上的删除操作同步给secondaries。mongodb的存储引擎的特性决定，这种大量的随机删除会导致严重的存储碎片，索引如果collection中存在TTL索引时，将会开启“usePowerOf2Sizes”选项而且不能修改，“usePowerOf2Sizes”可以降低存储碎片的可能。<code>collection.createIndex(new Document(&quot;created&quot;,1),new IndexOptions().expireAfter(15L,TimeUnit.MILLISECONDS));</code></collection></li>
+</ol>
+<h3 id="索引的基本策略"><a href="#索引的基本策略" class="headerlink" title="索引的基本策略"></a>索引的基本策略</h3><p>虽然索引可以提高query的查询效率，当然也会增加write时带来的开支，增加内存、磁盘的使用。建索引时要根据业务的<strong>查询和排序条件</strong>来合理选择。</p>
+<blockquote>
+<p>索引的选择性。是判定一个索引筛选数据的能力，越高效的索引其选择性越高，即可以排除掉更多的不匹配数据，更少的数据遍历。比如文档中有一个字段status，这个status有2个合法值“new”、“processed”，如果在status字段上建立索引，那么此索引的选择性就比较低，因为它只能筛选掉一半数据，这也意味着即使索引生效，也需要遍历整个collection中一半的数据才能得到最终结果，事实上对status建立索引是没有必要的。</p>
+</blockquote>
+<ul>
+<li><strong>索引支持匹配最左前缀</strong>，比如索引{x: 1, y : 1}能支持 {x : 1} 和 {x : 1, y : 1}两个key的查询。</li>
+<li><strong>尽量避免大量数据内存排序</strong> 设计索引时尽量能直接获取到排好序的结果，性能最好；如果不能，mongo可以将数据进行内存中的排序，在没有使用索引情况下排序操作所占用内存不得超过32M，否则将中断排序。</li>
+<li><strong>多字段索引顺序很重要</strong> sort操作使用索引时必须要和index顺序一致，比如索引{a : 1, b : 1}，将不支持sort( { b : 1, a : 1})；且排序的方向必须和index声明的保持一致，比如上述索引支持{a : 1, b : 1} 和 { a : -1, b : -1}，但无法支持{a : 1, b : -1} 和 { a : -1, b : 1}。</li>
+<li><p>查询和排序字段结合的分析</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> 如果参与排序的字段（和顺序）和索引字段一样或者是索引的前缀字段，且查询条件中也包含索引的前缀字段，那么mongodb则可以使用索引进行排序，这是一种比较高效的做法。比如索引&#123; a : 1, b : 1, c : 1&#125;，如下查询均可以利用索引排序：</span><br><span class="line">db.data.find().sort( &#123; a: 1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: -1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: 1, b: 1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: -1, b: -1 &#125; )</span><br><span class="line">db.data.find().sort( &#123; a: 1, b: 1, c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; a: &#123; $gt: 4 &#125; &#125; ).sort( &#123; a: 1, b: 1 &#125; )</span><br><span class="line">    如果参与排序的字段不是索引的前缀字段，具体是否能够利用索引排序，就要求查询条件的字段需要为索引的最左前缀字段，同时查询条件的字段和sort字段的也应该构成组合索引的左前缀，比如索引 &#123; a : 1, b : 1, c: 1&#125;，那么此索引将支持如下几种排序方式：</span><br><span class="line">db.data.find( &#123; a: 5 &#125; ).sort( &#123; b: 1, c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; b: 3, a: 4 &#125; ).sort( &#123; c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; a: 5, b: &#123; $lt: 3&#125; &#125; ).sort( &#123; b: 1 &#125; )</span><br><span class="line">    如果查询字段和sort字段不能构成组合索引的左前缀，那么将不能高效的利用索引排序，或者有可能不会使用此索引，比如： </span><br><span class="line">db.data.find( &#123; a: &#123; $gt: 2 &#125; &#125; ).sort( &#123; c: 1 &#125; )</span><br><span class="line">db.data.find( &#123; c: 5 &#125; ).sort( &#123; c: 1 &#125; )</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h3><p>1.索引覆盖查询<br>mongoDB可以做索引覆盖查询，这种查询不会访问指针指向的文档，而是直接用索引的数据返回结果。只有当要查询返回的字段，都在索引中的时候。</p>
+<p>2.常见慢查询：<br>1).不等于和不包含查询一般不使用索引 $ne 或者$nin<br>2).通配符在前面的模糊查询， like ‘%xxx’<br>3).无索引的count 查询 和 排序（复合索引顺序不匹配）<br>4).多个范围查询（范围列可以用到索引（必须是最左前缀），但是范围列后面的列无法用到索引）<br>5).skip跳过过多的行数<br>6).$where操作符</p>
+<p>3.<strong>对现有的数据大表建立索引的时候，采用后台运行方式</strong></p>
+<p><code>db.test.ensureIndex({&quot;username&quot;:1,&quot;age&quot;:-1},{&quot;background&quot;:true}) #默认情况下background是false。</code></p>
+<h3 id="查询计划explain"><a href="#查询计划explain" class="headerlink" title="查询计划explain"></a>查询计划explain</h3><p><code>db.person.find( {age： 18} ).explain()</code>可以查看mongo的查询计划，包括索引的使用、文档扫描的多少、查询步骤等信息</p>
+<p>一个例子</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mongo-9552:PRIMARY&amp;gt; db.person.find(&#123;age: 18&#125;).explain()</span><br><span class="line">&#123;</span><br><span class="line">    &quot;queryPlanner&quot; : &#123;</span><br><span class="line">        &quot;plannerVersion&quot; : 1,</span><br><span class="line">        &quot;namespace&quot; : &quot;test.person&quot;,</span><br><span class="line">        &quot;indexFilterSet&quot; : false,</span><br><span class="line">        &quot;parsedQuery&quot; : &#123;</span><br><span class="line">            &quot;age&quot; : &#123;</span><br><span class="line">                &quot;$eq&quot; : 18</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;winningPlan&quot; : &#123;</span><br><span class="line">            &quot;stage&quot; : &quot;FETCH&quot;,</span><br><span class="line">            &quot;inputStage&quot; : &#123;</span><br><span class="line">                &quot;stage&quot; : &quot;IXSCAN&quot;,</span><br><span class="line">                &quot;keyPattern&quot; : &#123;</span><br><span class="line">                    &quot;age&quot; : 1</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;indexName&quot; : &quot;age_1&quot;,</span><br><span class="line">                &quot;isMultiKey&quot; : false,</span><br><span class="line">                &quot;isUnique&quot; : false,</span><br><span class="line">                &quot;isSparse&quot; : false,</span><br><span class="line">                &quot;isPartial&quot; : false,</span><br><span class="line">                &quot;indexVersion&quot; : 1,</span><br><span class="line">                &quot;direction&quot; : &quot;forward&quot;,</span><br><span class="line">                &quot;indexBounds&quot; : &#123;</span><br><span class="line">                    &quot;age&quot; : [</span><br><span class="line">                        &quot;[18.0, 18.0]&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;rejectedPlans&quot; : [ ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;serverInfo&quot; : &#123;</span><br><span class="line">        &quot;host&quot; : &quot;localhost&quot;,</span><br><span class="line">        &quot;port&quot; : 9552,</span><br><span class="line">        &quot;version&quot; : &quot;3.2.3&quot;,</span><br><span class="line">        &quot;gitVersion&quot; : &quot;b326ba837cf6f49d65c2f85e1b70f6f31ece7937&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;ok&quot; : 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="stage常见类型"><a href="#stage常见类型" class="headerlink" title="stage常见类型"></a>stage常见类型</h4><p>如<code>explain.queryPlanner.winningPlan.stage</code>和<code>explain.queryPlanner.winningPlan.inputStage</code>等。<br>文档中仅有如下几类介绍</p>
+<p><code>COLLSCAN</code> 全表扫描</p>
+<p><code>IXSCAN</code> 索引扫描</p>
+<p><code>FETCH</code> 根据索引去检索指定document</p>
+<p><code>SHARD_MERGE</code> 将各个分片返回数据进行merge</p>
+<p>但是根据源码中的信息，个人还总结了文档中没有的如下几类(常用如下，由于是通过源码查找，可能有所遗漏)</p>
+<p><code>SORT</code> 表明在内存中进行了排序（与老版本的scanAndOrder:true一致）</p>
+<p><code>LIMIT</code> 使用limit限制返回数</p>
+<p><code>SKIP</code> 使用skip进行跳过</p>
+<p><code>IDHACK</code> 针对_id进行查询</p>
+<p><code>SHARDING_FILTER</code> 通过mongos对分片数据进行查询</p>
+<p><code>COUNT</code> 利用db.coll.explain().count()之类进行count运算</p>
+<p><code>COUNTSCAN</code> count不使用用Index进行count时的stage返回</p>
+<p><code>COUNT_SCAN</code> count使用了Index进行count时的stage返回</p>
+<p><code>SUBPLA</code> 未使用到索引的$or查询的stage返回</p>
+<p><code>TEXT</code> 使用全文索引进行查询时候的stage返回</p>
+<p> &lt;完&gt;</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/2018-11-19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/19/2018-11-19/" itemprop="url">并发策略 cas算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-19T00:00:00+08:00">
+                2018-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="并发策略-CAS算法"><a href="#并发策略-CAS算法" class="headerlink" title="并发策略-CAS算法"></a>并发策略-CAS算法</h2><p>　　对于并发控制而言，我们平时用的<strong>锁（synchronized，Lock）</strong>是一种悲观的策略。它总是假设每一次临界区操作会产生冲突，因此，必须对每次操作都小心翼翼。如果多个线程同时访问临界区资源，就宁可牺牲性能让线程进行等待，所以锁会阻塞线程执行。</p>
+<p>　　与之相对的有一种乐观的策略，它会假设对资源的访问是没有冲突的。既然没有冲突也就无需等待了，所有的线程都在不停顿的状态下持续执行。那如果遇到问题了无锁的策略使用一种叫做比较<strong>交换（CAS Compare And Swap）来鉴别线程冲突，一旦检测到冲突产生，就重试当前操作直到没有冲突。CAS算法是非阻塞的，它对死锁问题天生免疫，而且它比基于锁的方式拥有更优越的性能</strong>。</p>
+<p>　　<strong>CAS算法的过程是这样：它包含三个参数 CAS（V,E,N）。V表示要更新的变量，E表示预期的值，N表示新值。仅当V值等于E值时，才会将V的值设置成N，否则什么都不做。最后CAS返回当前V的值</strong>。CAS算法需要你额外给出一个期望值，也就是你认为现在变量应该是什么样子，如果变量不是你想象的那样，那说明已经被别人修改过。你就重新读取，再次尝试修改即可。</p>
+<p>　　JDK并发包有一个atomic包，里面实现了一些直接使用CAS操作的线程安全的类型。其中最常用的一个类应该就是AtomicInteger。我们以此为例来研究一下没有锁的情况下如何做到线程安全。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> value;</span><br><span class="line"><span class="comment">//这是AtomicInteger类的核心字段，代表当前实际取值，借助volatile保证线程间数据的可见性。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取内部数据的方法：</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//我们关注一下incrementAndGet()的内部实现　　</span></span><br><span class="line"><span class="number">1</span>  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">incrementAndGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="number">2</span>         <span class="keyword">for</span> (;;) &#123;</span><br><span class="line"><span class="number">3</span>             <span class="keyword">int</span> current = get();</span><br><span class="line"><span class="number">4</span>             <span class="keyword">int</span> next = current + <span class="number">1</span>;</span><br><span class="line"><span class="number">5</span>             <span class="keyword">if</span> (compareAndSet(current, next))</span><br><span class="line"><span class="number">6</span>                 <span class="keyword">return</span> next;</span><br><span class="line"><span class="number">7</span>         &#125;</span><br><span class="line"><span class="number">8</span>     &#125;</span><br></pre></td></tr></table></figure>
+<p>　　代码第二行使用了一个死循环，原因是：CAS的操作未必都是成功的，因此对于不成功的情况，我们就需要进行不断的尝试。第三行取得当前值，接着+1得到新值next。这里我们使用CAS必需的两个参数：期望值以及新值。使用compareAndSet()将新值next写入。成功的条件是在写入的时刻，当前的值应该要等于刚刚取到的current。如果不是这样则说明AtomicInteger的值在第3行到第5行之间被其他线程修改过了。当前看到的状态是一个过期的状态，因此返回失败，需要进行下一次重试，知道成功为止。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">compareAndSet</span><span class="params">(<span class="keyword">int</span> expect, <span class="keyword">int</span> update)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> unsafe.compareAndSwapInt(<span class="keyword">this</span>, valueOffset, expect, update);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//整体的过程就是这样子的，利用CPU的CAS指令，同时借助JNI来完成Java的非阻塞算法。其它原子操作都是利用类似的特性完成的。大概的逻辑应该是这样：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span> == expect) &#123;</span><br><span class="line">    <span class="keyword">this</span> = update</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　CAS虽然能高效的解决原子问题，但是CAS也会带来1个经典问题即<strong>ABA问题</strong>：</p>
+<p>　　因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。</p>
+<p>　　ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</p>
+<p>　　从Java1.5开始JDK的atomic包里提供了一个类AtomicStampedReference来解决ABA问题。这个类在内部不仅维护了对象值，还维护了一个时间戳（可以是任意的一个整数来表示状态值）。当设置对象值时，对象值和状态值都必须满足期望值才会写入成功。因此即使对象被反复读写，写会原值，只要状态值发生变化，就能防止不恰当的写入。　　</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> expectedReference 期望值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> newReference 写入新值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> expectedStamp 期望状态值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> newStamp 新状态值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> true if successful</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">compareAndSet</span><span class="params">(V   expectedReference,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 V   newReference,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">int</span> expectedStamp,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">int</span> newStamp)</span> </span>&#123;</span><br><span class="line">Pair&lt;V&gt; current = pair;</span><br><span class="line"><span class="keyword">return</span></span><br><span class="line">  expectedReference == current.reference &amp;&amp;</span><br><span class="line">  expectedStamp == current.stamp &amp;&amp;</span><br><span class="line">  ((newReference == current.reference &amp;&amp;</span><br><span class="line">    newStamp == current.stamp) ||</span><br><span class="line">   casPair(current, Pair.of(newReference, newStamp)));</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>— 不管多忙，每天给自己预留至少半小时的学习时间，拒绝做代码垃圾的搬运工！</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/09/2018-10-10/" itemprop="url">使用forever让node.js持久运行</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这里我们讨论几种使node应用在后台运行的几种方式，简单的是<code>linux后台执行</code>，另外两种是使用进程管理工具<code>forever</code> <code>pm2</code>。</p>
+<h2 id="linux-nohup-amp-命令"><a href="#linux-nohup-amp-命令" class="headerlink" title="linux nohup &amp; 命令"></a>linux nohup &amp; 命令</h2><p>使用<code>&amp;</code>符号后台执行，并利用<code>nohup</code>命令实现进程禁止挂起</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nohup node app.js &amp;</span><br></pre></td></tr></table></figure>
+<h2 id="forever工具"><a href="#forever工具" class="headerlink" title="forever工具"></a>forever工具</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install forever -g   <span class="comment">#安装</span></span><br><span class="line">forever start app.js     <span class="comment">#启动应用</span></span><br><span class="line">forever stop app.js      <span class="comment">#关闭应用</span></span><br><span class="line">forever restartall       <span class="comment">#重启所有应用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#输出日志和错误</span></span><br><span class="line">forever start -l forever.log -o out.log -e err.log app.js   </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定forever信息输出文件，当然，默认它会放到~/.forever/forever.log</span></span><br><span class="line">forever start -l forever.log app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定app.js中的日志信息和错误日志输出文件，  </span></span><br><span class="line"><span class="comment"># -o 就是console.log输出的信息，-e 就是console.error输出的信息</span></span><br><span class="line">forever start -o out.log -e err.log app.js </span><br><span class="line"></span><br><span class="line"><span class="comment"># 追加日志，forever默认是不能覆盖上次的启动日志，  </span></span><br><span class="line"><span class="comment"># 所以如果第二次启动不加-a，则会不让运行  </span></span><br><span class="line">forever start -l forever.log -a app.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 监听当前文件夹下的所有文件改动（不太建议这样）  </span></span><br><span class="line">forever start -w app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有运行的服务 </span></span><br><span class="line">forever list  </span><br><span class="line"></span><br><span class="line"><span class="comment">######停止操作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止所有运行的node App  </span></span><br><span class="line">forever stopall  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 停止其中一个node App  </span></span><br><span class="line">forever stop app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 当然还可以这样  </span></span><br><span class="line"><span class="comment"># forever list 找到对应的id，然后：  </span></span><br><span class="line">forever stop [id]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发环境下  </span></span><br><span class="line">NODE_ENV=development forever start -l forever.log -e err.log -a app.js  </span><br><span class="line"><span class="comment"># 线上环境下  </span></span><br><span class="line">NODE_ENV=production forever start -l ~/.forever/forever.log -e ~/.forever/err.log -w -a app.js</span><br><span class="line"><span class="comment">#上面加上NODE_ENV为了让app.js辨认当前是什么环境用的</span></span><br><span class="line">The End</span><br></pre></td></tr></table></figure>
+<h2 id="PM2"><a href="#PM2" class="headerlink" title="PM2"></a>PM2</h2><p>PM2是一个内置的负载平衡器Node.js应用生产过程管理。它允许您永久地保存应用程序，并在不停机的情况下重新加载它们</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ npm install -g pm2</span><br><span class="line"><span class="comment"># 启动 --name tank是给这个进程取个名字</span></span><br><span class="line">$ pm2 start index.js --name tankName</span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用命令</span></span><br><span class="line"><span class="variable">$pm2</span> stop  &lt;app_name|id|all&gt;  停止</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> delete &lt;app_name|id|all&gt; 删除</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> restart &lt;app_name|id|all&gt; 重启</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> reload &lt;app_name|id|all&gt; 重载</span><br></pre></td></tr></table></figure>
+<p>跟多命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">$ pm2 start app.js -i 4 #后台运行pm2，启动4个app.js </span><br><span class="line">                                # 也可以把&apos;max&apos; 参数传递给 start</span><br><span class="line">                                # 正确的进程数目依赖于Cpu的核心数目</span><br><span class="line">$ pm2 start app.js --name my-api # 命名进程</span><br><span class="line">$ pm2 list               # 显示所有进程状态</span><br><span class="line">$ pm2 monit              # 监视所有进程</span><br><span class="line">$ pm2 logs               #  显示所有进程日志</span><br><span class="line">$ pm2 stop all           # 停止所有进程</span><br><span class="line">$ pm2 restart all        # 重启所有进程</span><br><span class="line">$ pm2 reload all         # 0秒停机重载进程 (用于 NETWORKED 进程)</span><br><span class="line">$ pm2 stop 0             # 停止指定的进程</span><br><span class="line">$ pm2 restart 0          # 重启指定的进程</span><br><span class="line">$ pm2 startup            # 产生 init 脚本 保持进程活着</span><br><span class="line">$ pm2 web                # 运行健壮的 computer API endpoint (http://localhost:9615)</span><br><span class="line">$ pm2 delete 0           # 杀死指定的进程</span><br><span class="line">$ pm2 delete all         # 杀死全部进程</span><br><span class="line"></span><br><span class="line">运行进程的不同方式：</span><br><span class="line">$ pm2 start app.js -i max  # 根据有效CPU数目启动最大进程数目</span><br><span class="line">$ pm2 start app.js -i 3      # 启动3个进程</span><br><span class="line">$ pm2 start app.js -x        #用fork模式启动 app.js 而不是使用 cluster</span><br><span class="line">$ pm2 start app.js -x -- -a 23   # 用fork模式启动 app.js 并且传递参数 (-a 23)</span><br><span class="line">$ pm2 start app.js --name serverone  # 启动一个进程并把它命名为 serverone</span><br><span class="line">$ pm2 stop serverone       # 停止 serverone 进程</span><br><span class="line">$ pm2 start app.json        # 启动进程, 在 app.json里设置选项</span><br><span class="line">$ pm2 start app.js -i max -- -a 23                   #在--之后给 app.js 传递参数</span><br><span class="line">$ pm2 start app.js -i max -e err.log -o out.log  # 启动 并 生成一个配置文件</span><br><span class="line">你也可以执行用其他语言编写的app  ( fork 模式):</span><br><span class="line">$ pm2 start my-bash-script.sh    -x --interpreter bash</span><br><span class="line">$ pm2 start my-python-script.py -x --interpreter python</span><br><span class="line"></span><br><span class="line">0秒停机重载:</span><br><span class="line">这项功能允许你重新载入代码而不用失去请求连接。</span><br><span class="line">注意：</span><br><span class="line">仅能用于web应用</span><br><span class="line">运行于Node 0.11.x版本</span><br><span class="line">运行于 cluster 模式（默认模式）</span><br><span class="line">$ pm2 reload all</span><br><span class="line"></span><br><span class="line">CoffeeScript:</span><br><span class="line">$ pm2 start my_app.coffee  #这就是全部</span><br><span class="line"></span><br><span class="line">PM2准备好为产品级服务了吗？</span><br><span class="line">只需在你的服务器上测试</span><br><span class="line">$ git clone https://github.com/Unitech/pm2.git</span><br><span class="line">$ cd pm2</span><br><span class="line">$ npm install  # 或者 npm install --dev ，如果devDependencies 没有安装</span><br><span class="line">$ npm test</span><br></pre></td></tr></table></figure>
+<p>错误日志位置：</p>
+<p>error log path  /root/.pm2/pids/anaweb-13.pid </p>
+<p>错误日志，出现启动 error找她就没错</p>
+<p>out log path    /root/.pm2/logs/anaweb-out-13.log </p>
+<p>参考1: <a href="https://cnodejs.org/topic/5021c2cff767cc9a51e684e3" target="_blank" rel="noopener">https://cnodejs.org/topic/5021c2cff767cc9a51e684e3</a><br>参考2: <a href="http://tcrct.iteye.com/blog/2043644" target="_blank" rel="noopener">http://tcrct.iteye.com/blog/2043644</a><br>forever github: <a href="https://github.com/foreverjs/forever" target="_blank" rel="noopener">https://github.com/foreverjs/forever</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-09/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/09/2018-10-09/" itemprop="url">mongo中使用$type查询字段的BSON类型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p><code>$type</code>操作符用来查询某个字段是否是的指定<code>BSON</code>类型。当文档的数据类型是高度的非结构化时，这非常的有用<br><code>{ field: { $type: &lt;BSON type&gt; } }</code>，你可以通过数组或别名来指定BSON的type<br><code>{ field: { $type: [ &lt;BSON type1&gt; , &lt;BSON type2&gt;, ... ] } }</code>，这将匹配数组中BSON类型的任意一个</p>
+</blockquote>
+<h2 id="BSON-type总结（version-3-2）"><a href="#BSON-type总结（version-3-2）" class="headerlink" title="BSON type总结（version 3.2）"></a>BSON type总结（version 3.2）</h2><p>3.2版本可以使用别名或数字来指定<code>BSON</code>类型，在3.2之前的版本只能使用数字来匹配。</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Number</th>
+<th>Alias</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Double</td>
+<td>1</td>
+<td>“double”</td>
+<td></td>
+</tr>
+<tr>
+<td>String</td>
+<td>2</td>
+<td>“string”</td>
+<td></td>
+</tr>
+<tr>
+<td>Object</td>
+<td>3</td>
+<td>“object”</td>
+<td></td>
+</tr>
+<tr>
+<td>Array</td>
+<td>4</td>
+<td>“array”</td>
+<td></td>
+</tr>
+<tr>
+<td>Binary data</td>
+<td>5</td>
+<td>“binData”</td>
+<td></td>
+</tr>
+<tr>
+<td>Undefined</td>
+<td>6</td>
+<td>“undefined”</td>
+<td>废弃</td>
+</tr>
+<tr>
+<td>ObjectId</td>
+<td>7</td>
+<td>“objectId”</td>
+<td></td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>8</td>
+<td>“bool”</td>
+<td></td>
+</tr>
+<tr>
+<td>Date</td>
+<td>9</td>
+<td>“date”</td>
+<td></td>
+</tr>
+<tr>
+<td>Null</td>
+<td>10</td>
+<td>“null”</td>
+<td></td>
+</tr>
+<tr>
+<td>RegularExpression</td>
+<td>11</td>
+<td>“regex”</td>
+<td></td>
+</tr>
+<tr>
+<td>DBPointer</td>
+<td>12</td>
+<td>“dbPointer”</td>
+<td></td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>13</td>
+<td>“javascript”</td>
+<td></td>
+</tr>
+<tr>
+<td>Sysmbol</td>
+<td>14</td>
+<td>“symbol”</td>
+<td>废弃</td>
+</tr>
+<tr>
+<td>JavaScript(with scope)</td>
+<td>15</td>
+<td>“javascriptWithScope”</td>
+<td></td>
+</tr>
+<tr>
+<td>32-bit integer</td>
+<td>16</td>
+<td>“int”</td>
+<td></td>
+</tr>
+<tr>
+<td>Timestamp</td>
+<td>17</td>
+<td>“timestamp”</td>
+<td></td>
+</tr>
+<tr>
+<td>64-bit integer</td>
+<td>18</td>
+<td>“long”</td>
+<td></td>
+</tr>
+<tr>
+<td>Decimal128</td>
+<td>19</td>
+<td>“decimal”</td>
+<td>3.4版本新增</td>
+</tr>
+<tr>
+<td>Min key</td>
+<td>-1</td>
+<td>“minKey”</td>
+<td></td>
+</tr>
+<tr>
+<td>Max Key</td>
+<td>127</td>
+<td>“maxKey”</td>
+</tr>
+</tbody>
+</table>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>源数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">      &#123; &quot;_id&quot; : 1, address : &quot;2030 Martian Way&quot;, zipCode : &quot;90698345&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 2, address: &quot;156 Lunar Place&quot;, zipCode : 43339374 &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 3, address : &quot;2324 Pluto Place&quot;, zipCode: NumberLong(3921412) &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 4, address : &quot;55 Saturn Ring&quot; , zipCode : NumberInt(88602117) &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>查询zipCode字段是string的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : 2 &#125; &#125; );</span><br><span class="line">//等价于</span><br><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : &quot;string&quot; &#125; &#125; );</span><br><span class="line"></span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 1, &quot;address&quot; : &quot;2030 Martian Way&quot;, &quot;zipCode&quot; : &quot;90698345&quot; &#125;</span><br></pre></td></tr></table></figure>
+<p>zipCode的BSON类型是double的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : 1 &#125; &#125; )</span><br><span class="line">//等价于</span><br><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : &quot;double&quot; &#125; &#125; )</span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 2, &quot;address&quot; : &quot;156 Lunar Place&quot;, &quot;zip&quot; : 43339374 &#125;</span><br></pre></td></tr></table></figure>
+<p>使用<code>number</code>类型别名匹配BSON类型是<code>double``int</code>或<code>long</code>的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.addressBook.find( &#123; &quot;zipCode&quot; : &#123; $type : &quot;number&quot; &#125; &#125; )</span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 2, address : &quot;156 Lunar Place&quot;, zipCode : 43339374 &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 3, address : &quot;2324 Pluto Place&quot;, zipCode: NumberLong(3921412) &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 4, address : &quot;55 Saturn Ring&quot; , zipCode : 88602117 &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><p>源数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">      &#123; &quot;_id&quot; : 1, name : &quot;Alice King&quot; , classAverage : 87.333333333333333 &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 2, name : &quot;Bob Jenkins&quot;, classAverage : &quot;83.52&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 3, name : &quot;Cathy Hart&quot;, classAverage: &quot;94.06&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 4, name : &quot;Drew Williams&quot; , classAverage : 93 &#125;</span><br><span class="line">   ]</span><br></pre></td></tr></table></figure>
+<p>查询<code>classAverage</code>字段是BSON类型<code>string</code>或<code>double</code>的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.grades.find( &#123; &quot;classAverage&quot; : &#123; $type : [ 2 , 1 ] &#125; &#125; );</span><br><span class="line">//等价于</span><br><span class="line">db.grades.find( &#123; &quot;classAverage&quot; : &#123; $type : [ &quot;string&quot; , &quot;double&quot; ] &#125; &#125; );</span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 1, name : &quot;Alice King&quot; , classAverage : 87.333333333333333 &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 2, name : &quot;Bob Jenkins&quot;, classAverage : &quot;83.52&quot; &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 3, name : &quot;Cathy Hart&quot;, classAverage: &quot;94.06&quot; &#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/30/2018-08-30/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -634,127 +1474,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/22/2018-08-17/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/22/2018-08-17/" itemprop="url">Hello</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-22T00:00:00+08:00">
-                2018-08-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Hello"><a href="#Hello" class="headerlink" title="Hello"></a>Hello</h1><h2 id="ConcurrentLinkedDeque"><a href="#ConcurrentLinkedDeque" class="headerlink" title="ConcurrentLinkedDeque"></a>ConcurrentLinkedDeque</h2><p>Java7中引入的非阻塞并发列表</p>
-<h2 id="AtomicInteger"><a href="#AtomicInteger" class="headerlink" title="AtomicInteger"></a>AtomicInteger</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">//正常</span><br><span class="line">public class Sample1 &#123;</span><br><span class="line">    private static Integer count = 0;</span><br><span class="line">    synchronized public static void increment() &#123;</span><br><span class="line">        count++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//AtomicInteger</span><br><span class="line">public class Sample2 &#123;</span><br><span class="line">    private static AtomicInteger count = new AtomicInteger(0);</span><br><span class="line">    public static void increment() &#123;</span><br><span class="line">        count.getAndIncrement();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">以上两段代码，在使用Integer的时候，必须加上synchronized保证不会出现并发线程同时访问的情况，而在AtomicInteger中却不用加上synchronized，在这里AtomicInteger是提供原子操作的，下面就对这进行相应的介绍。</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/22/2018-08-12/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -895,7 +1614,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/22/2018-08-22/" itemprop="url">线程安全容器</a></h1>
+                <a class="post-title-link" href="/2018/08/22/2018-08-22/" itemprop="url">Java线程安全容器</a></h1>
         
 
         <div class="post-meta">
@@ -960,6 +1679,10 @@
 <p>  Map m = Collections.synchronizedMap(new HashMap());<br>      …<br>  Set s = m.keySet();  // Needn’t be in synchronized block<br>      …<br>  synchronized(m) {  // Synchronizing on m, not s!<br>      Iterator i = s.iterator(); // Must be in synchronized block<br>      while (i.hasNext())<br>          foo(i.next());<br>  }</p>
 <p>不遵从此建议将导致无法确定的行为。</p>
 <h4 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h4><h3 id="Set线程安全"><a href="#Set线程安全" class="headerlink" title="Set线程安全"></a>Set线程安全</h3><h4 id="Collections-synchronizedSet"><a href="#Collections-synchronizedSet" class="headerlink" title="Collections.synchronizedSet"></a>Collections.synchronizedSet</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">返回指定 set 支持的同步（线程安全的）set。为了保证按顺序访问，必须通过返回的 set 完成对 所有底层实现 set 的访问。</span><br><span class="line">在返回的 set 上进行迭代时，用户必须手工在返回的 set 上进行同步：</span><br><span class="line"></span><br><span class="line">  Set s = Collections.synchronizedSet(<span class="keyword">new</span> HashSet());</span><br><span class="line">      ...</span><br><span class="line">  <span class="keyword">synchronized</span>(s) &#123;</span><br><span class="line">      Iterator i = s.iterator(); <span class="comment">// Must be in the synchronized block</span></span><br><span class="line">      <span class="keyword">while</span> (i.hasNext())</span><br><span class="line">          foo(i.next());</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">不遵从此建议将导致无法确定的行为。</span><br></pre></td></tr></table></figure>
+<h3 id="ConcurrentLinkedDeque"><a href="#ConcurrentLinkedDeque" class="headerlink" title="ConcurrentLinkedDeque"></a>ConcurrentLinkedDeque</h3><p>Java7中引入的非阻塞并发列表<br>参考：<a href="https://blog.csdn.net/sprita1/article/details/58609070" target="_blank" rel="noopener">https://blog.csdn.net/sprita1/article/details/58609070</a></p>
+<h3 id="AtomicInteger"><a href="#AtomicInteger" class="headerlink" title="AtomicInteger"></a>AtomicInteger</h3><p>原子操作基本数据类型</p>
+<p>以上两段代码，在使用Integer的时候，必须加上synchronized保证不会出现并发线程同时访问的情况，而在AtomicInteger中却不用加上synchronized，在这里AtomicInteger是提供原子操作的，下面就对这进行相应的介绍。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//正常</span><br><span class="line">public class Sample1 &#123;</span><br><span class="line">    private static Integer count = 0;</span><br><span class="line">    synchronized public static void increment() &#123;</span><br><span class="line">        count++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//AtomicInteger</span><br><span class="line">public class Sample2 &#123;</span><br><span class="line">    private static AtomicInteger count = new AtomicInteger(0);</span><br><span class="line">    public static void increment() &#123;</span><br><span class="line">        count.getAndIncrement();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
           
         
@@ -1027,7 +1750,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/26/2018-07-26/" itemprop="url">未命名</a></h1>
+                <a class="post-title-link" href="/2018/07/26/2018-07-26/" itemprop="url">node退出进程时关闭mongo连接</a></h1>
         
 
         <div class="post-meta">
@@ -1079,7 +1802,7 @@
       
         
           
-            <h1 id="node退出进程时关闭mongo连接"><a href="#node退出进程时关闭mongo连接" class="headerlink" title="node退出进程时关闭mongo连接"></a>node退出进程时关闭mongo连接</h1><p>Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window</p>
+            <p>Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> mongoose = <span class="built_in">require</span>(<span class="string">'mongoose'</span>);</span><br><span class="line"><span class="keyword">var</span> gracefulShutdown;</span><br><span class="line"><span class="keyword">var</span> dbURI = <span class="string">'mongodb://localhost/mean-todo'</span>;</span><br><span class="line"><span class="keyword">if</span> (process.env.NODE_ENV === <span class="string">'production'</span>) &#123;</span><br><span class="line">    dbURI = process.env.MONGOLAB_URI;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mongoose.connect(dbURI);</span><br><span class="line"></span><br><span class="line"><span class="comment">// CONNECTION EVENTS</span></span><br><span class="line">mongoose.connection.on(<span class="string">'connected'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Mongoose connected to '</span> + dbURI);</span><br><span class="line">&#125;);</span><br><span class="line">mongoose.connection.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Mongoose connection error: '</span> + err);</span><br><span class="line">&#125;);</span><br><span class="line">mongoose.connection.on(<span class="string">'disconnected'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Mongoose disconnected'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// CAPTURE APP TERMINATION / RESTART EVENTS</span></span><br><span class="line"><span class="comment">// To be called when process is restarted or terminated</span></span><br><span class="line">gracefulShutdown = <span class="function"><span class="keyword">function</span>(<span class="params">msg, callback</span>) </span>&#123;</span><br><span class="line">    mongoose.connection.close(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Mongoose disconnected through '</span> + msg);</span><br><span class="line">        callback();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// For nodemon restarts</span></span><br><span class="line">process.once(<span class="string">'SIGUSR2'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    gracefulShutdown(<span class="string">'nodemon restart'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        process.kill(process.pid, <span class="string">'SIGUSR2'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// For app termination</span></span><br><span class="line">process.on(<span class="string">'SIGINT'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    gracefulShutdown(<span class="string">'app termination'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        process.exit(<span class="number">0</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// For Heroku app termination</span></span><br><span class="line">process.on(<span class="string">'SIGTERM'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    gracefulShutdown(<span class="string">'Heroku app termination'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        process.exit(<span class="number">0</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
           
@@ -1566,7 +2289,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/11/2018-07-11/" itemprop="url">node.js错误类型总结</a></h1>
+                <a class="post-title-link" href="/2018/07/11/2018-07-11/" itemprop="url">node.js错误类型</a></h1>
         
 
         <div class="post-meta">
@@ -4047,627 +4770,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/js面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/27/js面试题/" itemprop="url">函数闭包、IIFE、JS解释器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-27T09:53:44+08:00">
-                2017-02-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在掘金上看到了篇文章，里面讲了几个js代码片段，觉得很有意思，其中考察了关于<code>setTimeout</code>、<code>函数闭包</code>、<code>IIFE（立即执行函数表达式）</code>、<code>promise</code>、<code>js解释器</code>等概念的理解</p>
-<p>A：下面的程序输出啥？</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我：没有坑，别想多了。输出<code>0 1 2 3 4</code></p>
-<p>A：恩，那下面这个呢？</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;, <span class="number">1000</span>*i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我：<code>settimeout</code>时间到后，会在下一个tick中执行程序，所以程序打印的时候，i已经变成5了，输出<code>5 5 5 5 5</code>。</p>
-<p>A：不错，那我想输出的结果是<code>0 1 2 3 4</code>，应该怎么办呢？</p>
-<p>我：用闭包就解决了，如下</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;, <span class="number">1000</span>*i);</span><br><span class="line">    &#125;)(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>因为函数作用域内，保存着对于变量i的引用，故函数执行的时候仍能访问到当初的i。</p>
-<p>A：很好。那如果去掉参数i呢？</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;, <span class="number">1000</span>*i);</span><br><span class="line">    &#125;)(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我：这样的话，函数闭包内没有存储对i保持引用，所以输出结果又会变成<code>5 5 5 5 5</code></p>
-<p>A： 对。那我再给你改一下程序，你看看输出啥？</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//给setTimeout传递一个立即执行函数 </span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">     setTimeout((<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(i);</span><br><span class="line">     &#125;)(i), <span class="number">1000</span>*i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我：这里给<code>setTimeout</code>传递的是一个立即执行函数表达式，它会马上运行，执行结果是<code>undefined</code>，所以<code>setTimeout</code>输出0之后，应该会报错吧，因为参数传递不对，应该接受一个函数类型的参数。</p>
-<p>上面的代码差不多等于：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//其实等价于</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">     setTimeout(<span class="literal">undefined</span>, <span class="number">1000</span>*i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>A：恩！再看下面的这个程序输出什么？</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>);</span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> <span class="title">executor</span>(<span class="params">resolve</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span>( <span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">10000</span>;i++)&#123;</span><br><span class="line">        i == <span class="number">9999</span> &amp;&amp; resolve();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">3</span>);</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">4</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
-<p>我：思考半天…，应该输出<code>2 3 5 4 1</code>。这个题目是关于js解释器理解的。<code>setTimeout</code>中的函数会在下一个时钟周期运行，肯定比较靠后。<code>2，3</code>在立即执行函数中，所以他会立马打印。<code>4</code>在<code>then</code>中输出，它会放在当前周期的最后执行。最后<code>5</code>会立马打印。所以会这样<code>2 3 5 4 1</code>。</p>
-<p>疑问：关于setTimeout和promise.then执行先后的问题，上网找了一下原因，setTimeout属于<code>Macrotask</code>，而promise属于<code>Microtask</code>，<code>Microtask</code>在当前周期队列执行，<code>Macrotask</code>在下一周期执行。</p>
-<p>参考自：<a href="https://gold.xitu.io/entry/58b21e6c570c3500692805f1" target="_blank" rel="noopener">Excuse me？这个前端面试在搞事！</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/24/node版本管理 n和nvm说明/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/24/node版本管理 n和nvm说明/" itemprop="url">node版本管理 n和nvm说明</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-24T10:33:54+08:00">
-                2017-02-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>项目中我们有时需要使用不同版本 的node来调试或测试程序，最本的方法当然是手动下载不同的版本，并卸载之前的版本，这样可以达到目的，但是无疑是麻烦时间的，在node中有“node版本管理器”来实现类似的功能需要。这里介绍比较流行的两个，“<code>n</code>”和“<code>nvm</code>”.<br>先说说n。<br>n是node一个模块，可以用来管理和切换node版本，其作者是TJ Holowaychuk（出名的Express框架作者），使用非常之简单。<br>安装 方法：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm install -g n</span><br></pre></td></tr></table></figure>
-<p>常用命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$n</span> //查看已安装版本  </span><br><span class="line"><span class="variable">$n</span> latest  //安装最新版本并使用  </span><br><span class="line"><span class="variable">$n</span> latest -d   //下载最新版但不使用，-d参数表示为仅下载  </span><br><span class="line"><span class="variable">$n</span> stable  //安装最新稳定版本并使用  </span><br><span class="line"><span class="variable">$n</span> &lt;version&gt;  //安装某个版本并使用，如<span class="variable">$n</span> 6.2.2  </span><br><span class="line"><span class="variable">$n</span> rm &lt;version ...&gt; //删除某些版本  </span><br><span class="line"><span class="variable">$n</span> ls    //查看可用版本  </span><br><span class="line"><span class="variable">$n</span> --latest    //查看最新版本  </span><br><span class="line"><span class="variable">$n</span> --stable    //查看最新稳定版  </span><br><span class="line"><span class="variable">$n</span> -h    //查看帮助信息，更多命令在这里查看  </span><br><span class="line">[plain] view plain copy <span class="built_in">print</span>?在CODE上查看代码片派生到我的代码片</span><br><span class="line">$ n use 0.10.21 some.js   //&lt;span style=<span class="string">"font-family: Arial, Helvetica, sans-serif;"</span>&gt;以指定的版本来执行脚本&lt;/span&gt;</span><br></pre></td></tr></table></figure>
-<p>下面说说<code>nvm</code>。<br>问题来了，既然有这么简单好用的n，那么nvm为什么还会大肆流行呢？这个问题一会回答，先说说nvm。<br>nvm全称Node Version Manager，不同于 n，nvm 不是一个 npm package，而是一个独立软件包。这意味着我们需要单独使用它的安装逻辑：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget -qO- https://raw.github.com/creationix/nvm/v0.4.0/install.sh | sh </span><br><span class="line">``` </span><br><span class="line">独立的安装包，因此当你机器上没有安装node时仍可以使用它。</span><br><span class="line">常用命令：</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">$ nvm install 0.10    </span><br><span class="line">$ nvm use 0.10         //使用指定的版本   </span><br><span class="line">$ nvm ls               //查看当前已经安装的版本  </span><br><span class="line">.nvm  </span><br><span class="line">-&gt;  v0.10.24  </span><br><span class="line">$ nvm current         //查看正在使用的版本  </span><br><span class="line">v0.10.24  </span><br><span class="line">$ nvm run 0.10.24 myApp.js      //以指定版本执行脚本  </span><br><span class="line">$ rm -rf ~/.nvm     //卸载nvm</span><br></pre></td></tr></table></figure>
-<p>对比说明：<br>我们在使用 n 管理 node 版本前，首先需要一个 node 环境。我们或者用 Homebrew 来安装一个 node，或者从官网下载 pkg 来安装，总之我们得先自己装一个 node —— n 本身是没法给你装的。<br>然后我们可以使用 n 来安装不同版本的 node。<br>在安装的时候，n 会先将指定版本的 node 存储下来，然后将其复制到我们熟知的路径 /usr/local/bin，非常简单明了。当然由于 n 会操作到非用户目录，所以需要加 sudo 来执行命令。<br>两者区别:<br>安装简易度。nvm 安装起来显然是要麻烦不少；n 这种安装方式更符合 node 的惯性思维。见仁见智吧。<br>系统支持。注意， nvm 不支持 Windows。<br>对全局模块的管理。n 对全局模块毫无作为，因此有可能在切换了 node 版本后发生全局模块执行出错的问题；nvm 的全局模块存在于各自版本的沙箱中，切换版本后需要重新安装，不同版本间也不存在任何冲突。<br>关于 node 路径。n 是万年不变的 /usr/local/bin；nvm 需要手动指定路径。</p>
-<p>参考地址：<br><a href="http://taobaofed.org/blog/2015/11/17/nvm-or-n/" target="_blank" rel="noopener">http://taobaofed.org/blog/2015/11/17/nvm-or-n/</a>     管理 node 版本，选择 nvm 还是 n？<br><a href="http://it.taocms.org/03/3079.htm" target="_blank" rel="noopener">http://it.taocms.org/03/3079.htm</a>      利用n和nvm管理Node的版本</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/22/Angular笔记 - 属性型指令/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/22/Angular笔记 - 属性型指令/" itemprop="url">Angular笔记 - 属性型指令</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-22T16:52:47+08:00">
-                2017-02-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>属性型指令用于改变DOM元素的外观或行为。</p>
-<p>在Angular中有三种类型的指令：</p>
-<ol>
-<li>组件 — 拥有模板的指令</li>
-<li>属性型指令 — 改变元素外观或行为，例如内置的 <code>NgStyle</code> 指令可以同时修改元素的多个样式</li>
-<li>结构型指令 — 通过添加和移除dom元素改变视图结构，例如，<code>NgFor</code> 和 <code>NgIf</code>。</li>
-</ol>
-<h2 id="一个简单的属性型指令"><a href="#一个简单的属性型指令" class="headerlink" title="一个简单的属性型指令"></a>一个简单的属性型指令</h2><p>我们这里实现了一个简单的属性型指令，说一下几个重点的内容</p>
-<p>功能：当用户鼠标悬浮在元素上时，改变它的背景颜色</p>
-<p>代码：</p>
-<p>highlight.directive.ts</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Directive, ElementRef, HostListener, Input, Renderer &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="meta">@Directive</span>(&#123;</span><br><span class="line">  selector: <span class="string">'[myHighlight]'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HighlightDirective &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> el: ElementRef, <span class="keyword">private</span> renderer: Renderer</span>) &#123; &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseenter'</span>) onMouseEnter() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="string">'yellow'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseleave'</span>) onMouseLeave() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">private</span> highlight(color: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.renderer.setElementStyle(<span class="keyword">this</span>.el.nativeElement, <span class="string">'backgroundColor'</span>, color);  </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>a.html</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>My First Attribute Directive<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">myHighlight</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>说明：</p>
-<ul>
-<li><code>@Directive</code>装饰器需要一个 CSS 选择器，以便从模板中识别出关联到这个指令的 HTML，这里指令的选择器是<code>[myHighlight]</code>，Angular 将会在模板中找到所有带<code>myHighlight属性</code>的元素。</li>
-<li>需要把 Angular 的<code>ElementRef</code>和<code>Renderer</code>注入进构造函数。<code>ElementRef</code>是一个服务，它赋予我们通过它的<code>nativeElement</code>属性直接访问 DOM 元素的能力。 <code>Renderer</code>服务允许通过代码设置元素的样式。</li>
-<li>需要把这个类添加到 NgModule 元数据的<code>declarations数组</code>中</li>
-</ul>
-<blockquote>
-<p>EXCEPTION: Template parse errors:<br>  Can’t bind to ‘myHighlight’ since it isn’t a known property of ‘p’.</p>
-</blockquote>
-<p>  错误原因:你记着设置<code>@NgModule</code>的<code>declarations数组</code>了吗？它很容易被忘掉</p>
-<ul>
-<li><code>@HostListener</code>装饰器引用属性型指令的宿主元素，在这个例子中就是<code>&lt;p&gt;</code></li>
-</ul>
-<h2 id="高级点的属性型指令"><a href="#高级点的属性型指令" class="headerlink" title="高级点的属性型指令"></a>高级点的属性型指令</h2><p>对上面的那个指令添加功能：</p>
-<ol>
-<li>通过绑定从外部设定这个颜色 </li>
-<li>从外部设定一个默认颜色，如果没有传入颜色，则使用这个默认颜色</li>
-<li><p>这样使用这个指令</p>
- <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span> [<span class="attr">defaultColor</span>]=<span class="string">"'violet'"</span>&gt;</span></span><br><span class="line">    Highlight me too!</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>代码：</p>
-<p>highlight.directive.ts</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Directive, ElementRef, HostListener, Input, Renderer &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="meta">@Directive</span>(&#123;</span><br><span class="line">  selector: <span class="string">'[myHighlight]'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HighlightDirective &#123;</span><br><span class="line">  <span class="keyword">private</span> _defaultColor = <span class="string">'red'</span>;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> el: ElementRef, <span class="keyword">private</span> renderer: Renderer</span>) &#123; &#125;</span><br><span class="line">  <span class="meta">@Input</span>() <span class="keyword">set</span> defaultColor(colorName: <span class="built_in">string</span>)&#123;</span><br><span class="line">    <span class="keyword">this</span>._defaultColor = colorName || <span class="keyword">this</span>._defaultColor;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Input</span>(<span class="string">'myHighlight'</span>) highlightColor: <span class="built_in">string</span>;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseenter'</span>) onMouseEnter() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="keyword">this</span>.highlightColor || <span class="keyword">this</span>._defaultColor);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@HostListener</span>(<span class="string">'mouseleave'</span>) onMouseLeave() &#123;</span><br><span class="line">    <span class="keyword">this</span>.highlight(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">private</span> highlight(color: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.renderer.setElementStyle(<span class="keyword">this</span>.el.nativeElement, <span class="string">'backgroundColor'</span>, color);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>a.html</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='lightgreen'"</span>&gt;</span>Green</span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='yellow'"</span>&gt;</span>Yellow</span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"colors"</span> (<span class="attr">click</span>)=<span class="string">"color='cyan'"</span>&gt;</span>Cyan</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span> [<span class="attr">defaultColor</span>]=<span class="string">"'violet'"</span>&gt;</span></span><br><span class="line">  Highlight me too!</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>说明：</p>
-<ul>
-<li>新的<code>highlightColor</code>属性被称为输入属性，因为数据是从绑定表达式流入指令中。 注意，在定义这个属性的时候，我们调用了<code>@Input()</code>装饰器，<code>@Input</code>向类添加元数据，使<code>highlightColor</code>属性能以<code>myHighlight</code>为别名进行绑定</li>
-<li>你可以通过重命名属性名到myHighlight来移除这个区别，像这样：<code>@Input() myHighlight: string;</code></li>
-<li><code>defaultColor</code>属性是一个 <code>setter</code> 函数，它代替了硬编码的默认颜色 “red”,它不需要 getter 函数。这里，把字符串字面量<code>&#39;violet&#39;</code>绑定到了<code>defaultColor</code>上。</li>
-</ul>
-<h2 id="关于-输入属性的源和目标"><a href="#关于-输入属性的源和目标" class="headerlink" title="关于 输入属性的源和目标"></a>关于 输入属性的源和目标</h2><p>Angular 在绑定的源和目标之间的区别：</p>
-<ul>
-<li><p>如果属性出现在了模板表达式等号 (=) 的右侧，它就是一个<code>源</code>。</p>
-</li>
-<li><p>如果它出现在了方括号 ([ ]) 中，并且出现在等号 (=) 的左侧，它就是一个<code>目标</code>， 就像在绑定到HighlightDirective的myHighlight属性时所做的那样。</p>
-</li>
-</ul>
-<p>例如：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> [<span class="attr">myHighlight</span>]=<span class="string">"color"</span>&gt;</span>Highlight me!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><code>[myHighlight]=&quot;color&quot;</code>中的 <code>&#39;color&#39;</code>是绑定源。 源属性不需要声明。</p>
-<p><code>[myHighlight]=&quot;color&quot;</code>中的 <code>&#39;myHighlight&#39;</code> 是绑定目标。 必须把它定义为一个输入属性，否则，Angular 就会拒绝绑定，并给出一个明确的错误。</p>
-<p>Angular 这样区别对待目标属性有充分的理由。 作为目标的组件或指令需要保护。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/22/TypeScript - 类/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/22/TypeScript - 类/" itemprop="url">TypeScript - 类</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-22T16:04:45+08:00">
-                2017-02-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="类"><a href="#类" class="headerlink" title="类"></a>类</h1><p> 从ECMAScript 2015，也就是ECMAScript 6开始，JavaScript程序员将能够使用基于类的面向对象的方式。 使用TypeScript，我们允许开发者现在就使用这些特性，并且编译后的JavaScript可以在所有主流浏览器和平台上运行，而不需要等到下个JavaScript版本。</p>
-<h2 id="创建一个类"><a href="#创建一个类" class="headerlink" title="创建一个类"></a>创建一个类</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Greeter &#123;</span><br><span class="line">    greeting: <span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">message: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.greeting = message;</span><br><span class="line">    &#125;</span><br><span class="line">    greet() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello, "</span> + <span class="keyword">this</span>.greeting;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greeter = <span class="keyword">new</span> Greeter(<span class="string">"world"</span>);</span><br></pre></td></tr></table></figure>
-<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><ul>
-<li>使用<code>extend</code>关键字来创建子类</li>
-<li>子类构造函数中使用<code>super()</code>，执行父类的构造方法</li>
-</ul>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Animal &#123;</span><br><span class="line">    name:<span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">theName: <span class="built_in">string</span></span>) &#123; <span class="keyword">this</span>.name = theName; &#125;</span><br><span class="line">    move(distanceInMeters: <span class="built_in">number</span> = <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;this.name&#125;</span> moved <span class="subst">$&#123;distanceInMeters&#125;</span>m.`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Snake <span class="keyword">extends</span> Animal &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span></span>) &#123; <span class="keyword">super</span>(name); &#125;</span><br><span class="line">    move(distanceInMeters = <span class="number">5</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"Slithering..."</span>);</span><br><span class="line">        <span class="keyword">super</span>.move(distanceInMeters);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Horse <span class="keyword">extends</span> Animal &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span></span>) &#123; <span class="keyword">super</span>(name); &#125;</span><br><span class="line">    move(distanceInMeters = <span class="number">45</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"Galloping..."</span>);</span><br><span class="line">        <span class="keyword">super</span>.move(distanceInMeters);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> sam = <span class="keyword">new</span> Snake(<span class="string">"Sammy the Python"</span>);</span><br><span class="line"><span class="keyword">let</span> tom: Animal = <span class="keyword">new</span> Horse(<span class="string">"Tommy the Palomino"</span>);</span><br><span class="line"></span><br><span class="line">sam.move();</span><br><span class="line">tom.move(<span class="number">34</span>);</span><br></pre></td></tr></table></figure>
-<h2 id="public、private、protected修饰符"><a href="#public、private、protected修饰符" class="headerlink" title="public、private、protected修饰符"></a>public、private、protected修饰符</h2><ul>
-<li><p>在ts中，成员类型默认为<code>public</code></p>
-</li>
-<li><p>当成员被标记成<code>private</code>时，它就不能在声明它的类的外部访问</p>
-</li>
-<li><p><code>protected</code>修饰符与<code>private</code>修饰符的行为相似，但<strong><code>protected</code>成员在派生类中仍然可以访问</strong></p>
-</li>
-<li><p>构造函数可以被标记成<code>protected</code>，这是这个类不可以在类外进行实例化，但是能被继承并在子类中实例化。</p>
-</li>
-</ul>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Person &#123;</span><br><span class="line">   <span class="keyword">protected</span> name: <span class="built_in">string</span>;</span><br><span class="line">       <span class="keyword">protected</span> <span class="keyword">constructor</span>(<span class="params">theName: <span class="built_in">string</span></span>) &#123; <span class="keyword">this</span>.name = theName; &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// Employee can extend Person</span></span><br><span class="line">   <span class="keyword">class</span> Employee <span class="keyword">extends</span> Person &#123;</span><br><span class="line">       <span class="keyword">private</span> department: <span class="built_in">string</span>;</span><br><span class="line">   </span><br><span class="line">       <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span>, department: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">           <span class="keyword">super</span>(name);</span><br><span class="line">           <span class="keyword">this</span>.department = department;</span><br><span class="line">       &#125;</span><br><span class="line">   </span><br><span class="line">       <span class="keyword">public</span> getElevatorPitch() &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="string">`Hello, my name is <span class="subst">$&#123;this.name&#125;</span> and I work in <span class="subst">$&#123;this.department&#125;</span>.`</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">let</span> howard = <span class="keyword">new</span> Employee(<span class="string">"Howard"</span>, <span class="string">"Sales"</span>);</span><br><span class="line">   <span class="keyword">let</span> john = <span class="keyword">new</span> Person(<span class="string">"John"</span>); <span class="comment">// Error: The 'Person' constructor is protected</span></span><br></pre></td></tr></table></figure>
-<h2 id="readonly修饰符"><a href="#readonly修饰符" class="headerlink" title="readonly修饰符"></a>readonly修饰符</h2><ul>
-<li><code>readnoly</code>修饰符，设置属性为只读的</li>
-<li>只读属性必须在声明时或构造函数里被初始化</li>
-</ul>
-<h2 id="参数属性"><a href="#参数属性" class="headerlink" title="参数属性"></a>参数属性</h2><p>使用参数属性可以方便地在一个地方创建并初始化一个成员,可以简化代码</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Animal &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> name: <span class="built_in">string</span></span>) &#123; &#125;</span><br><span class="line">    move(distanceInMeters: <span class="built_in">number</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面仅在构造函数里使用<code>private name: string</code>参数来创建和初始化name成员,把声明和赋值合并至一处。</p>
-<p>等价于</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Animal &#123;</span><br><span class="line">    <span class="keyword">private</span> name:<span class="built_in">string</span></span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">theName: <span class="built_in">string</span></span>) &#123; </span><br><span class="line">        <span class="keyword">this</span>.name=theName;</span><br><span class="line">    &#125;</span><br><span class="line">    move(distanceInMeters: <span class="built_in">number</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="存取器-getters-setters"><a href="#存取器-getters-setters" class="headerlink" title="存取器 getters/setters"></a>存取器 getters/setters</h2><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Person&#123;</span><br><span class="line">    <span class="keyword">private</span> _name:<span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">get</span> name():<span class="built_in">string</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>._name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">set</span> name(name:<span class="built_in">string</span>)&#123;</span><br><span class="line">        <span class="keyword">this</span>._name=name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> Person();</span><br><span class="line">p.name=<span class="string">'tom'</span>;        <span class="comment">//调用set</span></span><br><span class="line"><span class="built_in">console</span>.log(p.name); <span class="comment">//调用get</span></span><br></pre></td></tr></table></figure>
-<p>要注意几点：</p>
-<ul>
-<li>使用<code>tsc file.ts --target es5</code>编译，因为它只支持ECMAScript 5或更高</li>
-<li>只带有 <code>get</code>不带有<code>set</code>的存取器自动被推断为readonly</li>
-</ul>
-<p>用在哪里？<br>可以用在存取时需要做一些额外操作，而不是直接赋值的地方。</p>
-<h2 id="静态属性"><a href="#静态属性" class="headerlink" title="静态属性"></a>静态属性</h2><ul>
-<li><code>static</code>可以创建类的静态成员，这些属性存在于类本身，而不是类的实例上</li>
-<li>使用<code>类名.静态成员名</code>格式访问类的静态成员</li>
-</ul>
-<h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><ul>
-<li>抽象类一般不会直接实例化，而是作为派生类的基类。</li>
-<li>与接口不同的地方：抽象类可以包含成员的实现细节。</li>
-<li><code>abstract</code>关键字是用于定义抽象类和在抽象类内部定义抽象方法。</li>
-</ul>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> Animal &#123;</span><br><span class="line">    <span class="keyword">abstract</span> makeSound(): <span class="built_in">void</span>;</span><br><span class="line">    move(): <span class="built_in">void</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'roaming the earch...'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意：<br><strong>抽象类中的抽象方法不包含具体实现</strong>，而且<strong>它必须要在派生类中实现</strong></p>
-<h2 id="高级技巧"><a href="#高级技巧" class="headerlink" title="高级技巧"></a>高级技巧</h2><h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>在创建ts的一个类时，声明了几个东西：</p>
-<ul>
-<li>类的<code>实例类型</code></li>
-<li>创建了一个叫做<code>构造函数的值</code></li>
-</ul>
-<p>a.ts<br><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Greeter &#123;</span><br><span class="line">    greeting: <span class="built_in">string</span>;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">message: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.greeting = message;</span><br><span class="line">    &#125;</span><br><span class="line">    greet() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello, "</span> + <span class="keyword">this</span>.greeting;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greeter: Greeter;</span><br><span class="line">greeter = <span class="keyword">new</span> Greeter(<span class="string">"world"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(greeter.greet());</span><br></pre></td></tr></table></figure></p>
-<p>上面的代码使用<code>tsc a.ts</code> 编译后得到的js代码：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> Greeter = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Greeter</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.greeting = message;</span><br><span class="line">    &#125;</span><br><span class="line">    Greeter.prototype.greet = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello, "</span> + <span class="keyword">this</span>.greeting;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> Greeter;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> greeter;</span><br><span class="line">greeter = <span class="keyword">new</span> Greeter(<span class="string">"world"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(greeter.greet());</span><br></pre></td></tr></table></figure>
-<h3 id="把类当做接口使用"><a href="#把类当做接口使用" class="headerlink" title="把类当做接口使用"></a>把类当做接口使用</h3><p>类定义会创建两个东西：<code>类的实例类型</code>和<code>一个构造函数</code>。 因为<strong>类可以创建出类型</strong>，所以你能够在允许使用接口的地方使用类。</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Point &#123;</span><br><span class="line">    x: <span class="built_in">number</span>;</span><br><span class="line">    y: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> Point3d <span class="keyword">extends</span> Point &#123;</span><br><span class="line">    z: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> point3d: Point3d = &#123;x: <span class="number">1</span>, y: <span class="number">2</span>, z: <span class="number">3</span>&#125;;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4722,7 +4824,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">50</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="node退出进程时关闭mongo连接Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window var mongoose = require(&apos;mon">
+<meta name="description" content="Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window var mongoose = require(&apos;mongoose&apos;);var g">
 <meta property="og:type" content="article">
-<meta property="og:title" content="易天行">
+<meta property="og:title" content="node退出进程时关闭mongo连接">
 <meta property="og:url" content="http://yoursite.com/2018/07/26/2018-07-26/index.html">
 <meta property="og:site_name" content="易天行">
-<meta property="og:description" content="node退出进程时关闭mongo连接Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window var mongoose = require(&apos;mongoose&apos;);var gracefulShutdown;var dbURI = &apos;mon">
+<meta property="og:description" content="Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window var mongoose = require(&apos;mongoose&apos;);var gracefulShutdown;var dbURI = &apos;mongodb://localhost/m">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-25T16:55:59.116Z">
+<meta property="og:updated_time" content="2018-11-24T01:36:18.180Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="易天行">
-<meta name="twitter:description" content="node退出进程时关闭mongo连接Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window var mongoose = require(&apos;mongoose&apos;);var gracefulShutdown;var dbURI = &apos;mon">
+<meta name="twitter:title" content="node退出进程时关闭mongo连接">
+<meta name="twitter:description" content="Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window var mongoose = require(&apos;mongoose&apos;);var gracefulShutdown;var dbURI = &apos;mongodb://localhost/m">
 
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title> | 易天行</title>
+  <title>node退出进程时关闭mongo连接 | 易天行</title>
   
 
 
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">node退出进程时关闭mongo连接</h1>
         
 
         <div class="post-meta">
@@ -309,7 +309,7 @@
       
 
       
-        <h1 id="node退出进程时关闭mongo连接"><a href="#node退出进程时关闭mongo连接" class="headerlink" title="node退出进程时关闭mongo连接"></a>node退出进程时关闭mongo连接</h1><p>Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window</p>
+        <p>Shouldn’t we be closing the mongo connection somehow? It seems to be increasing with use in the mongod window</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> mongoose = <span class="built_in">require</span>(<span class="string">'mongoose'</span>);</span><br><span class="line"><span class="keyword">var</span> gracefulShutdown;</span><br><span class="line"><span class="keyword">var</span> dbURI = <span class="string">'mongodb://localhost/mean-todo'</span>;</span><br><span class="line"><span class="keyword">if</span> (process.env.NODE_ENV === <span class="string">'production'</span>) &#123;</span><br><span class="line">    dbURI = process.env.MONGOLAB_URI;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mongoose.connect(dbURI);</span><br><span class="line"></span><br><span class="line"><span class="comment">// CONNECTION EVENTS</span></span><br><span class="line">mongoose.connection.on(<span class="string">'connected'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Mongoose connected to '</span> + dbURI);</span><br><span class="line">&#125;);</span><br><span class="line">mongoose.connection.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Mongoose connection error: '</span> + err);</span><br><span class="line">&#125;);</span><br><span class="line">mongoose.connection.on(<span class="string">'disconnected'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Mongoose disconnected'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// CAPTURE APP TERMINATION / RESTART EVENTS</span></span><br><span class="line"><span class="comment">// To be called when process is restarted or terminated</span></span><br><span class="line">gracefulShutdown = <span class="function"><span class="keyword">function</span>(<span class="params">msg, callback</span>) </span>&#123;</span><br><span class="line">    mongoose.connection.close(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Mongoose disconnected through '</span> + msg);</span><br><span class="line">        callback();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// For nodemon restarts</span></span><br><span class="line">process.once(<span class="string">'SIGUSR2'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    gracefulShutdown(<span class="string">'nodemon restart'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        process.kill(process.pid, <span class="string">'SIGUSR2'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// For app termination</span></span><br><span class="line">process.on(<span class="string">'SIGINT'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    gracefulShutdown(<span class="string">'app termination'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        process.exit(<span class="number">0</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// For Heroku app termination</span></span><br><span class="line">process.on(<span class="string">'SIGTERM'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    gracefulShutdown(<span class="string">'Heroku app termination'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        process.exit(<span class="number">0</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
       
@@ -345,8 +345,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/08/22/2018-08-22/" rel="prev" title="线程安全容器">
-                线程安全容器 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/08/22/2018-08-22/" rel="prev" title="Java线程安全容器">
+                Java线程安全容器 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -399,17 +399,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -428,7 +419,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">50</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -475,22 +466,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#node退出进程时关闭mongo连接"><span class="nav-number">1.</span> <span class="nav-text">node退出进程时关闭mongo连接</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
