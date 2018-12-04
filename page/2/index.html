@@ -242,6 +242,149 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/对node事件循环机制中Macrotask和Microtask的理解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/27/对node事件循环机制中Macrotask和Microtask的理解/" itemprop="url">对node事件循环机制中Macrotask和Microtask的理解</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-27T10:38:23+08:00">
+                2017-02-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="node事件循环机制中的Microtask和Macrotask"><a href="#node事件循环机制中的Microtask和Macrotask" class="headerlink" title="node事件循环机制中的Microtask和Macrotask?"></a>node事件循环机制中的<code>Microtask</code>和<code>Macrotask</code>?</h2><h3 id="他是什么？"><a href="#他是什么？" class="headerlink" title="他是什么？"></a>他是什么？</h3><p>在Nodejs事件循环机制中，有任务两个队列：<code>Macrotask队列</code>和<code>Microtask队列</code>。在一个事件循环里，这两个队列会分两步执行，第一步会固定地执行一个（且仅一个）Macrotask任务，第二步会执行整个Microtask队列中的所有任务。并且，在执行Microtask队列任务的时候，也允许加入新的Microtask任务，直到所有Microtask任务全部执行完毕，才会结束循环。</p>
+<p>Macrotasks一般包括: <code>setTimeout</code>, <code>setInterval</code>, <code>setImmediate</code>, <code>I/O</code>, <code>UI rendering</code>；<br>Microtasks一般包括: <code>process.nextTick</code>, <code>Promises</code>, <code>Object.observe</code>, <code>MutationObserver</code>。</p>
+<h3 id="node事件循环机制详解"><a href="#node事件循环机制详解" class="headerlink" title="node事件循环机制详解"></a>node事件循环机制详解</h3><p>从一个事件循环开始，到结束会经历以下步骤：</p>
+<ol>
+<li>检查Macrotask队列，选择其中最早加入（即最老的）的任务X，设置为“目前运行的任务”。如果任务X不存在，那么直接跳到步骤4。</li>
+<li>运行任务X，即运行对应的回调函数。</li>
+<li>设置“目前运行的任务”为null，从Macrotask队列中移除任务X。</li>
+<li><p>检查Microtask队列：</p>
+<ol>
+<li>选择其中最老的任务a，如果任务a不存在，直接结束Microtask队列。</li>
+<li>设置任务a为“目前运行的任务”，并执行。</li>
+<li>设置“目前运行的任务”为null，从Microtask队列中移除任务a。</li>
+<li>选择下一个最老的任务b，跳到步骤2）。</li>
+<li>直到队列里没有剩余的任务，结束队列。</li>
+</ol>
+</li>
+<li>跳回步骤1，检查下一个Macrotask任务。</li>
+</ol>
+<h3 id="如何选用Macrotask或Microtask呢？"><a href="#如何选用Macrotask或Microtask呢？" class="headerlink" title="如何选用Macrotask或Microtask呢？"></a>如何选用Macrotask或Microtask呢？</h3><p><strong><em>如果你想让一个任务立即执行，那么就把它设置为Microtask，除此之外都用Macrotask比较好。</em></strong></p>
+<p>因为可以看出，虽然Node是异步非阻塞的，但<strong>在一个事件循环中，Microtask的执行方式基本上就是用同步的</strong>。</p>
+<h3 id="有什么问题？"><a href="#有什么问题？" class="headerlink" title="有什么问题？"></a>有什么问题？</h3><p>如果<code>Microtask</code>任务列表太长，或不断加入新的<code>Microtask</code>，就会导致下一个<code>Macrotask</code>任务很久得不到执行，可能导致UI一直无法刷新或IO无法完成。</p>
+<p>应该是考虑到了这一点，至少Microtask任务中的<code>process.nextTick</code>任务，是被设置了（在一个事件循环中的）最大调用次数的，叫<code>process.maxTickDepth</code>，默认是1000。一定程度上避免了上述情况。</p>
+<h3 id="参考文档："><a href="#参考文档：" class="headerlink" title="参考文档："></a>参考文档：</h3><p><a href="https://segmentfault.com/a/1190000007710772" target="_blank" rel="noopener">Node.js事件循环中的：Macrotask 与 Microtask</a></p>
+<p><a href="https://segmentfault.com/a/1190000002914296" target="_blank" rel="noopener">Node.js事件驱动实现概览</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/js面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3484,7 +3627,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-count">51</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
