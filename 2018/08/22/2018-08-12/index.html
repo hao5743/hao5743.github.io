@@ -84,12 +84,12 @@
 <meta property="og:title" content="Node.js Event Loop，Timers定时器和process.nextTick()">
 <meta property="og:url" content="http://yoursite.com/2018/08/22/2018-08-12/index.html">
 <meta property="og:site_name" content="易天行">
-<meta property="og:description" content="什么是事件循环？事件循环是Node.js中实现非阻塞IO的机制，它通过及时的转发操作请求给系统内核来实现，尽管JavaScript是单线程的。目前大部分的系统内核都是多线程的，可以后台同时处理多个操作请求。当某个请求处理完毕后，内核会通知node把对应的回调函数加入poll事件队列等待执行。我们稍后具体阐述这个流程。 事件循环解释Node.js启动时会">
+<meta property="og:description" content="什么是事件循环？事件循环是Node.js中实现非阻塞IO的机制，它通过及时的转发操作请求给系统内核来实现，尽管JavaScript是单线程的。目前大部分的系统内核都是多线程的，可以后台同时处理多个操作请求。当某个请求处理完毕后，内核会通知node把对应的回调函数加入poll事件队列等待执行。我们稍后具体阐述这个流程。 事件循环解释">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-30T15:59:49.077Z">
+<meta property="og:updated_time" content="2019-04-20T12:32:35.885Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.js Event Loop，Timers定时器和process.nextTick()">
-<meta name="twitter:description" content="什么是事件循环？事件循环是Node.js中实现非阻塞IO的机制，它通过及时的转发操作请求给系统内核来实现，尽管JavaScript是单线程的。目前大部分的系统内核都是多线程的，可以后台同时处理多个操作请求。当某个请求处理完毕后，内核会通知node把对应的回调函数加入poll事件队列等待执行。我们稍后具体阐述这个流程。 事件循环解释Node.js启动时会">
+<meta name="twitter:description" content="什么是事件循环？事件循环是Node.js中实现非阻塞IO的机制，它通过及时的转发操作请求给系统内核来实现，尽管JavaScript是单线程的。目前大部分的系统内核都是多线程的，可以后台同时处理多个操作请求。当某个请求处理完毕后，内核会通知node把对应的回调函数加入poll事件队列等待执行。我们稍后具体阐述这个流程。 事件循环解释">
 
 
 
@@ -310,8 +310,7 @@
 
       
         <h2 id="什么是事件循环？"><a href="#什么是事件循环？" class="headerlink" title="什么是事件循环？"></a>什么是事件循环？</h2><p>事件循环是Node.js中实现非阻塞IO的机制，它通过及时的转发操作请求给系统内核来实现，尽管JavaScript是单线程的。<br>目前大部分的系统内核都是多线程的，可以后台同时处理多个操作请求。当某个请求处理完毕后，内核会通知node把对应的回调函数加入poll事件队列等待执行。我们稍后具体阐述这个流程。</p>
-<h2 id="事件循环解释"><a href="#事件循环解释" class="headerlink" title="事件循环解释"></a>事件循环解释</h2><p>Node.js启动时会</p>
-
+<h2 id="事件循环解释"><a href="#事件循环解释" class="headerlink" title="事件循环解释"></a>事件循环解释</h2>
       
     </div>
     
@@ -335,8 +334,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/22/2018-08-22/" rel="next" title="Java线程安全容器">
-                <i class="fa fa-chevron-left"></i> Java线程安全容器
+              <a href="/2018/08/22/2018-08-22/" rel="next" title="Java线程安全容器小记">
+                <i class="fa fa-chevron-left"></i> Java线程安全容器小记
               </a>
             
           </div>
@@ -345,8 +344,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/08/23/2018-08-23/" rel="prev" title="linux查看内存">
-                linux查看内存 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/08/23/2018-08-23/" rel="prev" title="linux内存命令-top,free细解">
+                linux内存命令-top,free细解 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -428,7 +427,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -505,7 +504,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

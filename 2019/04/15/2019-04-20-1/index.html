@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="git小记 https://githowto.com/aliases git rebase -i HEAD~4用来合并最近4次的提交 git log origin/master查看的是本地版本库的origin/master分支，如果要看远程，需要先git fetch从远程取下来再git ls orign/master ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git实用总结">
+<meta property="og:url" content="http://yoursite.com/2019/04/15/2019-04-20-1/index.html">
+<meta property="og:site_name" content="易天行">
+<meta property="og:description" content="git小记 https://githowto.com/aliases git rebase -i HEAD~4用来合并最近4次的提交 git log origin/master查看的是本地版本库的origin/master分支，如果要看远程，需要先git fetch从远程取下来再git ls orign/master 工作区 暂存区 本地版本库 远程版本库 git rebase branchnam">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-20T12:55:47.876Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git实用总结">
+<meta name="twitter:description" content="git小记 https://githowto.com/aliases git rebase -i HEAD~4用来合并最近4次的提交 git log origin/master查看的是本地版本库的origin/master分支，如果要看远程，需要先git fetch从远程取下来再git ls orign/master 工作区 暂存区 本地版本库 远程版本库 git rebase branchnam">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/15/2019-04-20-1/"/>
+
+
+
+
+
+  <title>git实用总结 | 易天行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">易天行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">积累点滴，汇聚江河</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/15/2019-04-20-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">git实用总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-15T00:00:00+08:00">
+                2019-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="git小记"><a href="#git小记" class="headerlink" title="git小记"></a>git小记</h2><ul>
+<li><a href="https://githowto.com/aliases" target="_blank" rel="noopener">https://githowto.com/aliases</a></li>
+<li><code>git rebase -i HEAD~4</code>用来合并最近4次的提交</li>
+<li><code>git log origin/master</code>查看的是本地版本库的origin/master分支，如果要看远程，需要先<code>git fetch</code>从远程取下来再<code>git ls orign/master</code></li>
+<li><code>工作区</code> <code>暂存区</code> <code>本地版本库</code> <code>远程版本库</code></li>
+<li><code>git rebase branchname</code>是变基合并，它不会产生新的merge记录，会把之前的提交记录依次放在本分支；</li>
+<li>尽量不要在master分支<code>git rebase branch</code>操作</li>
+<li><code>git commit --amend</code>用于修改上一次commit信息</li>
+<li><code>git reflog</code>用于查看git操作日志，可以方便的用<code>git reset --hard hashid</code>回滚，或<code>git reset --hard HEAD^</code>到上一个版本</li>
+<li><code>git push origin dev:dev</code>是推送分支到远程的命令；dev和dev存在追踪关系时，<code>git push origin dev</code>；当前分支且存在追踪关系，<code>git push origin</code>；只有一个远程分支，且当前分支存在远程追踪关系<code>git push</code></li>
+<li><code>git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;</code>同push,<code>git pull</code> <code>git pull origin shaoc</code> 都是简写</li>
+<li><code>git merge --no-ff shaoc</code>不使用fast-forward,肯定会生成一个合并历史，方便查看历史。<code>git merge</code>如果不存在冲突的时候，默认会使用fast-forward就不会生成新的commit</li>
+<li><code>git pull --rebase</code>,fetch后，合并时使用rebase方式,等于<code>git fetch + git merge</code>;<code>git pull</code> = <code>git fetch + git rebase</code> </li>
+<li><code>git stash</code>功能是把所有没有提交的修改暂存到stash里面。可用<code>git stash pop</code>恢复,<code>git stash drop</code>用于删除。</li>
+<li><code>stash save message</code>推荐使用，等价于<code>stash push -m &quot;message&quot;</code>;如果要暂存部分，<code>stash push log/file -m &quot;sth&quot;</code></li>
+<li><code>git checkout -b b1 origin/master</code>表示从<code>origin/master</code>创建并切换分支b1</li>
+</ul>
+<p>场景1：多人开发当前dev分支，拉取代码可以使用<code>git pull --rebase</code>，避免生成多余记录；但是如果冲突太多，一个个合并就太麻烦了，需要使用<code>git pull</code></p>
+<p>场景2：分支feature正在开发，最好及时拉取master的最新代码合并，可以使用<code>git merge --no-ff origin/master</code>,强制记一条记录；如果冲突不多，使用<code>git rebase origin/master</code>，把master的提交记录都平移过来</p>
+<p>场景3：分支阶段开发完成，需要合会主分支，请使用<code>git merge --no-ff branch</code>,这样不管有没有冲突都会记录一条commit信息；如果预计没有冲突，且想把分支的提交记录平移过来，而不是只记录一条提交日志，请使用<code>git rebase branch</code>,不推荐这样，是因为会导致主分支的commit历史记录收到影响。</p>
+<blockquote>
+<p><code>合并是很常见的操作，那么到底什么时间改用什么命令呢</code>？两者的使用需要，具体看冲突commit次数的多少，是否想要平移commit记录，是否需要记录一次merge历史，根据需求自行选择；</p>
+</blockquote>
+<h2 id="stash"><a href="#stash" class="headerlink" title="stash"></a>stash</h2><ul>
+<li><code>git stash</code> 暂存</li>
+<li><code>git stash save &#39;shaoc&#39;</code>推荐加一个message，等价于<code>git stash push -m &quot;message&quot;</code></li>
+<li><code>stash list</code> 查看</li>
+<li><code>stash drop [name]</code>,默认移除最近一个</li>
+<li><code>stash clear</code>, 清空stash list</li>
+<li><code>stash show [name]</code>,查看某个stash</li>
+<li><code>stash pop</code></li>
+<li><code>stash apply</code></li>
+</ul>
+<p>默认情况下，git stash会缓存下列文件：</p>
+<ul>
+<li>添加到暂存区的修改（staged changes）</li>
+<li>Git跟踪的但并未添加到暂存区的修改（unstaged changes）</li>
+</ul>
+<p>但不会缓存以下文件：</p>
+<ul>
+<li>在工作目录中新的文件（untracked files）</li>
+<li>被忽略的文件（ignored files）</li>
+</ul>
+<p>git stash命令提供了参数用于缓存上面两种类型的文件。使用<br><code>-u</code>或者<code>--include-untracked</code>可以<code>stash untracked</code>文件。使用-a或者–all命令可以stash当前目录下的所有修改。</p>
+<h2 id="git-stash-push-和-git-stash-save"><a href="#git-stash-push-和-git-stash-save" class="headerlink" title="git stash push 和 git stash save"></a>git stash push 和 git stash save</h2><blockquote>
+<p>git stash push 目前不被推荐使用了，推荐使用save</p>
+</blockquote>
+<p>功能相同点:</p>
+<ul>
+<li>用于本地存储修改，并加一个message说明，<code>git stash</code> <code>git stash save</code> <code>git stash push</code>这个三个命令是等价的</li>
+</ul>
+<p>不同：</p>
+<ul>
+<li>语法不同</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 这两者是等价的</span><br><span class="line">git stash save &quot;mytemp&quot;</span><br><span class="line">git stash push -m &quot;mytemp&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>push</code>和单独暂存某个文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 只暂存subDir.txt一个文件</span><br><span class="line">git stash push subDir/subDir.txt</span><br><span class="line">git stash save subDir/subDir.txt(不会生效)</span><br></pre></td></tr></table></figure>
+<h2 id="git一些命令"><a href="#git一些命令" class="headerlink" title="git一些命令"></a>git一些命令</h2><p>分支-&gt;主干</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master  //切换分支</span><br><span class="line">git pull (--rebase)  //拉取代码,根据需要选择rebase或merge的冲突处理</span><br><span class="line">git merge shaoc     //合并，用merge</span><br><span class="line">git rebase shaoc    //合并，用rebase</span><br><span class="line">git commit and push //提交</span><br></pre></td></tr></table></figure>
+<p>主干合并到分支</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git checkout b1</span><br><span class="line">$ git pull (--rebae) //更新到最新</span><br><span class="line">$ git merge (--no-ff) origin/master  // merge合并,--no-ff强制生成一个commit记录，不论是否有冲突</span><br><span class="line">$ git rebase origin/master // rebase合并，线性历史，但一个个处理冲突</span><br><span class="line">$ git rebase --continue</span><br><span class="line">$ git rebase --abort</span><br></pre></td></tr></table></figure>
+<p>删除操作</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git branch -d Chapater8 //删除本地分支</span><br><span class="line">git push origin --delete shaoc //删除远程分支1</span><br><span class="line">git branch -r -d origin/cat //删除远程分支2</span><br><span class="line">git rm --cached readme1.txt //删除readme1.txt的跟踪，并保留在本地。</span><br><span class="line">git rm --f readme1.txt  //删除readme1.txt的跟踪，并且删除本地文件。</span><br></pre></td></tr></table></figure>
+<p>fork合并操作步骤</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//fork 情况下合并到本地分支</span><br><span class="line">//此时origin，为你自己的地址</span><br><span class="line">git remote add upstream URL</span><br><span class="line">git fetch upstream 拉去原作者的仓库更新</span><br><span class="line">git checkout master 切换到自己的master</span><br><span class="line">git merge upstream/master</span><br><span class="line">git rebase upstream/master</span><br><span class="line">merge或者rebase到你的master</span><br></pre></td></tr></table></figure>
+<p>git reflog</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git reflog //查看历史</span><br><span class="line">git reset --hard hashid //跳转到某个id</span><br><span class="line">git reset --hard HEAD^  //跳转到前一个</span><br><span class="line">git show HEAD@&#123;2&#125; //查看某个记录</span><br></pre></td></tr></table></figure>
+<p>强制拉取到最新</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//强制拉取到最新</span><br><span class="line">git fetch --all //拉取所有remote</span><br><span class="line">git git reset --hard origin/master // 移动到origin/master</span><br><span class="line">（参考）</span><br><span class="line">git fetch //查看</span><br><span class="line">git checkout . // 情况本地所有工作区</span><br><span class="line">git stash //收藏本地所有内容</span><br></pre></td></tr></table></figure>
+<p>git stash</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 收藏文件或修改</span><br><span class="line">git stash</span><br><span class="line">git stash save &apos;message&apos; //保存时打标记</span><br><span class="line">git stash list</span><br><span class="line">git stash show stash@&#123;0&#125;</span><br><span class="line">git stash pop|apply</span><br><span class="line">git stash pop stash@&#123;0&#125;  //应用任意暂存到当前</span><br><span class="line">git diff file   //查看文件修改</span><br><span class="line">git stash drop stash@&#123;1&#125;</span><br></pre></td></tr></table></figure>
+<p>git branch</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push origin dev  //本地dev分支，push到远程dev分支，不存在则创建</span><br><span class="line">git push origin dev:dev2 // 本地devpush到远程dev2</span><br><span class="line">git checkout -b branch1 origin/branch1 //从远程分支创建本地新分支并检出</span><br><span class="line"></span><br><span class="line">git branch //列出本地分支</span><br><span class="line">git branch -r //查看远程分支</span><br><span class="line">git branch -a //所有分支：本地 and 远程</span><br><span class="line">git branch dev //创建本地dev分支</span><br><span class="line">git branch -d dev  //删除本地dev分支</span><br><span class="line">git branch -r -d origin/dev //删除远程分支</span><br><span class="line">git branch -vv //查看本地分支对应的远程分支</span><br><span class="line">git branch -m oname newname //分支重命名</span><br></pre></td></tr></table></figure>
+<p>git checkout</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkout的作用</span><br><span class="line">// 操作文件</span><br><span class="line">git checkout filename //放弃单个文件修改</span><br><span class="line">git checkout . 放弃当前目录下的修改</span><br><span class="line">// 操作分支</span><br><span class="line">git checkout master 切换分支</span><br><span class="line">git checkout -b branch1 //分支存在则只切换分支；不存在创建并切换到branch1</span><br><span class="line"></span><br><span class="line">git log</span><br><span class="line">git log -p -2 //-p 选项展开显示每次提交的内容差异</span><br></pre></td></tr></table></figure>
+<p>简单步骤</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git stash</span><br><span class="line">git checkout .</span><br><span class="line">git pull</span><br><span class="line">git stash pop  </span><br><span class="line">-&gt;处理冲突</span><br><span class="line">npm run lint</span><br><span class="line">-&gt;处理规范</span><br><span class="line">npm run commit</span><br></pre></td></tr></table></figure>
+<p>alias<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global alias.ls &quot;log --color --graph --date=format:&apos;%Y-%m-%d %H:%M:%S&apos; --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Cblue %s %Cgreen(%cd) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</span><br><span class="line"></span><br><span class="line">git config --global alias.lss &quot;log --color --stat --graph --date=format:&apos;%Y-%m-%d %H:%M:%S&apos; --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Cblue %s %Cgreen(%cd) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</span><br><span class="line"></span><br><span class="line">git config --global alias.lg &quot;log --color --graph --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</span><br><span class="line"></span><br><span class="line">--author=&apos;shaoc&apos;</span><br><span class="line">--no-merges</span><br><span class="line"></span><br><span class="line">used:</span><br><span class="line">git ls</span><br><span class="line">git ls origin/master</span><br><span class="line">git ls --no-merges origin/master</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/10/2019-04-20-3/" rel="next" title="Jvm命令操作解释">
+                <i class="fa fa-chevron-left"></i> Jvm命令操作解释
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/20/2019-04-20-2/" rel="prev" title="linux日常命令记录(一直更新)">
+                linux日常命令记录(一直更新) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tx.jpeg"
+                alt="Ethan Hunt" />
+            
+              <p class="site-author-name" itemprop="name">Ethan Hunt</p>
+              <p class="site-description motion-element" itemprop="description">Make more time</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#git小记"><span class="nav-number">1.</span> <span class="nav-text">git小记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stash"><span class="nav-number">2.</span> <span class="nav-text">stash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-stash-push-和-git-stash-save"><span class="nav-number">3.</span> <span class="nav-text">git stash push 和 git stash save</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git一些命令"><span class="nav-number">4.</span> <span class="nav-text">git一些命令</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ethan Hunt</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

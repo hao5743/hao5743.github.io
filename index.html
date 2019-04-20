@@ -242,6 +242,701 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/21/2019-04-20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/21/2019-04-20/" itemprop="url">node进程监控PM2</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-21T00:00:00+08:00">
+                2019-04-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。</p>
+</blockquote>
+<h3 id="cluster模块"><a href="#cluster模块" class="headerlink" title="cluster模块"></a>cluster模块</h3><blockquote>
+<p>node.js试运行在v8引擎上的，以单线程的方式运行，在多核心处理器的系统中并不能发挥其最大性能。可以使用cluster模块，下面<br>是一个例子：</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> cluster = <span class="built_in">require</span>(<span class="string">'cluster'</span>);  </span><br><span class="line"><span class="keyword">var</span> http    = <span class="built_in">require</span>(<span class="string">'http'</span>);  </span><br><span class="line"><span class="keyword">var</span> os      = <span class="built_in">require</span>(<span class="string">'os'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> numCPUs = os.cpus().length;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cluster.isMaster) &#123;  </span><br><span class="line">  <span class="comment">// Master:</span></span><br><span class="line">  <span class="comment">// Let's fork as many workers as you have CPU cores</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; numCPUs; ++i) &#123;</span><br><span class="line">    cluster.fork();</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// Worker:</span></span><br><span class="line">  <span class="comment">// Let's spawn a HTTP server</span></span><br><span class="line">  <span class="comment">// (Workers can share any TCP connection.</span></span><br><span class="line">  <span class="comment">//  In this case its a HTTP server)</span></span><br><span class="line"></span><br><span class="line">  http.createServer(<span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    res.writeHead(<span class="number">200</span>);</span><br><span class="line">    res.end(<span class="string">"hello world"</span>);</span><br><span class="line">  &#125;).listen(<span class="number">8080</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="pm2替代cluster模块"><a href="#pm2替代cluster模块" class="headerlink" title="pm2替代cluster模块"></a>pm2替代cluster模块</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 原始代码</span><br><span class="line">var http = require(&apos;http&apos;);</span><br><span class="line"></span><br><span class="line">http.createServer(function(req, res) &#123;  </span><br><span class="line">  res.writeHead(200);</span><br><span class="line">  res.end(&quot;hello world&quot;);</span><br><span class="line">&#125;).listen(8080);</span><br></pre></td></tr></table></figure>
+<p>执行<code>pm2 start app.js -i 4</code>,<code>-i &lt;number of workers&gt;</code>参数用来告诉PM2以cluster_mode的形式运行你的app（对应的叫fork_mode），后面的数字表示要启动的工作线程的数量。如果给定的数字为0，PM2则会根据你CPU核心的数量来生成对应的工作线程。</p>
+<p>优点：</p>
+<ul>
+<li>不论什么情况下，你的应用将一直运行,如果任意一个工作线程挂了，PM2会立即重启一个。</li>
+<li>实时扩展集群，如果你需要增加工作线程的数量，可以通过<code>pm2 scale &lt;app name&gt; &lt;n&gt;</code>来对集群进行扩展。参数<n>指定工作线程的数量，被用来增加或减少集群数。你也可以通过<code>pm2 scale app +3</code>的方式来指定要增加多少工作线程。</n></li>
+<li>生产环境零停机更新。PM2的<code>reload &lt;app name&gt;</code>功能将依次重启所有的工作线程。每一个线程会等待在新的线程创建之后才会被终止掉。</li>
+<li><code>使用gracefulReload功能可以达到相同的目的</code>，不同的是它不会立即终止工作线程，而是通过IPC发送一个shutdown信号来关闭所有当前的连接并处理一些自定义的任务，然后再优雅地退出。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">process.on(&apos;message&apos;, function(msg) &#123;  </span><br><span class="line">  if (msg === &apos;shutdown&apos;) &#123;</span><br><span class="line">    close_all_connections();</span><br><span class="line">    delete_cache();</span><br><span class="line">    server.close();</span><br><span class="line">    process.exit(0);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="PM2使用"><a href="#PM2使用" class="headerlink" title="PM2使用"></a>PM2使用</h2><ul>
+<li>安装 <code>npm install -g pm2</code></li>
+<li>更多命令</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ npm install -g pm2</span><br><span class="line"><span class="comment"># 启动 --name tank是给这个进程取个名字</span></span><br><span class="line">$ pm2 start index.js --name tankName</span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用命令</span></span><br><span class="line"><span class="variable">$pm2</span> stop  &lt;app_name|id|all&gt;  停止</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> delete &lt;app_name|id|all&gt; 删除</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> restart &lt;app_name|id|all&gt; 重启</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> reload &lt;app_name|id|all&gt; 重载</span><br></pre></td></tr></table></figure>
+<p>跟多命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">$ pm2 start app.js -i 4 #后台运行pm2，启动4个app.js </span><br><span class="line">                                # 也可以把&apos;max&apos; 参数传递给 start</span><br><span class="line">                                # 正确的进程数目依赖于Cpu的核心数目</span><br><span class="line">$ pm2 start app.js --name my-api # 命名进程</span><br><span class="line">$ pm2 list               # 显示所有进程状态</span><br><span class="line">$ pm2 monit              # 监视所有进程</span><br><span class="line">$ pm2 logs               #  显示所有进程日志</span><br><span class="line">$ pm2 stop all           # 停止所有进程</span><br><span class="line">$ pm2 restart all        # 重启所有进程</span><br><span class="line">$ pm2 reload all         # 0秒停机重载进程 (用于 NETWORKED 进程)</span><br><span class="line">$ pm2 stop 0             # 停止指定的进程</span><br><span class="line">$ pm2 restart 0          # 重启指定的进程</span><br><span class="line">$ pm2 startup            # 产生 init 脚本 保持进程活着</span><br><span class="line">$ pm2 web                # 运行健壮的 computer API endpoint (http://localhost:9615)</span><br><span class="line">$ pm2 delete 0           # 杀死指定的进程</span><br><span class="line">$ pm2 delete all         # 杀死全部进程</span><br><span class="line"></span><br><span class="line">运行进程的不同方式：</span><br><span class="line">$ pm2 start app.js -i max  # 根据有效CPU数目启动最大进程数目</span><br><span class="line">$ pm2 start app.js -i 3      # 启动3个进程</span><br><span class="line">$ pm2 start app.js -x        #用fork模式启动 app.js 而不是使用 cluster</span><br><span class="line">$ pm2 start app.js -x -- -a 23   # 用fork模式启动 app.js 并且传递参数 (-a 23)</span><br><span class="line">$ pm2 start app.js --name serverone  # 启动一个进程并把它命名为 serverone</span><br><span class="line">$ pm2 stop serverone       # 停止 serverone 进程</span><br><span class="line">$ pm2 start app.json        # 启动进程, 在 app.json里设置选项</span><br><span class="line">$ pm2 start app.js -i max -- -a 23                   #在--之后给 app.js 传递参数</span><br><span class="line">$ pm2 start app.js -i max -e err.log -o out.log  # 启动 并 生成一个配置文件</span><br><span class="line">你也可以执行用其他语言编写的app  ( fork 模式):</span><br><span class="line">$ pm2 start my-bash-script.sh    -x --interpreter bash</span><br><span class="line">$ pm2 start my-python-script.py -x --interpreter python</span><br><span class="line"></span><br><span class="line">0秒停机重载:</span><br><span class="line">这项功能允许你重新载入代码而不用失去请求连接。</span><br><span class="line">注意：</span><br><span class="line">仅能用于web应用</span><br><span class="line">运行于Node 0.11.x版本</span><br><span class="line">运行于 cluster 模式（默认模式）</span><br><span class="line">$ pm2 reload all</span><br><span class="line"></span><br><span class="line">CoffeeScript:</span><br><span class="line">$ pm2 start my_app.coffee  #这就是全部</span><br><span class="line"></span><br><span class="line">PM2准备好为产品级服务了吗？</span><br><span class="line">只需在你的服务器上测试</span><br><span class="line">$ git clone https://github.com/Unitech/pm2.git</span><br><span class="line">$ cd pm2</span><br><span class="line">$ npm install  # 或者 npm install --dev ，如果devDependencies 没有安装</span><br><span class="line">$ npm test</span><br></pre></td></tr></table></figure>
+<p>错误日志位置：</p>
+<p>error log path  /root/.pm2/pids/anaweb-13.pid </p>
+<p>错误日志，出现启动 error找她就没错</p>
+<p>out log path    /root/.pm2/logs/anaweb-out-13.log </p>
+<p>参考1: <a href="https://cnodejs.org/topic/5021c2cff767cc9a51e684e3" target="_blank" rel="noopener">https://cnodejs.org/topic/5021c2cff767cc9a51e684e3</a><br>参考2: <a href="http://tcrct.iteye.com/blog/2043644" target="_blank" rel="noopener">http://tcrct.iteye.com/blog/2043644</a><br>forever github: <a href="https://github.com/foreverjs/forever" target="_blank" rel="noopener">https://github.com/foreverjs/forever</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/20/2019-04-20-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/20/2019-04-20-2/" itemprop="url">linux日常命令记录(一直更新)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-20T00:00:00+08:00">
+                2019-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>linux命令繁杂，确必不可少，这里用来总结日常用的命令记录，随时更新…</p>
+</blockquote>
+<h3 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ps -ef | grep nginx</span><br><span class="line">$ sudo lsof -nP -i:9300 <span class="comment"># 端口 -&gt; 进程</span></span><br><span class="line">$ sudo netstat -tlnp | grep port <span class="comment"># 端口 -&gt; 进程</span></span><br><span class="line">$ sudo lsof -p 12764 | grep TCP <span class="comment"># 进程 -&gt; 端口</span></span><br><span class="line">$ sudo netstat -tlnp | grep pid <span class="comment"># 进程 -&gt; 端口</span></span><br></pre></td></tr></table></figure>
+<h3 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h3><p>查看进程正在打开文件、网络、socket的状态</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">ps -ef | grep nginx  <span class="comment">#进程名 -&gt; pid</span></span><br><span class="line">sudo lsof -i :9300 <span class="comment"># 端口号 -&gt; 进程</span></span><br><span class="line">sudo lsof -i @140.143.60.140  <span class="comment"># ip地址 -&gt; 进程</span></span><br><span class="line">lsof -p 12764 | grep TCP <span class="comment"># 进程 -&gt; 端口</span></span><br><span class="line">或者</span><br><span class="line">lsof -i | grep 12764 <span class="comment"># 进程 -&gt; 端口</span></span><br><span class="line">lsof -p 12764 <span class="comment"># 进程 -&gt; 打开资源状态，包括文件、网络、socket等</span></span><br><span class="line"></span><br><span class="line">-n no host names</span><br><span class="line">-P no port names</span><br><span class="line">-i  select by IPv[46] address: [46][proto][@host|addr][:svc_list|port_list]</span><br><span class="line">-p exclude(^)|select PIDs</span><br></pre></td></tr></table></figure>
+<p>mac:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo lsof -nP -i :20002</span><br><span class="line">sudo lsof -p 1234 -P # -P显示端口号</span><br></pre></td></tr></table></figure>
+<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><p>查看当前的网络连接状态，主要用来查看本机和外部的的网络连接，包括端口，连接情况</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">netstat -anp <span class="comment"># 所有端口</span></span><br><span class="line">netstat -tlnp <span class="comment"># 所有listening的tcp端口</span></span><br><span class="line"></span><br><span class="line">netstat -tlnp | grep tcp | grep port <span class="comment"># 端口 -&gt; 进程</span></span><br><span class="line">netstat -tlnp | grep pid <span class="comment"># 进程 -&gt; 端口</span></span><br><span class="line"></span><br><span class="line">$ netstat -at <span class="comment"># 所有 tcp</span></span><br><span class="line">$ netstat -au <span class="comment"># 所有 udp </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -p （root）Show the PID and name of the program to which each socket belongs</span></span><br><span class="line"><span class="comment"># -n 不显示主机\端口\用户名,加速输出</span></span><br><span class="line"><span class="comment"># -t 显示tcp连接</span></span><br><span class="line"><span class="comment"># -u 显示udp</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -a Show both listening and non-listening (for TCP this means established  connections)  sockets</span></span><br><span class="line"><span class="comment"># -l Show only listening sockets.  (These are omitted by default.)</span></span><br></pre></td></tr></table></figure>
+<h3 id="top"><a href="#top" class="headerlink" title="top"></a>top</h3><p>查看当前的系统进程状态，实时刷新</p>
+<h3 id="free"><a href="#free" class="headerlink" title="free"></a>free</h3><p>查看内存占用情况</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">free -m <span class="comment"># 以M为单位查看</span></span><br></pre></td></tr></table></figure>
+<h3 id="ip"><a href="#ip" class="headerlink" title="ip"></a>ip</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">ip addr <span class="comment"># 网络状态</span></span><br><span class="line">ifconfig <span class="comment"># 网络状态</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 外网地址</span></span><br><span class="line">$ curl ifconfig.me</span><br><span class="line">$ curl icanhazip.com</span><br><span class="line">$ curl ident.me</span><br></pre></td></tr></table></figure>
+<h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mac:</span><br><span class="line">ls -lT</span><br><span class="line">-T 参数展示详细时间</span><br><span class="line"></span><br><span class="line">linux：</span><br><span class="line">ls --full-time</span><br><span class="line">ls -la --time-style=full-iso</span><br><span class="line">--full-time</span><br><span class="line">--time-style=full-iso</span><br></pre></td></tr></table></figure>
+<h2 id="ps进程启动时间"><a href="#ps进程启动时间" class="headerlink" title="ps进程启动时间"></a>ps进程启动时间</h2><p>ps -ef、ps aux命令可以展示进程的大概信息，启动时间展示不完整，如果想得知进程的详细启动时间，怎么办呢？</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">linux:</span><br><span class="line">$ ps -eo pid,lstart,cmd</span><br><span class="line"></span><br><span class="line">outPut:</span><br><span class="line">PID                  STARTED CMD</span><br><span class="line">    1 Mon Jun 19 21:31:08 2017 /sbin/init</span><br><span class="line">    2 Mon Jun 19 21:31:08 2017 [kthreadd]</span><br><span class="line">    3 Mon Jun 19 21:31:08 2017 [ksoftirqd/0]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>系统</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># linux内核信息</span></span><br><span class="line">cat /proc/version</span><br><span class="line">uname -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看linux发行版信息</span></span><br><span class="line">lsb_release -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># cpu核心数</span></span><br><span class="line">cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c </span><br><span class="line"></span><br><span class="line"><span class="comment"># 内存情况</span></span><br><span class="line">cat /proc/meminfo</span><br><span class="line">free</span><br><span class="line"></span><br><span class="line"><span class="comment"># 磁盘情况</span></span><br><span class="line">sudo fdisk -l</span><br><span class="line"></span><br><span class="line"><span class="comment"># 主机名</span></span><br><span class="line">hostname</span><br></pre></td></tr></table></figure>
+<h3 id="pidstat-展示进程资源占用信息"><a href="#pidstat-展示进程资源占用信息" class="headerlink" title="pidstat 展示进程资源占用信息"></a>pidstat 展示进程资源占用信息</h3><p>使用示例</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pidstat [ 选项 ] [ &lt;时间间隔&gt; ] [ &lt;次数&gt; ]</span><br><span class="line"></span><br><span class="line"># pid4989的cpu详细详细，每个1s打印一次，打印8次</span><br><span class="line">pidstat -u -p 4989 1 8</span><br><span class="line"># 内存</span><br><span class="line">pidstat -r -p 4989 1 8</span><br><span class="line"># 磁盘</span><br><span class="line">pidstat -d -p 4989 1 8</span><br><span class="line"># 展示三者</span><br><span class="line">pidstat -urd -p 4989 1 8</span><br><span class="line"># -h 在一行展示所有信息</span><br><span class="line">pidstat -urdh -p 4989 1 8</span><br><span class="line"># 更多</span><br><span class="line">man pidstat</span><br></pre></td></tr></table></figure>
+<p>参数说明</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-u：默认的参数，显示各个进程的cpu使用统计</span><br><span class="line">-r：显示各个进程的内存使用统计</span><br><span class="line">-d：显示各个进程的IO使用情况</span><br><span class="line">-p：指定进程号</span><br><span class="line">-w：显示每个进程的上下文切换情况</span><br><span class="line">-t：显示选择任务的线程的统计信息外的额外信息</span><br><span class="line">-T &#123; TASK | CHILD | ALL &#125;</span><br><span class="line">这个选项指定了pidstat监控的。TASK表示报告独立的task，CHILD关键字表示报告进程下所有线程统计信息。ALL表示报告独立的task和task下面的所有线程。</span><br><span class="line">注意：task和子线程的全局的统计信息和pidstat选项无关。这些统计信息不会对应到当前的统计间隔，这些统计信息只有在子线程kill或者完成的时候才会被收集。</span><br><span class="line">-V：版本号</span><br><span class="line">-h：在一行上显示了所有活动，这样其他程序可以容易解析。</span><br><span class="line">-I：在SMP环境，表示任务的CPU使用率/内核数量</span><br><span class="line">-l：显示命令名和所有参数</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/15/2019-04-20-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/15/2019-04-20-1/" itemprop="url">git实用总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-15T00:00:00+08:00">
+                2019-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="git小记"><a href="#git小记" class="headerlink" title="git小记"></a>git小记</h2><ul>
+<li><a href="https://githowto.com/aliases" target="_blank" rel="noopener">https://githowto.com/aliases</a></li>
+<li><code>git rebase -i HEAD~4</code>用来合并最近4次的提交</li>
+<li><code>git log origin/master</code>查看的是本地版本库的origin/master分支，如果要看远程，需要先<code>git fetch</code>从远程取下来再<code>git ls orign/master</code></li>
+<li><code>工作区</code> <code>暂存区</code> <code>本地版本库</code> <code>远程版本库</code></li>
+<li><code>git rebase branchname</code>是变基合并，它不会产生新的merge记录，会把之前的提交记录依次放在本分支；</li>
+<li>尽量不要在master分支<code>git rebase branch</code>操作</li>
+<li><code>git commit --amend</code>用于修改上一次commit信息</li>
+<li><code>git reflog</code>用于查看git操作日志，可以方便的用<code>git reset --hard hashid</code>回滚，或<code>git reset --hard HEAD^</code>到上一个版本</li>
+<li><code>git push origin dev:dev</code>是推送分支到远程的命令；dev和dev存在追踪关系时，<code>git push origin dev</code>；当前分支且存在追踪关系，<code>git push origin</code>；只有一个远程分支，且当前分支存在远程追踪关系<code>git push</code></li>
+<li><code>git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;</code>同push,<code>git pull</code> <code>git pull origin shaoc</code> 都是简写</li>
+<li><code>git merge --no-ff shaoc</code>不使用fast-forward,肯定会生成一个合并历史，方便查看历史。<code>git merge</code>如果不存在冲突的时候，默认会使用fast-forward就不会生成新的commit</li>
+<li><code>git pull --rebase</code>,fetch后，合并时使用rebase方式,等于<code>git fetch + git merge</code>;<code>git pull</code> = <code>git fetch + git rebase</code> </li>
+<li><code>git stash</code>功能是把所有没有提交的修改暂存到stash里面。可用<code>git stash pop</code>恢复,<code>git stash drop</code>用于删除。</li>
+<li><code>stash save message</code>推荐使用，等价于<code>stash push -m &quot;message&quot;</code>;如果要暂存部分，<code>stash push log/file -m &quot;sth&quot;</code></li>
+<li><code>git checkout -b b1 origin/master</code>表示从<code>origin/master</code>创建并切换分支b1</li>
+</ul>
+<p>场景1：多人开发当前dev分支，拉取代码可以使用<code>git pull --rebase</code>，避免生成多余记录；但是如果冲突太多，一个个合并就太麻烦了，需要使用<code>git pull</code></p>
+<p>场景2：分支feature正在开发，最好及时拉取master的最新代码合并，可以使用<code>git merge --no-ff origin/master</code>,强制记一条记录；如果冲突不多，使用<code>git rebase origin/master</code>，把master的提交记录都平移过来</p>
+<p>场景3：分支阶段开发完成，需要合会主分支，请使用<code>git merge --no-ff branch</code>,这样不管有没有冲突都会记录一条commit信息；如果预计没有冲突，且想把分支的提交记录平移过来，而不是只记录一条提交日志，请使用<code>git rebase branch</code>,不推荐这样，是因为会导致主分支的commit历史记录收到影响。</p>
+<blockquote>
+<p><code>合并是很常见的操作，那么到底什么时间改用什么命令呢</code>？两者的使用需要，具体看冲突commit次数的多少，是否想要平移commit记录，是否需要记录一次merge历史，根据需求自行选择；</p>
+</blockquote>
+<h2 id="stash"><a href="#stash" class="headerlink" title="stash"></a>stash</h2><ul>
+<li><code>git stash</code> 暂存</li>
+<li><code>git stash save &#39;shaoc&#39;</code>推荐加一个message，等价于<code>git stash push -m &quot;message&quot;</code></li>
+<li><code>stash list</code> 查看</li>
+<li><code>stash drop [name]</code>,默认移除最近一个</li>
+<li><code>stash clear</code>, 清空stash list</li>
+<li><code>stash show [name]</code>,查看某个stash</li>
+<li><code>stash pop</code></li>
+<li><code>stash apply</code></li>
+</ul>
+<p>默认情况下，git stash会缓存下列文件：</p>
+<ul>
+<li>添加到暂存区的修改（staged changes）</li>
+<li>Git跟踪的但并未添加到暂存区的修改（unstaged changes）</li>
+</ul>
+<p>但不会缓存以下文件：</p>
+<ul>
+<li>在工作目录中新的文件（untracked files）</li>
+<li>被忽略的文件（ignored files）</li>
+</ul>
+<p>git stash命令提供了参数用于缓存上面两种类型的文件。使用<br><code>-u</code>或者<code>--include-untracked</code>可以<code>stash untracked</code>文件。使用-a或者–all命令可以stash当前目录下的所有修改。</p>
+<h2 id="git-stash-push-和-git-stash-save"><a href="#git-stash-push-和-git-stash-save" class="headerlink" title="git stash push 和 git stash save"></a>git stash push 和 git stash save</h2><blockquote>
+<p>git stash push 目前不被推荐使用了，推荐使用save</p>
+</blockquote>
+<p>功能相同点:</p>
+<ul>
+<li>用于本地存储修改，并加一个message说明，<code>git stash</code> <code>git stash save</code> <code>git stash push</code>这个三个命令是等价的</li>
+</ul>
+<p>不同：</p>
+<ul>
+<li>语法不同</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 这两者是等价的</span><br><span class="line">git stash save &quot;mytemp&quot;</span><br><span class="line">git stash push -m &quot;mytemp&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>push</code>和单独暂存某个文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 只暂存subDir.txt一个文件</span><br><span class="line">git stash push subDir/subDir.txt</span><br><span class="line">git stash save subDir/subDir.txt(不会生效)</span><br></pre></td></tr></table></figure>
+<h2 id="git一些命令"><a href="#git一些命令" class="headerlink" title="git一些命令"></a>git一些命令</h2><p>分支-&gt;主干</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master  //切换分支</span><br><span class="line">git pull (--rebase)  //拉取代码,根据需要选择rebase或merge的冲突处理</span><br><span class="line">git merge shaoc     //合并，用merge</span><br><span class="line">git rebase shaoc    //合并，用rebase</span><br><span class="line">git commit and push //提交</span><br></pre></td></tr></table></figure>
+<p>主干合并到分支</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git checkout b1</span><br><span class="line">$ git pull (--rebae) //更新到最新</span><br><span class="line">$ git merge (--no-ff) origin/master  // merge合并,--no-ff强制生成一个commit记录，不论是否有冲突</span><br><span class="line">$ git rebase origin/master // rebase合并，线性历史，但一个个处理冲突</span><br><span class="line">$ git rebase --continue</span><br><span class="line">$ git rebase --abort</span><br></pre></td></tr></table></figure>
+<p>删除操作</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git branch -d Chapater8 //删除本地分支</span><br><span class="line">git push origin --delete shaoc //删除远程分支1</span><br><span class="line">git branch -r -d origin/cat //删除远程分支2</span><br><span class="line">git rm --cached readme1.txt //删除readme1.txt的跟踪，并保留在本地。</span><br><span class="line">git rm --f readme1.txt  //删除readme1.txt的跟踪，并且删除本地文件。</span><br></pre></td></tr></table></figure>
+<p>fork合并操作步骤</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//fork 情况下合并到本地分支</span><br><span class="line">//此时origin，为你自己的地址</span><br><span class="line">git remote add upstream URL</span><br><span class="line">git fetch upstream 拉去原作者的仓库更新</span><br><span class="line">git checkout master 切换到自己的master</span><br><span class="line">git merge upstream/master</span><br><span class="line">git rebase upstream/master</span><br><span class="line">merge或者rebase到你的master</span><br></pre></td></tr></table></figure>
+<p>git reflog</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git reflog //查看历史</span><br><span class="line">git reset --hard hashid //跳转到某个id</span><br><span class="line">git reset --hard HEAD^  //跳转到前一个</span><br><span class="line">git show HEAD@&#123;2&#125; //查看某个记录</span><br></pre></td></tr></table></figure>
+<p>强制拉取到最新</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//强制拉取到最新</span><br><span class="line">git fetch --all //拉取所有remote</span><br><span class="line">git git reset --hard origin/master // 移动到origin/master</span><br><span class="line">（参考）</span><br><span class="line">git fetch //查看</span><br><span class="line">git checkout . // 情况本地所有工作区</span><br><span class="line">git stash //收藏本地所有内容</span><br></pre></td></tr></table></figure>
+<p>git stash</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 收藏文件或修改</span><br><span class="line">git stash</span><br><span class="line">git stash save &apos;message&apos; //保存时打标记</span><br><span class="line">git stash list</span><br><span class="line">git stash show stash@&#123;0&#125;</span><br><span class="line">git stash pop|apply</span><br><span class="line">git stash pop stash@&#123;0&#125;  //应用任意暂存到当前</span><br><span class="line">git diff file   //查看文件修改</span><br><span class="line">git stash drop stash@&#123;1&#125;</span><br></pre></td></tr></table></figure>
+<p>git branch</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push origin dev  //本地dev分支，push到远程dev分支，不存在则创建</span><br><span class="line">git push origin dev:dev2 // 本地devpush到远程dev2</span><br><span class="line">git checkout -b branch1 origin/branch1 //从远程分支创建本地新分支并检出</span><br><span class="line"></span><br><span class="line">git branch //列出本地分支</span><br><span class="line">git branch -r //查看远程分支</span><br><span class="line">git branch -a //所有分支：本地 and 远程</span><br><span class="line">git branch dev //创建本地dev分支</span><br><span class="line">git branch -d dev  //删除本地dev分支</span><br><span class="line">git branch -r -d origin/dev //删除远程分支</span><br><span class="line">git branch -vv //查看本地分支对应的远程分支</span><br><span class="line">git branch -m oname newname //分支重命名</span><br></pre></td></tr></table></figure>
+<p>git checkout</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkout的作用</span><br><span class="line">// 操作文件</span><br><span class="line">git checkout filename //放弃单个文件修改</span><br><span class="line">git checkout . 放弃当前目录下的修改</span><br><span class="line">// 操作分支</span><br><span class="line">git checkout master 切换分支</span><br><span class="line">git checkout -b branch1 //分支存在则只切换分支；不存在创建并切换到branch1</span><br><span class="line"></span><br><span class="line">git log</span><br><span class="line">git log -p -2 //-p 选项展开显示每次提交的内容差异</span><br></pre></td></tr></table></figure>
+<p>简单步骤</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git stash</span><br><span class="line">git checkout .</span><br><span class="line">git pull</span><br><span class="line">git stash pop  </span><br><span class="line">-&gt;处理冲突</span><br><span class="line">npm run lint</span><br><span class="line">-&gt;处理规范</span><br><span class="line">npm run commit</span><br></pre></td></tr></table></figure>
+<p>alias<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global alias.ls &quot;log --color --graph --date=format:&apos;%Y-%m-%d %H:%M:%S&apos; --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Cblue %s %Cgreen(%cd) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</span><br><span class="line"></span><br><span class="line">git config --global alias.lss &quot;log --color --stat --graph --date=format:&apos;%Y-%m-%d %H:%M:%S&apos; --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Cblue %s %Cgreen(%cd) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</span><br><span class="line"></span><br><span class="line">git config --global alias.lg &quot;log --color --graph --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</span><br><span class="line"></span><br><span class="line">--author=&apos;shaoc&apos;</span><br><span class="line">--no-merges</span><br><span class="line"></span><br><span class="line">used:</span><br><span class="line">git ls</span><br><span class="line">git ls origin/master</span><br><span class="line">git ls --no-merges origin/master</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/10/2019-04-20-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/10/2019-04-20-3/" itemprop="url">Jvm命令操作解释</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-10T00:00:00+08:00">
+                2019-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>介绍了分析java进程或线程的步骤？jstack,jstat,jinfo等命令的用法</p>
+</blockquote>
+<h3 id="分析步骤命令"><a href="#分析步骤命令" class="headerlink" title="分析步骤命令"></a>分析步骤命令</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 检测运行状态</span></span><br><span class="line">$ top free</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看进程信息</span></span><br><span class="line">$ ps -ef | grep cc-doc [pid]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看进程堆栈</span></span><br><span class="line">$ jstack [-l] [-F] pid &gt; 1.txt</span><br><span class="line">$ sz 1.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列出线程信息，找到占用cpu\时间高的线程tid</span></span><br><span class="line">$ ps -mp pid -o THREAD,tid,time </span><br><span class="line"></span><br><span class="line"><span class="comment"># 用linux命令tid转为16进制</span></span><br><span class="line">$ <span class="built_in">printf</span> <span class="string">"%x"</span> tid</span><br><span class="line"><span class="comment"># ee2f</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看线程的堆栈信息，-A30显示后30行</span></span><br><span class="line">$ jstack pid | grep ee2f -A30</span><br></pre></td></tr></table></figure>
+<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>“jstat（JVM Statistics Monitoring Tool）是用于监视虚拟机各种运行状态信息的命令行工具。它可以显示本地或者远程[1]虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据，在没有GUI图形界面，只提供了纯文本控制台环境的服务器上，它将是运行期定位虚拟机性能问题的首选工具。”</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ jstat [option vmid] [interval[s|ms] [count]]]</span><br><span class="line">$ jstat -gcutil pid 250 20</span><br><span class="line">$ jstat -gc pid 250 20  //250ms间隔，刷新20次</span><br></pre></td></tr></table></figure>
+<h3 id="jstack-堆栈跟踪工具"><a href="#jstack-堆栈跟踪工具" class="headerlink" title="jstack 堆栈跟踪工具"></a>jstack 堆栈跟踪工具</h3><p>“jstack（Stack Trace for Java）命令用于生成虚拟机当前时刻的线程快照（一般称为threaddump或者javacore文件）”<br>“线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合，生成线程快照的主要目的是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间等待等都是导致线程长时间停顿的常见原因。线程出现停顿的时候通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做些什么事情，或者等待着什么资源”</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># jstack -l 3500 </span><br><span class="line"># jstack -lm 3500 &gt; a.txt</span><br></pre></td></tr></table></figure>
+<h3 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h3><p><code>“jinfo（Configuration Info for Java）</code>的作用是实时地查看和调整虚拟机各项参数。使用jps命令的-v参数可以查看虚拟机启动时显式指定的参数列表，但如果想知道未被显式指定的参数的系统默认值，除了去找资料外，就只能使用jinfo的-flag选项进行查询了”</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$jinfo -flags pid</span><br><span class="line">$jinfo pid</span><br></pre></td></tr></table></figure>
+<h3 id="jmap-java内存映像工具"><a href="#jmap-java内存映像工具" class="headerlink" title="jmap java内存映像工具"></a>jmap java内存映像工具</h3><blockquote>
+<p>“jmap（Memory Map for Java）命令用于生成堆转储快照（一般称为heapdump或dump文件）<br>如果不使用jmap命令，要想获取Java堆转储快照，还有一些比较“暴力”的手段：譬如在第2章中用过的-XX:+HeapDumpOnOutOfMemoryError参数，可以让虚拟机在OOM异常出现之后自动生成dump文件，通过-XX:+HeapDumpOnCtrlBreak参数则可以使用[Ctrl]+[Break]键让虚拟机生成dump文件，又或者在Linux系统下通过Kill-3命令发送进程退出信号“吓唬”一下虚拟机，也能拿到dump文件”</p>
+</blockquote>
+<p>“jmap的作用并不仅仅是为了获取dump文件，它还可以查询finalize执行队列、Java堆和永久代的详细信息，如空间使用率、当前用的是哪种收集器等。”</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ jmap -dump:format=b,file=dump.bin 21561 # 导出虚拟机dump文件</span><br><span class="line">$ jmap -heap # 显示虚拟机堆信息</span><br><span class="line"></span><br><span class="line"># jmap -heap 21561</span><br><span class="line">输出：</span><br><span class="line">Attaching to process ID 21561, please wait...</span><br><span class="line">Debugger attached successfully.</span><br><span class="line">Server compiler detected.</span><br><span class="line">JVM version is 25.77-b03</span><br><span class="line"></span><br><span class="line">using thread-local object allocation.</span><br><span class="line">Parallel GC with 4 thread(s)</span><br><span class="line"></span><br><span class="line">Heap Configuration:</span><br><span class="line">   MinHeapFreeRatio         = 0</span><br><span class="line">   MaxHeapFreeRatio         = 100</span><br><span class="line">   MaxHeapSize              = 1073741824 (1024.0MB)</span><br><span class="line">   NewSize                  = 89128960 (85.0MB)</span><br><span class="line">   MaxNewSize               = 357564416 (341.0MB)</span><br><span class="line">   OldSize                  = 179306496 (171.0MB)</span><br><span class="line">   NewRatio                 = 2</span><br><span class="line">   SurvivorRatio            = 8</span><br><span class="line">   MetaspaceSize            = 21807104 (20.796875MB)</span><br><span class="line">   CompressedClassSpaceSize = 1073741824 (1024.0MB)</span><br><span class="line">   MaxMetaspaceSize         = 17592186044415 MB</span><br><span class="line">   G1HeapRegionSize         = 0 (0.0MB)</span><br><span class="line"></span><br><span class="line">Heap Usage:</span><br><span class="line">PS Young Generation</span><br><span class="line">Eden Space:</span><br><span class="line">   capacity = 135790592 (129.5MB)</span><br><span class="line">   used     = 47917952 (45.6981201171875MB)</span><br><span class="line">   free     = 87872640 (83.8018798828125MB)</span><br><span class="line">   35.28812364261583% used</span><br><span class="line">From Space:</span><br><span class="line">   capacity = 47710208 (45.5MB)</span><br><span class="line">   used     = 229376 (0.21875MB)</span><br><span class="line">   free     = 47480832 (45.28125MB)</span><br><span class="line">   0.4807692307692308% used</span><br><span class="line">To Space:</span><br><span class="line">   capacity = 49283072 (47.0MB)</span><br><span class="line">   used     = 0 (0.0MB)</span><br><span class="line">   free     = 49283072 (47.0MB)</span><br><span class="line">   0.0% used</span><br><span class="line">PS Old Generation</span><br><span class="line">   capacity = 463470592 (442.0MB)</span><br><span class="line">   used     = 202372448 (192.99740600585938MB)</span><br><span class="line">   free     = 261098144 (249.00259399414062MB)</span><br><span class="line">   43.66457149453832% used</span><br><span class="line"></span><br><span class="line">22290 interned Strings occupying 2157896 bytes.</span><br></pre></td></tr></table></figure>
+<h3 id="jhat-内存快照分析工具"><a href="#jhat-内存快照分析工具" class="headerlink" title="jhat 内存快照分析工具"></a>jhat 内存快照分析工具</h3><p>“JDK提供jhat（JVM Heap Analysis Tool）命令与jmap搭配使用，来分析jmap生成的堆转储快照”<br>“一般都不会去直接使用jhat命令来分析dump文件，主要原因有二：一是一般不会在部署应用程序的服务器上直接分析dump文件，即使可以这样做，也会尽量将dump文件复制到其他机器[1]上进行分析，因为分析工作是一个耗时而且消耗硬件资源的过程，既然都要在其他机器进行，就没有必要受到命令行工具的限制了；另一个原因是jhat的分析功能相对来说比较简陋，后文将会介绍到的VisualVM，以及专业用于分析dump文件的Eclipse Memory Analyzer、IBM HeapAnalyzer[2]等工具，都能实现比jhat更强大更专业的分析功能”</p>
+<p><code>$ jhat dump.bin //一般用不到</code></p>
+<h3 id="可视化监测工具-jconsole，jvisualvm"><a href="#可视化监测工具-jconsole，jvisualvm" class="headerlink" title="可视化监测工具 jconsole，jvisualvm"></a>可视化监测工具 jconsole，jvisualvm</h3><ul>
+<li>“其中JConsole是在JDK 1.5时期就已经提供的虚拟机监控工具，而VisualVM在JDK 1.6 Update7中才首次发布，现在已经成为Sun（Oracle）主力推动的多合一故障处理工具[1]，并且已经从JDK中分离出来成为可以独立发展的开源项目。JConsole（Java Monitoring and Management Console）是一种基于JMX的可视化监视、管理工具。”</li>
+</ul>
+<p>启动命令，mac、windows可以在机器上直接启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ jconsole</span><br><span class="line">$ jvisualvm</span><br></pre></td></tr></table></figure>
+<ul>
+<li>“VisualVM（All-in-One Java Troubleshooting Tool）是到目前为止随JDK发布的功能最强大的运行监视和故障处理程序，并且可以预见在未来一段时间内都是官方主力发展的虚拟机故障处理工具”, “VisualVM在JDK 1.6 update 7中才首次出现，但并不意味着它只能监控运行于JDK 1.6上的程序，它具备很强的向下兼容能力，甚至能向下兼容至近10年前发布的JDK 1.4.2平台[1]”</li>
+</ul>
+<h3 id="补充知识"><a href="#补充知识" class="headerlink" title="补充知识"></a>补充知识</h3><ol>
+<li>Java运行时内存分为5个部分：<ul>
+<li>程序计数器（Program Counter Register） 当前线程所执行的字节码的行号指示器，是线程私有的</li>
+<li>java虚拟机栈（VM stack） 描述的是java方法执行时的内存模型，每个方法在执行的同时会创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等。每个方法调用直到执行完成，就对应着一个栈在虚拟机中从入栈到出栈的过程。经常有人把java内存分为栈内存和堆内存，栈就是现在讲的虚拟机栈，或者说是其中的局部变量表部分。线程私有的，生命周期与线程相同。如果线程请求的栈深度大于虚拟机所允许的深度，将抛出StackOverflowError,允许动态扩展但是内存不够时，会抛出OutOfMemoryError</li>
+<li>本地方法栈（Native Method Stack） 与Vm stack相似，不过他用于为本地方法服务</li>
+<li>java堆（Heap） 被所有线程共享的区域，启动JVM时初始化，所有对象实例以及数组都要在堆上分配。它是垃圾回收器管理的主要区域，也称为GC堆。可以分为新生代和老年代，再细致一点有Eden空间、From Survivor空间、To Survivor空间。堆内存不够时，会抛出OutOfMemory异常</li>
+<li>方法区（Method Area） 各个线程共享的区域，用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。运行时常量池属于方法区的一部分。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>jvm内存区域详见： “深入理解Java虚拟机：JVM高级特性与最佳实践。” 第二章、2.2节、 Apple Books.</p>
+</blockquote>
+<ol>
+<li>HotSpot虚拟机常见的垃圾收集器：</li>
+</ol>
+<ul>
+<li>“Serial收集器是最基本、发展历史最悠久的收集器，曾经（在JDK 1.3.1之前）是虚拟机新生代收集的唯一选择。大家看名字就会知道，这个收集器是一个单线程的收集器，但它的“单线程”的意义并不仅仅说明它只会使用一个CPU或一条收集线程去完成垃圾收集工作，更重要的是在它进行垃圾收集时，必须暂停其他所有的工作线程，直到它收集结束。”“Serial收集器对于运行在Client模式下的虚拟机来说是一个很好的选择”</li>
+<li>“ParNew收集器其实就是Serial收集器的多线程版本，除了使用多条线程进行垃圾收集之外，其余行为包括Serial收集器可用的所有控制参数（例如：-XX:SurvivorRatio、-XX:PretenureSizeThreshold、-XX:HandlePromotionFailure等）、收集算法、Stop The World、对象分配规则、回收策略等都与Serial收集器完全一样，在实现上，这两种收集器也共用了相当多的代码。”</li>
+<li>“Parallel Scavenge收集器是一个新生代收集器，它也是使用复制算法的收集器”；“Parallel Scavenge收集器的特点是它的关注点与其他收集器不同，CMS等收集器的关注点是尽可能地缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量（Throughput）。所谓吞吐量就是CPU用于运行用户代码的时间与CPU总消耗时间的比值，即吞吐量=运行用户代码时间/（运行用户代码时间+垃圾收集时间），虚拟机总共运行了100分钟，其中垃圾收集花掉1分钟，那吞吐量就是99%。；停顿时间越短就越适合需要与用户交互的程序，良好的响应速度能提升用户体验，而高吞吐量则可以高效率地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。”</li>
+<li>“Serial Old是Serial收集器的老年代版本，它同样是一个单线程收集器，使用“标记-整理”算法。这个收集器的主要意义也是在于给Client模式下的虚拟机使用”</li>
+<li>“Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和“标记-整理”算法。这个收集器是在JDK 1.6中才开始提供的，在此之前，新生代的Parallel Scavenge收集器一直处于比较尴尬的状态。原因是，如果新生代选择了Parallel Scavenge收集器，老年代除了Serial Old（PS MarkSweep）收集器外别无选择（还记得上面说过Parallel Scavenge收集器无法与CMS收集器配合工作吗？）。由于老年代Serial Old收集器在服务端应用性能上的“拖累”，使用了Parallel Scavenge收集器也未必能在整体应用上获得吞吐量最大化的效果，由于单线程的老年代收集中无法充分利用服务器多CPU的处理能力，在老年代很大而且硬件比较高级的环境中，这种组合的吞吐量甚至还不一定有ParNew加CMS的组合“给力”</li>
+<li>“CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。目前很大一部分的Java应用集中在互联网站或者B/S系统的服务端上，这类应用尤其重视服务的响应速度，希望系统停顿时间最短，以给用户带来较好的体验。CMS收集器就非常符合这类应用的需求。；从名字（包含”Mark Sweep”）上就可以看出，CMS收集器是基于“标记—清除”算法实现的，它的运作过程相对于前面几种收集器来说更复杂一些，整个过程分为4个步骤，包括：初始标记（CMS initial mark）并发标记（CMS concurrent mark）重新标记（CMS remark）并发清除（CMS concurrent sweep）”</li>
+<li><p>“G1是一款面向服务端应用的垃圾收集器。HotSpot开发团队赋予它的使命是（在比较长期的）未来可以替换掉JDK 1.5中发布的CMS收集器。与其他GC收集器相比，G1具备如下特点” ：</p>
+<ul>
+<li><p>“并行与并发：G1能充分利用多CPU、多核环境下的硬件优势，使用多个CPU（CPU或者CPU核心）来缩短Stop-The-World停顿的时间，部分其他收集器原本需要停顿Java线程执行的GC动作，G1收集器仍然可以通过并发的方式让Java程序继续执行。</p>
+</li>
+<li><p>分代收集：与其他收集器一样，分代概念在G1中依然得以保留。虽然G1可以不需要其他收集器配合就能独立管理整个GC堆，但它能够采用不同的方式去处理新创建的对象和已经存活了一段时间、熬过多次GC的旧对象以获取更好的收集效果。</p>
+</li>
+<li><p>空间整合：与CMS的“标记—清理”算法不同，G1从整体来看是基于“标记—整理”算法实现的收集器，从局部（两个Region之间）上来看是基于“复制”算法实现的，但无论如何，这两种算法都意味着G1运作期间不会产生内存空间碎片，收集后能提供规整的可用内存。这种特性有利于程序长时间运行[…]”</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>垃圾收集器详见： “深入理解Java虚拟机：JVM高级特性与最佳实践。” 第三章、3.5节、 Apple Books.</p>
+</blockquote>
+<ol>
+<li><p>对象已死的判断：<br>引用计数法：无法解决循环引用的问题<br>可达性分析算法：判断从gcRoots是否可达（<code>Java、c#等主流商用语言都用这个算法</code>）<br>详见： “深入理解Java虚拟机：JVM高级特性与最佳实践。” 第三章、3.2节、</p>
+</li>
+<li><p>回收算法：<br>标记清除；复制；标记整理；分代收集算法<br>详见： “深入理解Java虚拟机：JVM高级特性与最佳实践。” 第三章、3.3节、</p>
+</li>
+<li><p>内存分配策略</p>
+</li>
+</ol>
+<ul>
+<li>对象优先在新生代的Eden区分配，当Eden区没有足够空间进行分配时，虚拟机将发起一次Minor GC；</li>
+<li>大对象直接进入老年代；</li>
+<li>长期存活的对象直接进入老年代；</li>
+</ul>
+<ol>
+<li>Minor GC和Full GC有什么不一样吗？</li>
+</ol>
+<ul>
+<li><p>新生代GC（Minor GC）：指发生在新生代的垃圾收集动作，因为Java对象大多都具备朝生夕灭的特性，所以Minor GC非常频繁，一般回收速度也比较快。</p>
+</li>
+<li><p>老年代GC（Major GC/Full GC）：指发生在老年代的GC，出现了Major GC，经常会伴随至少一次的Minor GC（但非绝对的，在Parallel Scavenge收集器的收集策略里就有直接进行Major GC的策略选择过程）。Major GC的速度一般会比Minor GC慢10倍以上。”</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/03/2018-12-04/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -399,7 +1094,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/27/2018-11-23-1/" itemprop="url">几种树</a></h1>
+                <a class="post-title-link" href="/2018/11/27/2018-11-23-1/" itemprop="url">数据结构中的几种树的区别</a></h1>
         
 
         <div class="post-meta">
@@ -521,7 +1216,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/23/2018-11-23-2/" itemprop="url">嘿嘿，mongoDB也有索引</a></h1>
+                <a class="post-title-link" href="/2018/11/23/2018-11-23-2/" itemprop="url">mongoDB索引</a></h1>
         
 
         <div class="post-meta">
@@ -768,138 +1463,6 @@
 <p>　　从Java1.5开始JDK的atomic包里提供了一个类AtomicStampedReference来解决ABA问题。这个类在内部不仅维护了对象值，还维护了一个时间戳（可以是任意的一个整数来表示状态值）。当设置对象值时，对象值和状态值都必须满足期望值才会写入成功。因此即使对象被反复读写，写会原值，只要状态值发生变化，就能防止不恰当的写入。　　</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> expectedReference 期望值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> newReference 写入新值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> expectedStamp 期望状态值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> newStamp 新状态值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> true if successful</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">compareAndSet</span><span class="params">(V   expectedReference,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 V   newReference,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">int</span> expectedStamp,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">int</span> newStamp)</span> </span>&#123;</span><br><span class="line">Pair&lt;V&gt; current = pair;</span><br><span class="line"><span class="keyword">return</span></span><br><span class="line">  expectedReference == current.reference &amp;&amp;</span><br><span class="line">  expectedStamp == current.stamp &amp;&amp;</span><br><span class="line">  ((newReference == current.reference &amp;&amp;</span><br><span class="line">    newStamp == current.stamp) ||</span><br><span class="line">   casPair(current, Pair.of(newReference, newStamp)));</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <p>— 不管多忙，每天给自己预留至少半小时的学习时间，拒绝做代码垃圾的搬运工！</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-10/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/09/2018-10-10/" itemprop="url">使用forever/pm2让node.js持久运行</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
-                2018-10-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这里我们讨论几种使node应用在后台运行的几种方式，简单的是<code>linux后台执行</code>，另外两种是使用进程管理工具<code>forever</code> <code>pm2</code>。</p>
-<h2 id="linux-nohup-amp-命令"><a href="#linux-nohup-amp-命令" class="headerlink" title="linux nohup &amp; 命令"></a>linux nohup &amp; 命令</h2><p>使用<code>&amp;</code>符号后台执行，并利用<code>nohup</code>命令实现进程禁止挂起</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nohup node app.js &amp;</span><br></pre></td></tr></table></figure>
-<h2 id="forever工具"><a href="#forever工具" class="headerlink" title="forever工具"></a>forever工具</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install forever -g   <span class="comment">#安装</span></span><br><span class="line">forever start app.js     <span class="comment">#启动应用</span></span><br><span class="line">forever stop app.js      <span class="comment">#关闭应用</span></span><br><span class="line">forever restartall       <span class="comment">#重启所有应用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#输出日志和错误</span></span><br><span class="line">forever start -l forever.log -o out.log -e err.log app.js   </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定forever信息输出文件，当然，默认它会放到~/.forever/forever.log</span></span><br><span class="line">forever start -l forever.log app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定app.js中的日志信息和错误日志输出文件，  </span></span><br><span class="line"><span class="comment"># -o 就是console.log输出的信息，-e 就是console.error输出的信息</span></span><br><span class="line">forever start -o out.log -e err.log app.js </span><br><span class="line"></span><br><span class="line"><span class="comment"># 追加日志，forever默认是不能覆盖上次的启动日志，  </span></span><br><span class="line"><span class="comment"># 所以如果第二次启动不加-a，则会不让运行  </span></span><br><span class="line">forever start -l forever.log -a app.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 监听当前文件夹下的所有文件改动（不太建议这样）  </span></span><br><span class="line">forever start -w app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有运行的服务 </span></span><br><span class="line">forever list  </span><br><span class="line"></span><br><span class="line"><span class="comment">######停止操作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止所有运行的node App  </span></span><br><span class="line">forever stopall  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 停止其中一个node App  </span></span><br><span class="line">forever stop app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 当然还可以这样  </span></span><br><span class="line"><span class="comment"># forever list 找到对应的id，然后：  </span></span><br><span class="line">forever stop [id]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发环境下  </span></span><br><span class="line">NODE_ENV=development forever start -l forever.log -e err.log -a app.js  </span><br><span class="line"><span class="comment"># 线上环境下  </span></span><br><span class="line">NODE_ENV=production forever start -l ~/.forever/forever.log -e ~/.forever/err.log -w -a app.js</span><br><span class="line"><span class="comment">#上面加上NODE_ENV为了让app.js辨认当前是什么环境用的</span></span><br><span class="line">The End</span><br></pre></td></tr></table></figure>
-<h2 id="PM2"><a href="#PM2" class="headerlink" title="PM2"></a>PM2</h2><p>PM2是一个内置的负载平衡器Node.js应用生产过程管理。它允许您永久地保存应用程序，并在不停机的情况下重新加载它们</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ npm install -g pm2</span><br><span class="line"><span class="comment"># 启动 --name tank是给这个进程取个名字</span></span><br><span class="line">$ pm2 start index.js --name tankName</span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用命令</span></span><br><span class="line"><span class="variable">$pm2</span> stop  &lt;app_name|id|all&gt;  停止</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> delete &lt;app_name|id|all&gt; 删除</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> restart &lt;app_name|id|all&gt; 重启</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> reload &lt;app_name|id|all&gt; 重载</span><br></pre></td></tr></table></figure>
-<p>跟多命令</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">$ pm2 start app.js -i 4 #后台运行pm2，启动4个app.js </span><br><span class="line">                                # 也可以把&apos;max&apos; 参数传递给 start</span><br><span class="line">                                # 正确的进程数目依赖于Cpu的核心数目</span><br><span class="line">$ pm2 start app.js --name my-api # 命名进程</span><br><span class="line">$ pm2 list               # 显示所有进程状态</span><br><span class="line">$ pm2 monit              # 监视所有进程</span><br><span class="line">$ pm2 logs               #  显示所有进程日志</span><br><span class="line">$ pm2 stop all           # 停止所有进程</span><br><span class="line">$ pm2 restart all        # 重启所有进程</span><br><span class="line">$ pm2 reload all         # 0秒停机重载进程 (用于 NETWORKED 进程)</span><br><span class="line">$ pm2 stop 0             # 停止指定的进程</span><br><span class="line">$ pm2 restart 0          # 重启指定的进程</span><br><span class="line">$ pm2 startup            # 产生 init 脚本 保持进程活着</span><br><span class="line">$ pm2 web                # 运行健壮的 computer API endpoint (http://localhost:9615)</span><br><span class="line">$ pm2 delete 0           # 杀死指定的进程</span><br><span class="line">$ pm2 delete all         # 杀死全部进程</span><br><span class="line"></span><br><span class="line">运行进程的不同方式：</span><br><span class="line">$ pm2 start app.js -i max  # 根据有效CPU数目启动最大进程数目</span><br><span class="line">$ pm2 start app.js -i 3      # 启动3个进程</span><br><span class="line">$ pm2 start app.js -x        #用fork模式启动 app.js 而不是使用 cluster</span><br><span class="line">$ pm2 start app.js -x -- -a 23   # 用fork模式启动 app.js 并且传递参数 (-a 23)</span><br><span class="line">$ pm2 start app.js --name serverone  # 启动一个进程并把它命名为 serverone</span><br><span class="line">$ pm2 stop serverone       # 停止 serverone 进程</span><br><span class="line">$ pm2 start app.json        # 启动进程, 在 app.json里设置选项</span><br><span class="line">$ pm2 start app.js -i max -- -a 23                   #在--之后给 app.js 传递参数</span><br><span class="line">$ pm2 start app.js -i max -e err.log -o out.log  # 启动 并 生成一个配置文件</span><br><span class="line">你也可以执行用其他语言编写的app  ( fork 模式):</span><br><span class="line">$ pm2 start my-bash-script.sh    -x --interpreter bash</span><br><span class="line">$ pm2 start my-python-script.py -x --interpreter python</span><br><span class="line"></span><br><span class="line">0秒停机重载:</span><br><span class="line">这项功能允许你重新载入代码而不用失去请求连接。</span><br><span class="line">注意：</span><br><span class="line">仅能用于web应用</span><br><span class="line">运行于Node 0.11.x版本</span><br><span class="line">运行于 cluster 模式（默认模式）</span><br><span class="line">$ pm2 reload all</span><br><span class="line"></span><br><span class="line">CoffeeScript:</span><br><span class="line">$ pm2 start my_app.coffee  #这就是全部</span><br><span class="line"></span><br><span class="line">PM2准备好为产品级服务了吗？</span><br><span class="line">只需在你的服务器上测试</span><br><span class="line">$ git clone https://github.com/Unitech/pm2.git</span><br><span class="line">$ cd pm2</span><br><span class="line">$ npm install  # 或者 npm install --dev ，如果devDependencies 没有安装</span><br><span class="line">$ npm test</span><br></pre></td></tr></table></figure>
-<p>错误日志位置：</p>
-<p>error log path  /root/.pm2/pids/anaweb-13.pid </p>
-<p>错误日志，出现启动 error找她就没错</p>
-<p>out log path    /root/.pm2/logs/anaweb-out-13.log </p>
-<p>参考1: <a href="https://cnodejs.org/topic/5021c2cff767cc9a51e684e3" target="_blank" rel="noopener">https://cnodejs.org/topic/5021c2cff767cc9a51e684e3</a><br>参考2: <a href="http://tcrct.iteye.com/blog/2043644" target="_blank" rel="noopener">http://tcrct.iteye.com/blog/2043644</a><br>forever github: <a href="https://github.com/foreverjs/forever" target="_blank" rel="noopener">https://github.com/foreverjs/forever</a></p>
 
           
         
@@ -1220,6 +1783,138 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/09/2018-10-10/" itemprop="url">使用forever/pm2让node.js持久运行</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这里我们讨论几种使node应用在后台运行的几种方式，简单的是<code>linux后台执行</code>，另外两种是使用进程管理工具<code>forever</code> <code>pm2</code>。</p>
+<h2 id="linux-nohup-amp-命令"><a href="#linux-nohup-amp-命令" class="headerlink" title="linux nohup &amp; 命令"></a>linux nohup &amp; 命令</h2><p>使用<code>&amp;</code>符号后台执行，并利用<code>nohup</code>命令实现进程禁止挂起</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nohup node app.js &amp;</span><br></pre></td></tr></table></figure>
+<h2 id="forever工具"><a href="#forever工具" class="headerlink" title="forever工具"></a>forever工具</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install forever -g   <span class="comment">#安装</span></span><br><span class="line">forever start app.js     <span class="comment">#启动应用</span></span><br><span class="line">forever stop app.js      <span class="comment">#关闭应用</span></span><br><span class="line">forever restartall       <span class="comment">#重启所有应用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#输出日志和错误</span></span><br><span class="line">forever start -l forever.log -o out.log -e err.log app.js   </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定forever信息输出文件，当然，默认它会放到~/.forever/forever.log</span></span><br><span class="line">forever start -l forever.log app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定app.js中的日志信息和错误日志输出文件，  </span></span><br><span class="line"><span class="comment"># -o 就是console.log输出的信息，-e 就是console.error输出的信息</span></span><br><span class="line">forever start -o out.log -e err.log app.js </span><br><span class="line"></span><br><span class="line"><span class="comment"># 追加日志，forever默认是不能覆盖上次的启动日志，  </span></span><br><span class="line"><span class="comment"># 所以如果第二次启动不加-a，则会不让运行  </span></span><br><span class="line">forever start -l forever.log -a app.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 监听当前文件夹下的所有文件改动（不太建议这样）  </span></span><br><span class="line">forever start -w app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有运行的服务 </span></span><br><span class="line">forever list  </span><br><span class="line"></span><br><span class="line"><span class="comment">######停止操作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止所有运行的node App  </span></span><br><span class="line">forever stopall  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 停止其中一个node App  </span></span><br><span class="line">forever stop app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 当然还可以这样  </span></span><br><span class="line"><span class="comment"># forever list 找到对应的id，然后：  </span></span><br><span class="line">forever stop [id]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发环境下  </span></span><br><span class="line">NODE_ENV=development forever start -l forever.log -e err.log -a app.js  </span><br><span class="line"><span class="comment"># 线上环境下  </span></span><br><span class="line">NODE_ENV=production forever start -l ~/.forever/forever.log -e ~/.forever/err.log -w -a app.js</span><br><span class="line"><span class="comment">#上面加上NODE_ENV为了让app.js辨认当前是什么环境用的</span></span><br><span class="line">The End</span><br></pre></td></tr></table></figure>
+<h2 id="PM2"><a href="#PM2" class="headerlink" title="PM2"></a>PM2</h2><p>PM2是一个内置的负载平衡器Node.js应用生产过程管理。它允许您永久地保存应用程序，并在不停机的情况下重新加载它们</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ npm install -g pm2</span><br><span class="line"><span class="comment"># 启动 --name tank是给这个进程取个名字</span></span><br><span class="line">$ pm2 start index.js --name tankName</span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用命令</span></span><br><span class="line"><span class="variable">$pm2</span> stop  &lt;app_name|id|all&gt;  停止</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> delete &lt;app_name|id|all&gt; 删除</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> restart &lt;app_name|id|all&gt; 重启</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> reload &lt;app_name|id|all&gt; 重载</span><br></pre></td></tr></table></figure>
+<p>跟多命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">$ pm2 start app.js -i 4 #后台运行pm2，启动4个app.js </span><br><span class="line">                                # 也可以把&apos;max&apos; 参数传递给 start</span><br><span class="line">                                # 正确的进程数目依赖于Cpu的核心数目</span><br><span class="line">$ pm2 start app.js --name my-api # 命名进程</span><br><span class="line">$ pm2 list               # 显示所有进程状态</span><br><span class="line">$ pm2 monit              # 监视所有进程</span><br><span class="line">$ pm2 logs               #  显示所有进程日志</span><br><span class="line">$ pm2 stop all           # 停止所有进程</span><br><span class="line">$ pm2 restart all        # 重启所有进程</span><br><span class="line">$ pm2 reload all         # 0秒停机重载进程 (用于 NETWORKED 进程)</span><br><span class="line">$ pm2 stop 0             # 停止指定的进程</span><br><span class="line">$ pm2 restart 0          # 重启指定的进程</span><br><span class="line">$ pm2 startup            # 产生 init 脚本 保持进程活着</span><br><span class="line">$ pm2 web                # 运行健壮的 computer API endpoint (http://localhost:9615)</span><br><span class="line">$ pm2 delete 0           # 杀死指定的进程</span><br><span class="line">$ pm2 delete all         # 杀死全部进程</span><br><span class="line"></span><br><span class="line">运行进程的不同方式：</span><br><span class="line">$ pm2 start app.js -i max  # 根据有效CPU数目启动最大进程数目</span><br><span class="line">$ pm2 start app.js -i 3      # 启动3个进程</span><br><span class="line">$ pm2 start app.js -x        #用fork模式启动 app.js 而不是使用 cluster</span><br><span class="line">$ pm2 start app.js -x -- -a 23   # 用fork模式启动 app.js 并且传递参数 (-a 23)</span><br><span class="line">$ pm2 start app.js --name serverone  # 启动一个进程并把它命名为 serverone</span><br><span class="line">$ pm2 stop serverone       # 停止 serverone 进程</span><br><span class="line">$ pm2 start app.json        # 启动进程, 在 app.json里设置选项</span><br><span class="line">$ pm2 start app.js -i max -- -a 23                   #在--之后给 app.js 传递参数</span><br><span class="line">$ pm2 start app.js -i max -e err.log -o out.log  # 启动 并 生成一个配置文件</span><br><span class="line">你也可以执行用其他语言编写的app  ( fork 模式):</span><br><span class="line">$ pm2 start my-bash-script.sh    -x --interpreter bash</span><br><span class="line">$ pm2 start my-python-script.py -x --interpreter python</span><br><span class="line"></span><br><span class="line">0秒停机重载:</span><br><span class="line">这项功能允许你重新载入代码而不用失去请求连接。</span><br><span class="line">注意：</span><br><span class="line">仅能用于web应用</span><br><span class="line">运行于Node 0.11.x版本</span><br><span class="line">运行于 cluster 模式（默认模式）</span><br><span class="line">$ pm2 reload all</span><br><span class="line"></span><br><span class="line">CoffeeScript:</span><br><span class="line">$ pm2 start my_app.coffee  #这就是全部</span><br><span class="line"></span><br><span class="line">PM2准备好为产品级服务了吗？</span><br><span class="line">只需在你的服务器上测试</span><br><span class="line">$ git clone https://github.com/Unitech/pm2.git</span><br><span class="line">$ cd pm2</span><br><span class="line">$ npm install  # 或者 npm install --dev ，如果devDependencies 没有安装</span><br><span class="line">$ npm test</span><br></pre></td></tr></table></figure>
+<p>错误日志位置：</p>
+<p>error log path  /root/.pm2/pids/anaweb-13.pid </p>
+<p>错误日志，出现启动 error找她就没错</p>
+<p>out log path    /root/.pm2/logs/anaweb-out-13.log </p>
+<p>参考1: <a href="https://cnodejs.org/topic/5021c2cff767cc9a51e684e3" target="_blank" rel="noopener">https://cnodejs.org/topic/5021c2cff767cc9a51e684e3</a><br>参考2: <a href="http://tcrct.iteye.com/blog/2043644" target="_blank" rel="noopener">http://tcrct.iteye.com/blog/2043644</a><br>forever github: <a href="https://github.com/foreverjs/forever" target="_blank" rel="noopener">https://github.com/foreverjs/forever</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/30/2018-08-30/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1239,7 +1934,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/30/2018-08-30/" itemprop="url">ps -ef 和 ps aux</a></h1>
+                <a class="post-title-link" href="/2018/08/30/2018-08-30/" itemprop="url">ps -ef、 ps aux、top、pidstat</a></h1>
         
 
         <div class="post-meta">
@@ -1351,6 +2046,8 @@
 <li>TIME  //进程使用cpu的时间</li>
 <li>CMD    //命令的名称和参数</li>
 </ul>
+<h3 id="ps-ef展示启动时间"><a href="#ps-ef展示启动时间" class="headerlink" title="ps -ef展示启动时间"></a>ps -ef展示启动时间</h3><p>ps -ef、ps aux命令可以展示进程的大概信息，启动时间展示不完整，如果想得知进程的详细启动时间，怎么办呢？</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">linux:</span><br><span class="line">$ ps -eo pid,lstart,cmd</span><br><span class="line"></span><br><span class="line">outPut:</span><br><span class="line">PID                  STARTED CMD</span><br><span class="line">    1 Mon Jun 19 21:31:08 2017 /sbin/init</span><br><span class="line">    2 Mon Jun 19 21:31:08 2017 [kthreadd]</span><br><span class="line">    3 Mon Jun 19 21:31:08 2017 [ksoftirqd/0]</span><br></pre></td></tr></table></figure>
 <h3 id="ps-aux-BSD的格式来显示"><a href="#ps-aux-BSD的格式来显示" class="headerlink" title="ps aux BSD的格式来显示"></a>ps aux BSD的格式来显示</h3><table>
 <thead>
 <tr>
@@ -1413,6 +2110,14 @@
 </ul>
 </li>
 </ul>
+<h3 id="top"><a href="#top" class="headerlink" title="top"></a>top</h3><p>使用示例</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ top -p 4989</span><br><span class="line">$ top</span><br></pre></td></tr></table></figure>
+<p>列说明</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PID,USER进程号，用户名。</span><br><span class="line"></span><br><span class="line">NI，nice，好看不好看。。动态修正CPU调度。范围（-20~19）。越大，cpu调度越一般，越小，cpu调度越偏向它。一般用于后台进程，调整也是往大了调，用来给前台进程让出CPU资源。</span><br><span class="line"></span><br><span class="line">PR：优先级，会有两种格式，一种是数字（默认20），一种是RT字符串。</span><br><span class="line"></span><br><span class="line">PR默认是20，越小，优先级越高。修改nice可以同时修改PR，测试过程：先开一个窗口，运行wc，另开一个窗口运行top，按N按照PID倒序排，按r输入要renice的PID，然后输入-19~20之间的值，可以看到NI变成输入的值，PR=PR+NI。修改NI得到PR的范围是0~39。优先级由高到低</span><br><span class="line"></span><br><span class="line">RT是real-time。只能用chrt -p (1~99) pid来修改。chrt -p 1 1234会将1234的PR改成-2，chrt -p 98 1234变成-99。chrt -p 99 1234会变成RT......只要chrt过，修改nice后PR不会再更改。修改chrt得到的PR范围是RT~-2。优先级由高到低</span><br><span class="line"></span><br><span class="line">VIRT：一个进程瞬时可以访问的所有内存总和大小，包括RES自己在使用的，共享的类库，和其他进程共享的内存，内存中的文件数据。共享的类库，一个大文件，只有一个程序片段被用到，这个文件会被 map到VIRT和SHR中，程序片段会在RES中。</span><br><span class="line"></span><br><span class="line">S：状态S -- Process Status. The status of the task which can be one of:</span><br><span class="line">D Uninterruptible sleep (usually IO)</span><br><span class="line">R Running or runnable (on run queue)</span><br><span class="line">S Interruptible sleep (waiting for an event to complete)</span><br><span class="line">T Stopped, either by a job control signal or because it is being traced.</span><br><span class="line">W paging (not valid since the 2.6.xx kernel)</span><br><span class="line">X dead (should never be seen)</span><br><span class="line">Z Defunct (&quot;zombie&quot;) process, terminated but not reaped by its parent.</span><br><span class="line"></span><br><span class="line">%CPU，总体CPU百分比，按H可以显示所有线程。8个核，从0~800%。</span><br><span class="line">%mem，RES占总MEM的百分比</span><br><span class="line">TIME+，自启动到现在占用的CPU时间。</span><br></pre></td></tr></table></figure>
+<h3 id="pidstat-进程的信息"><a href="#pidstat-进程的信息" class="headerlink" title="pidstat 进程的信息"></a>pidstat 进程的信息</h3><p>使用示例</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">pidstat [ 选项 ] [ &lt;时间间隔&gt; ] [ &lt;次数&gt; ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># pid4989的cpu详细详细，每个1s打印一次，打印8次</span></span><br><span class="line">pidstat -u -p 4989 1 8</span><br><span class="line"><span class="comment"># 内存</span></span><br><span class="line">pidstat -r -p 4989 1 8</span><br><span class="line"><span class="comment"># 磁盘</span></span><br><span class="line">pidstat -d -p 4989 1 8</span><br><span class="line"><span class="comment"># 展示三者</span></span><br><span class="line">pidstat -urd -p 4989 1 8</span><br><span class="line"><span class="comment"># -h 在一行展示所有信息</span></span><br><span class="line">pidstat -urdh -p 4989 1 8</span><br><span class="line"><span class="comment"># 更多</span></span><br><span class="line">man pidstat</span><br></pre></td></tr></table></figure>
+<p>参数说明</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-u：默认的参数，显示各个进程的cpu使用统计</span><br><span class="line">-r：显示各个进程的内存使用统计</span><br><span class="line">-d：显示各个进程的IO使用情况</span><br><span class="line">-p：指定进程号</span><br><span class="line">-w：显示每个进程的上下文切换情况</span><br><span class="line">-t：显示选择任务的线程的统计信息外的额外信息</span><br><span class="line">-T &#123; TASK | CHILD | ALL &#125;</span><br><span class="line">这个选项指定了pidstat监控的。TASK表示报告独立的task，CHILD关键字表示报告进程下所有线程统计信息。ALL表示报告独立的task和task下面的所有线程。</span><br><span class="line">注意：task和子线程的全局的统计信息和pidstat选项无关。这些统计信息不会对应到当前的统计间隔，这些统计信息只有在子线程kill或者完成的时候才会被收集。</span><br><span class="line">-V：版本号</span><br><span class="line">-h：在一行上显示了所有活动，这样其他程序可以容易解析。</span><br><span class="line">-I：在SMP环境，表示任务的CPU使用率/内核数量</span><br><span class="line">-l：显示命令名和所有参数</span><br></pre></td></tr></table></figure>
 
           
         
@@ -1480,7 +2185,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/23/2018-08-23/" itemprop="url">linux查看内存</a></h1>
+                <a class="post-title-link" href="/2018/08/23/2018-08-23/" itemprop="url">linux内存命令-top,free细解</a></h1>
         
 
         <div class="post-meta">
@@ -1684,8 +2389,7 @@
         
           
             <h2 id="什么是事件循环？"><a href="#什么是事件循环？" class="headerlink" title="什么是事件循环？"></a>什么是事件循环？</h2><p>事件循环是Node.js中实现非阻塞IO的机制，它通过及时的转发操作请求给系统内核来实现，尽管JavaScript是单线程的。<br>目前大部分的系统内核都是多线程的，可以后台同时处理多个操作请求。当某个请求处理完毕后，内核会通知node把对应的回调函数加入poll事件队列等待执行。我们稍后具体阐述这个流程。</p>
-<h2 id="事件循环解释"><a href="#事件循环解释" class="headerlink" title="事件循环解释"></a>事件循环解释</h2><p>Node.js启动时会</p>
-
+<h2 id="事件循环解释"><a href="#事件循环解释" class="headerlink" title="事件循环解释"></a>事件循环解释</h2>
           
         
       
@@ -1752,7 +2456,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/22/2018-08-22/" itemprop="url">Java线程安全容器</a></h1>
+                <a class="post-title-link" href="/2018/08/22/2018-08-22/" itemprop="url">Java线程安全容器小记</a></h1>
         
 
         <div class="post-meta">
@@ -1888,7 +2592,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/26/2018-07-26/" itemprop="url">node退出进程时关闭mongo连接</a></h1>
+                <a class="post-title-link" href="/2018/07/26/2018-07-26/" itemprop="url">node退出进程时,关闭mongo连接</a></h1>
         
 
         <div class="post-meta">
@@ -1900,7 +2604,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-26T00:55:12+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-26T00:00:00+08:00">
                 2018-07-26
               </time>
             
@@ -2009,7 +2713,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/13/2018-07-11-3/" itemprop="url">SVN简介</a></h1>
+                <a class="post-title-link" href="/2018/07/13/2018-07-11-3/" itemprop="url">SVN介绍</a></h1>
         
 
         <div class="post-meta">
@@ -4172,599 +4876,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/babel-cli入门使用步骤/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/22/babel-cli入门使用步骤/" itemprop="url">babel-cli入门使用步骤</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-22T00:00:00+08:00">
-                2017-03-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="babel"><a href="#babel" class="headerlink" title="babel"></a>babel</h1><h2 id="babel-cli"><a href="#babel-cli" class="headerlink" title="babel-cli"></a>babel-cli</h2><p>项目中遇到了一个es6写的文件代码，在某些老的android设备的webview运行环境中不支持es6，比如<code>class</code>，<code>扩展运算符</code>等，使用这个解决方案：用<code>babel-cli</code>和<code>babel-preset-es2015</code>插件，把代码转为es5的代码。下面是具体步骤：</p>
-<h3 id="1-全局安装babel-cli"><a href="#1-全局安装babel-cli" class="headerlink" title="1.全局安装babel-cli"></a>1.全局安装babel-cli</h3><p><code>$ npm install --global babel-cli</code></p>
-<p><code>babel</code>提供命令行工具，用来在命令行转码，参考：<a href="http://babeljs.cn/docs/usage/cli/" target="_blank" rel="noopener">官方文档</a></p>
-<p>基本用法如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 转码结果输出到标准输出</span></span><br><span class="line">$ babel example.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转码结果写入一个文件</span></span><br><span class="line"><span class="comment"># --out-file 或 -o 参数指定输出文件</span></span><br><span class="line">$ babel example.js --out-file compiled.js</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">$ babel example.js -o compiled.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 整个目录转码</span></span><br><span class="line"><span class="comment"># --out-dir 或 -d 参数指定输出目录</span></span><br><span class="line">$ babel src --out-dir lib</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">$ babel src -d lib</span><br><span class="line"></span><br><span class="line"><span class="comment"># -s 参数生成source map文件</span></span><br><span class="line">$ babel src -d lib -s</span><br></pre></td></tr></table></figure>
-<h3 id="2-项目中新建-babelrc-配置文件"><a href="#2-项目中新建-babelrc-配置文件" class="headerlink" title="2.项目中新建.babelrc 配置文件"></a>2.项目中新建.babelrc 配置文件</h3><p><code>.babelrc</code>它是<code>babel</code>的配置文件，存放在项目的根目录下面，用来设置转码规则和插件。基本格式如下：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"presets"</span>: [</span><br><span class="line">      <span class="string">"es2015"</span>,</span><br><span class="line">      <span class="string">"react"</span>,</span><br><span class="line">      <span class="string">"stage-2"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"plugins"</span>: []</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>presets字段设定<code>转码规则</code>，官方提供以下的规则集，你可以根据需要安装。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ES2015转码规则</span></span><br><span class="line">$ npm install --save-dev babel-preset-es2015</span><br><span class="line"></span><br><span class="line"><span class="comment"># react转码规则</span></span><br><span class="line">$ npm install --save-dev babel-preset-react</span><br><span class="line"></span><br><span class="line"><span class="comment"># ES7不同阶段语法提案的转码规则（共有4个阶段），选装一个</span></span><br><span class="line">$ npm install --save-dev babel-preset-stage-0</span><br><span class="line">$ npm install --save-dev babel-preset-stage-1</span><br><span class="line">$ npm install --save-dev babel-preset-stage-2</span><br><span class="line">$ npm install --save-dev babel-preset-stage-3</span><br></pre></td></tr></table></figure>
-<h3 id="3-安装es2015插件"><a href="#3-安装es2015插件" class="headerlink" title="3.安装es2015插件"></a>3.安装es2015插件</h3><p><code>$ npm install --save-dev babel-preset-es2015</code></p>
-<p>修改配置文件为：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"presets"</span>: [</span><br><span class="line">      <span class="string">"es2015"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"plugins"</span>: []</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-在命令行中使用命令转码"><a href="#4-在命令行中使用命令转码" class="headerlink" title="4.在命令行中使用命令转码"></a>4.在命令行中使用命令转码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ babel example.js -o compiled.js</span><br></pre></td></tr></table></figure>
-<h2 id="关于babel-node"><a href="#关于babel-node" class="headerlink" title="关于babel-node"></a>关于babel-node</h2><p>babel-cli工具自带一个<code>babel-node</code>命令，提供一个支持ES6的REPL环境。它支持Node的REPL环境的所有功能，而且可以直接运行ES6代码。<br>它不用单独安装，而是随<code>babel-cli</code>一起安装。然后，执行babel-node就进入PEPL环境。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ babel-node</span><br><span class="line">&gt; (x =&gt; x * 2)(1)</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
-<p>babel-node命令可以直接运行ES6脚本。将上面的代码放入脚本文件es6.js，然后直接运行。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ babel-node es6.js</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
-<p>babel-node也可以安装在项目中。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install --save-dev babel-cli</span><br></pre></td></tr></table></figure>
-<p>然后，改写<code>package.json</code>。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"script-name"</span>: <span class="string">"babel-node script.js"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面代码中，使用babel-node替代node，这样script.js本身就不用做任何转码处理。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/22/ES6中5种遍历对象属性的方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/22/ES6中5种遍历对象属性的方法/" itemprop="url">ES6中5种遍历对象属性的方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-22T00:00:00+08:00">
-                2017-03-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ES6中5种遍历对象属性的方法"><a href="#ES6中5种遍历对象属性的方法" class="headerlink" title="ES6中5种遍历对象属性的方法"></a>ES6中5种遍历对象属性的方法</h1><h3 id="5种遍历对象属性的方法："><a href="#5种遍历对象属性的方法：" class="headerlink" title="5种遍历对象属性的方法："></a>5种遍历对象属性的方法：</h3><ul>
-<li><p>for…in<br><code>for...in</code>循环遍历自身的和继承的可枚举属性（不含Symbol属性）</p>
-</li>
-<li><p>Object.keys(obj)<br><code>Object.keys(obj)</code>返回一个数组，包括对象自身的（不含继承）所有可枚举属性（不含Symbol属性）</p>
-</li>
-<li><p>Object.getOwnPropertyNames(obj)<br><code>Object.getOwnPropertyNames(obj)</code>返回一个数组，包括对象自身（不含继承）所有属性（包括不可枚举的属性，不含Symbol属性）</p>
-</li>
-<li><p>Object.getOwnPropertySymbols(obj)<br><code>Object.getOwnPropertySymbols(obj)</code>返回一个数组，包括对象自身所有的Symbol属性</p>
-</li>
-<li><p>Reflect.ownKeys(obj)<br><code>Reflect.ownKeys(obj)</code>返回一个数组，包含对象自身的所有属性，不管属性名是Symbol或字符串，也不管是否可枚举</p>
-</li>
-</ul>
-<p>###通过比较，可以得到结论：</p>
-<ol>
-<li>要想获得对象自身和它所继承的属性（可枚举的），必须用<code>for...in</code>，其它只与对象自身有关。</li>
-<li><code>Object.keys(obj)</code>返回自身的<strong>可枚举属性</strong>。</li>
-<li><code>Object.getOwnPropertyNames(obj)</code>比<code>Object.keys(obj)</code>多包含了对象自身的不可枚举属性。</li>
-<li><code>Reflect.ownKeys(obj)</code>的返回结果是<code>Object.getOwnPropertyNames(obj)</code>和<code>Object.getOwnPropertySymbols(obj)</code>的合集。</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/07/RxJs常用Operator记录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/07/RxJs常用Operator记录/" itemprop="url">RxJs常用Operator记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-07T00:00:00+08:00">
-                2017-03-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="RxJs中的operator"><a href="#RxJs中的operator" class="headerlink" title="RxJs中的operator"></a>RxJs中的operator</h1><h2 id="创建操作符"><a href="#创建操作符" class="headerlink" title="创建操作符"></a>创建操作符</h2><p>常见的有<code>Observable.forEvent()</code>,  <code>Observable.create()</code>, <code>Observable.interval()</code>。</p>
-<h3 id="create"><a href="#create" class="headerlink" title="create"></a>create</h3><p><code>Observable.create()</code>：自定义创建一个<code>observable</code></p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123;Observable&#125; = <span class="built_in">require</span>(<span class="string">'rxjs/Observable'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'rxjs/add/observable/of'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'rxjs/add/operator/map'</span>);</span><br><span class="line"><span class="comment">//create创建操作符</span></span><br><span class="line"><span class="keyword">let</span> observable = Observable.create(<span class="function"><span class="params">observer</span>=&gt;</span>&#123;</span><br><span class="line">    observer.next(<span class="number">3</span>);</span><br><span class="line">    observer.next(<span class="number">2</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">observable.subscribe(<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="interval"><a href="#interval" class="headerlink" title="interval"></a>interval</h3><p><code>interval(time:number)</code>:创建一个递增序列，每隔指定时间发送一条数据</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> numbers = Rx.Observable.interval(<span class="number">1000</span>);</span><br><span class="line">numbers.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));  <span class="comment">// 0 1 2 3 4 5 6 ......</span></span><br></pre></td></tr></table></figure>
-<h3 id="of"><a href="#of" class="headerlink" title="of"></a>of</h3><p><code>public static of(values: ...T, scheduler: Scheduler): Observable&lt;T&gt;</code>: 从数组创建一个序列，一次将数据发射出去，然后发射完成命令</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> numbers = Rx.Observable.of(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>);</span><br><span class="line"><span class="keyword">var</span> letters = Rx.Observable.of(<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>);</span><br><span class="line"><span class="keyword">var</span> result = numbers.concat(letters);</span><br><span class="line">result.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));  <span class="comment">//10 20 30 a b c</span></span><br></pre></td></tr></table></figure>
-<h2 id="变换操作符"><a href="#变换操作符" class="headerlink" title="变换操作符"></a>变换操作符</h2><p>对每一次返回数据做一次变换操作，把原本的数据流变成需要的数据流，最常使用的变换操作是<code>observable.map()</code></p>
-<p>比如，数据获取接口经常会有一些规范去包裹数据，比如</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;err_code&quot;:0,</span><br><span class="line">    &quot;data&quot;:&#123;&quot;name&quot;:&quot;Operators&quot;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果我们只需要data字段，就可以使用map来实现：</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line">observable.map(<span class="function"><span class="params">res</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> res.data;</span><br><span class="line">&#125;).subscribe(<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//do sth with data</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="过滤操作符filter"><a href="#过滤操作符filter" class="headerlink" title="过滤操作符filter"></a>过滤操作符filter</h2><p>用于过滤掉数据流中一些不需要处理的数据，常用的是<code>observable.filter()</code><br>比如，前端获取数据的时候，接口可能会因为各种原因无法返回最终需要的数据，可能由于异常返回的数据为空，或者返回一个错误代码和错误描述告知前端，但是并不需要处理这些错误信息，就需要过滤掉这些错误数据。</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">//过滤操作符</span></span><br><span class="line">observable.filter(<span class="function"><span class="params">response</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !!response.data &amp;&amp; response.status === <span class="number">200</span>;</span><br><span class="line">&#125;).map(<span class="function"><span class="params">response</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> response.data;</span><br><span class="line">&#125;).subscribe(<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//do sth with data</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="组合操作符"><a href="#组合操作符" class="headerlink" title="组合操作符"></a>组合操作符</h2><p>很多业务场景需要依赖两个甚至更多的接口数据，并且在这些接口数据都成功获取后，再进行关联合并。要满足这种场景，就需要把各个数据流汇汇合组成新的数据流，这时就要用到<code>组合操作符</code>，比如<code>Observable.forkJoin()</code>,<code>Observable.prototype.concatMap()</code></p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">//组合操作符 Observable.forkJoin</span></span><br><span class="line"><span class="keyword">let</span> getFirstDataObs = Observable.create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">    observer.next(<span class="string">'a1'</span>);</span><br><span class="line">    observer.next(<span class="string">'a2'</span>);</span><br><span class="line">    observer.complete();</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">let</span> getSecondDataObs = Observable.create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">    observer.next(<span class="string">'b1'</span>);</span><br><span class="line">    observer.next(<span class="string">'b2'</span>);</span><br><span class="line">    observer.complete();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> joinedObservable = Observable.forkJoin(</span><br><span class="line">    getFirstDataObs, getSecondDataObs</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">joinedObservable.subscribe(<span class="function"><span class="params">datas</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//data[0] 是getFirstDataObs 的数据</span></span><br><span class="line">    <span class="comment">//data[1] 是getSecondDataObs 的数据</span></span><br><span class="line">    <span class="comment">//只有在他两个都执行complete()之后，才会返回数据，且返回最后发送的数据</span></span><br><span class="line">    <span class="built_in">console</span>.log(datas);  <span class="comment">//[ 'a2', 'b2' ]</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>如果某次请求数据需要依赖前一次请求的结果，也就是说两次请求必须有先后顺序，这时候可以使用<code>Observalbe.prototype.concatMap()</code>,示例：</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">//concatMap</span></span><br><span class="line"><span class="keyword">let</span> getFirstDataObs = Observable.create(<span class="function"><span class="params">observer</span>=&gt;</span>&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">res</span>=&gt;</span> &#123; observer.next(<span class="number">1</span>);&#125;, <span class="number">500</span>);</span><br><span class="line">    setTimeout(<span class="function"><span class="params">res</span>=&gt;</span> &#123; observer.next(<span class="number">2</span>);&#125;, <span class="number">1000</span>);</span><br><span class="line">    setTimeout(<span class="function"><span class="params">res</span>=&gt;</span> &#123; observer.next(<span class="number">3</span>);&#125;, <span class="number">1500</span>);</span><br><span class="line">    setTimeout(<span class="function"><span class="params">res</span>=&gt;</span> &#123; observer.complete();&#125;, <span class="number">2000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> createSecondDataObs  = <span class="function">(<span class="params">firstData</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Observable.create(<span class="function"><span class="params">observer</span>=&gt;</span>&#123;</span><br><span class="line">        observer.next(firstData*<span class="number">10</span>+<span class="number">1</span>);</span><br><span class="line">        observer.next(firstData*<span class="number">10</span>+<span class="number">2</span>);</span><br><span class="line">        observer.next(firstData*<span class="number">10</span>+<span class="number">3</span>);</span><br><span class="line">        observer.complete();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> concatedObs = getFirstDataObs.concatMap(<span class="function"><span class="params">firstData</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> createSecondDataObs(firstData);</span><br><span class="line">&#125;).subscribe(<span class="function"><span class="params">secondData</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//do sth with second data</span></span><br><span class="line">    <span class="built_in">console</span>.log(secondData); </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>结果输出：<code>11 12 13 21 22 23 31 32 33</code></p>
-<p>通过<code>Observable.prototype.concatMap()</code>方法，<code>getSecondDataObs()</code>的数据流被紧接在<code>getFirstDataObs()</code>的数据流后，并且最终被数据流被subscribe()所捕获。</p>
-<h2 id="工具操作符"><a href="#工具操作符" class="headerlink" title="工具操作符"></a>工具操作符</h2><p>在Observable.prototype中有很多有用的工具方法，统称为工具操作符，如<code>delay</code>,<code>timeout</code>,<code>debounce</code>,<code>take</code>,<code>takeUntil</code>,<code>takeLast</code>,<code>takeWhile</code>,<code>skip</code>等等</p>
-<h3 id="timeout"><a href="#timeout" class="headerlink" title="timeout"></a>timeout</h3><p><code>timeout</code>:当observable在指定时间内数据没有完全返回时，发出一个错误</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">//工具操作符timeout</span></span><br><span class="line"><span class="keyword">let</span> observable = Observable.create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">   observer.next(<span class="number">3</span>);</span><br><span class="line">   setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">       observer.complete();</span><br><span class="line">   &#125;, <span class="number">3000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">observable.timeout(<span class="number">2000</span>).subscribe(<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">   <span class="comment">//do sth with data</span></span><br><span class="line">   <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;,<span class="function"><span class="params">err</span>=&gt;</span>&#123;</span><br><span class="line">   handleError(err);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//当observable超过2000ms没有返回全部数据流（即返回complete时），便会抛出一个err错误，被handleError捕获。</span></span><br></pre></td></tr></table></figure>
-<h3 id="delay"><a href="#delay" class="headerlink" title="delay"></a>delay</h3><p><code>delay</code>: 返回一个新序列，但是每个序列数据延迟指定时间<br><img src="http://ol1ftyec4.bkt.clouddn.com/2017-03-07-delay.png" alt="delay"></p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">//延迟1000ms</span></span><br><span class="line">observable.delay(<span class="number">1000</span>).subscribe(<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="debounceTime"><a href="#debounceTime" class="headerlink" title="debounceTime"></a>debounceTime</h3><p><code>public debounceTime(time: number)</code>: 和<code>delay</code>一样，也会延迟发送数据，但仅发送这一段时间内最新的<strong>一条</strong>消息，如果原序列在这段时间内没有发送消息，就不发送。比如可以用在，前台界面搜索框延迟500ms后自动发起api请求进行查询，或后台数据返回的太过频繁。<br><img src="http://ol1ftyec4.bkt.clouddn.com/2017-03-07-debounceTime-1.png" alt="debounceTime"></p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line">Observable.fromEvent(inputSelector,<span class="string">'keyup'</span>)</span><br><span class="line">    .debounceTime(<span class="number">500</span>)</span><br><span class="line">    .switchMap(<span class="function"><span class="params">event</span>=&gt;</span>getValue(event.target.value))</span><br><span class="line">    .subscribe(callback);</span><br></pre></td></tr></table></figure>
-<h3 id="debounce"><a href="#debounce" class="headerlink" title="debounce"></a>debounce</h3><p><code>public debounce(durationSelector: function(value: T): SubscribableOrPromise): Observable</code>：和<code>debounceTime</code>类似，但它的发送时机不是由延迟时间决定，而是由另一个<code>observable</code>决定,</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> clicks = Rx.Observable.fromEvent(<span class="built_in">document</span>, <span class="string">'click'</span>);</span><br><span class="line"><span class="keyword">var</span> result = clicks.debounce(<span class="function"><span class="params">()</span> =&gt;</span> Rx.Observable.interval(<span class="number">1000</span>));</span><br><span class="line">result.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
-<h3 id="take"><a href="#take" class="headerlink" title="take"></a>take</h3><p><code>public take(count:number)</code>: 挑选出指定的前几个数据，作为新的序列，并complete<br><img src="http://ol1ftyec4.bkt.clouddn.com/2017-03-07-take.png" alt="take"></p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> interval = Rx.Observable.interval(<span class="number">1000</span>);</span><br><span class="line"><span class="keyword">var</span> five = interval.take(<span class="number">5</span>);  <span class="comment">//取出前5个数据</span></span><br><span class="line">five.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">//0 1 2 3 4</span></span><br><span class="line"><span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">### takeLast</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span>takeLast(count:<span class="built_in">number</span>)<span class="string">`：挑选出原序列的最后count个数据，在complete时一起发送出去</span></span><br><span class="line"><span class="string">![takeLast](http://ol1ftyec4.bkt.clouddn.com/2017-03-07-takeLast.png)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>ts</span><br><span class="line"><span class="keyword">let</span> interval = Rx.Observable.interval(<span class="number">1000</span>).take(<span class="number">5</span>);</span><br><span class="line">five.takeLast(<span class="number">2</span>).subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">//挑选出最后2个，打印：3 4</span></span><br></pre></td></tr></table></figure>
-<h3 id="takeUntil"><a href="#takeUntil" class="headerlink" title="takeUntil"></a>takeUntil</h3><p><code>public takeUntil(notifier: Observable): Observable&lt;T&gt;</code>： 筛选原序列中数据，直到notifier发射出一个数据为止.(Lets values pass until a second Observable, notifier, emits something. Then, it completes.)</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> interval = Rx.Observable.interval(<span class="number">1000</span>);</span><br><span class="line"><span class="keyword">var</span> clicks = Rx.Observable.fromEvent(<span class="built_in">document</span>, <span class="string">'click'</span>);</span><br><span class="line"><span class="keyword">var</span> result = interval.takeUntil(clicks);  <span class="comment">//一直从原序列中取数据，直到点击事件发生为止</span></span><br><span class="line">result.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
-<h3 id="takeWhile"><a href="#takeWhile" class="headerlink" title="takeWhile"></a>takeWhile</h3><p><code>public takeWhile(predicate: function(value: T, index: number): boolean): Observable&lt;T&gt;</code> ：满足某个条件时不再从原序列中取数据<br><img src="http://ol1ftyec4.bkt.clouddn.com/2017-03-07-takeWhile.png" alt="takeWhile"></p>
-<h3 id="skip"><a href="#skip" class="headerlink" title="skip"></a>skip</h3><p><code>public skip(count: Number): Observable</code>：跳过序列中的前<code>count</code>个数据</p>
-<p><img src="http://ol1ftyec4.bkt.clouddn.com/2017-03-07-skip.png" alt="skip"></p>
-<h3 id="switchMap"><a href="#switchMap" class="headerlink" title="switchMap"></a>switchMap</h3><p><code>public switchMap(project: function(value: T, ?index: number): ObservableInput, resultSelector: function(outerValue: T, innerValue: I, outerIndex: number, innerIndex: number): any): Observable</code>: 将原序列某个数据转换为另一个observable的若干个序列数据，当元序列有新数据到来时，会截断旧数据</p>
-<p><a href="http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-switchMap" target="_blank" rel="noopener">switchMap官方说明</a></p>
-<p><img src="http://ol1ftyec4.bkt.clouddn.com/2017-03-08-switchMap.png" alt="switchMap"></p>
-<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/03/JavaScript响应式编程 - RxJs入门/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/03/JavaScript响应式编程 - RxJs入门/" itemprop="url">JavaScript响应式编程 - RxJs入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-03T16:13:48+08:00">
-                2017-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在angular2项目的过程中，接触到了Rxjs这个东西，对它进行了一下简单的了解，对它的基本用法进行了学习和总结，介绍了：</p>
-<ul>
-<li>基本概念</li>
-<li>如何创建一个Observerble可观察序列</li>
-<li>Observer实例的生命周期</li>
-<li>如何对Observer实例进行订阅？以及监听他的next、error、complete事件？</li>
-<li>rxjs交互图怎么看？</li>
-<li>map、filter、from等简单的操作符含义</li>
-</ul>
-<h2 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h2><p>官方文档：<a href="http://reactivex.io/rxjs/" target="_blank" rel="noopener">http://reactivex.io/rxjs/</a></p>
-<p><code>Rx</code>（<code>ReactiveX</code>, <code>Reactive Extensions</code>）,它是微软开发和维护的基于<code>响应式编程</code>（<code>Reactive Programming</code>）范式实现的一套工具库集合，于2012年11月开源，它提供了一系列接口规范来帮助开发者方便的处理异步数据流。Rx系列结合了观察者模式、迭代器模式、函数式编程，它已成为业界响应式编程的优秀实践。</p>
-<p><code>RxJs</code>就是Rx在JavaScript层面上的实现，除此之外还有RxJava、Rx.Net、RxSwift等等。</p>
-<p><code>RxJs</code>全名<code>Reactive Extensions for JavaScript</code>，翻译为<code>Javascript的响应式扩展</code>, 它的思路是把随时间不断变化的数据、状态、事件等等转成可被观察的序列(<code>Observable Sequence</code>)，然后订阅序列中那些Observable对象的变化，一旦变化，就会执行事先安排好的各种转换和操作。</p>
-<h2 id="几个名词"><a href="#几个名词" class="headerlink" title="几个名词"></a>几个名词</h2><p><code>Observable</code>: <code>可观察的数据序列</code>.<br><code>Observer</code>: <code>观察者实例</code>，用来决定何时观察指定数据，只有在Rx.Observable.create创建方法可以获取<br><code>Subscription</code>: 观察数据序列返回的<code>订阅实例</code>.<br><code>Operators</code>: <code>Observable的操作符</code>，包括转换数据序列，过滤等，所有的Operators方法接受的参数是上一次发送的数据变更的值，而方法返回值我们称之为发射新数据变更</p>
-<p><code>Observable</code>可以发射三种类型的事件：<code>next</code>、<code>error</code>、<code>complete</code><br><code>Subscription</code>可以订阅三种类型的事件：<code>onNext</code> <code>onError</code> <code>onComplete</code><br><code>Observable</code>有四个生命周期：创建 、订阅 、 执行 、销毁。</p>
-<h2 id="使用create创建一个Observable"><a href="#使用create创建一个Observable" class="headerlink" title="使用create创建一个Observable"></a>使用create创建一个Observable</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Rx = <span class="built_in">require</span>(<span class="string">'rxjs/Rx'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;Observable&#125; = <span class="built_in">require</span>(<span class="string">'rxjs/Observable'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'rxjs/add/observable/of'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'rxjs/add/operator/map'</span>);</span><br><span class="line">    </span><br><span class="line"><span class="comment">//创建序列源</span></span><br><span class="line"><span class="keyword">const</span> source = Observable.create(<span class="function"><span class="params">observer</span>=&gt;</span>&#123;</span><br><span class="line">    observer.next(<span class="string">'foo'</span>);</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span> observer.next(<span class="string">'bar'</span>), <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//订阅</span></span><br><span class="line"><span class="keyword">const</span> subscription = source.subscribe(<span class="function"><span class="params">data</span>=&gt;</span><span class="built_in">console</span>.log(data));</span><br></pre></td></tr></table></figure>
-<h2 id="捕获error和complete"><a href="#捕获error和complete" class="headerlink" title="捕获error和complete"></a>捕获error和complete</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> source = Observable.create(<span class="function"><span class="params">observer</span>=&gt;</span>&#123;</span><br><span class="line">    observer.next(<span class="string">'foo'</span>);                         <span class="comment">//发射数据</span></span><br><span class="line">    observer.error(<span class="string">'my error'</span>);                   <span class="comment">//发射错误</span></span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span> observer.next(<span class="string">'bar'</span>), <span class="number">1000</span>);</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>observer.complete(),<span class="number">2000</span>);     <span class="comment">//发射完成</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> source1 = source.map(<span class="function"><span class="params">e</span>=&gt;</span><span class="string">`hello <span class="subst">$&#123;e&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> subscription = source1</span><br><span class="line">    .subscribe(</span><br><span class="line">        data=&gt;<span class="built_in">console</span>.log(data),</span><br><span class="line">        error=&gt;<span class="built_in">console</span>.log(error),</span><br><span class="line">        ()=&gt;<span class="built_in">console</span>.log(<span class="string">'complete'</span>)</span><br><span class="line">        );</span><br></pre></td></tr></table></figure>
-<h2 id="rxjs交互图"><a href="#rxjs交互图" class="headerlink" title="rxjs交互图"></a>rxjs交互图</h2><ul>
-<li>每条线表示一个数据序列</li>
-<li>每个球表示发送的数据变更，小竖线表示complete</li>
-<li>方法下面表示经过map、filter等操作符处理过后产生的新序列</li>
-</ul>
-<p><img src="http://ol1ftyec4.bkt.clouddn.com/2017-03-07-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-03%2014.23.49.png" alt="屏幕快照 2017-03-03 14.23.49"></p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">//序列1</span></span><br><span class="line"><span class="keyword">let</span> source = Observable.create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">    observer.next(<span class="number">1</span>);</span><br><span class="line">    observer.next(<span class="number">2</span>);</span><br><span class="line">    observer.next(<span class="number">3</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//序列2</span></span><br><span class="line"><span class="keyword">let</span> source2 = source.map(<span class="function"><span class="params">e</span>=&gt;</span>e=e*<span class="number">10</span>);</span><br><span class="line"><span class="comment">//订阅序列1</span></span><br><span class="line">source.subscribe(<span class="function"><span class="params">data</span>=&gt;</span><span class="built_in">console</span>.log(data));</span><br><span class="line"><span class="comment">//订阅序列2</span></span><br><span class="line">source2.subscribe(<span class="function"><span class="params">data</span>=&gt;</span><span class="built_in">console</span>.log(data));</span><br></pre></td></tr></table></figure>
-<h2 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h2><p><code>map</code>：对要发送的data作统一处理后再返回<br><code>filter</code>：满足条件时才发射出去<br><code>toPromise</code>：将observer转为promise<br><code>debounce</code>：（防抖动）取一段时间内最新的数据<br><code>throttle</code>：(防抖动) 忽略这段时间，发现新值后再发送</p>
-<p>更多，如 mapTo, scan, from ,concat, concatAll, merge, mergeAll等</p>
-<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>angular2中的HTTP模块，ionic-native中的BLE模块都默认使用了<code>Observable</code></p>
-<p>还需要要研究：</p>
-<ul>
-<li>他的使用场景？</li>
-<li>与promise相比他的优势劣势是什么？</li>
-<li>未来的使用趋势如何？</li>
-</ul>
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p>官方文档：<a href="http://reactivex.io/rxjs/" target="_blank" rel="noopener">http://reactivex.io/rxjs/</a></p>
-<p><a href="https://yq.aliyun.com/articles/65027" target="_blank" rel="noopener">rxjs简单入门</a></p>
-<p><a href="http://www.oschina.net/translate/rxjs-streams?lang=chs&amp;page=1#" target="_blank" rel="noopener">使用 RxJS 实现 JavaScript 的 Reactive 编程</a></p>
-<p><a href="https://dzone.com/refcardz/rxjs-streams" target="_blank" rel="noopener">Reactive Programming in JavaScript With RxJS</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4819,7 +4930,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4880,7 +4991,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
