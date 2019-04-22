@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。  cluster模块 node.js试运行在v8引擎上的，以单线程的方式运行，在多核心处理器的系统中并不能发挥其最大性能。可以使用cluster模块，下面是一个例子：">
+<meta name="description" content="pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。  官方文档 callcheat# Fork modepm2 start app.js --name my-api # Name process# Cluster mo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="node进程监控PM2">
 <meta property="og:url" content="http://yoursite.com/2019/04/21/2019-04-20/index.html">
 <meta property="og:site_name" content="易天行">
-<meta property="og:description" content="pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。  cluster模块 node.js试运行在v8引擎上的，以单线程的方式运行，在多核心处理器的系统中并不能发挥其最大性能。可以使用cluster模块，下面是一个例子：  var cluster = require(&apos;cluster&apos;);  va">
+<meta property="og:description" content="pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。  官方文档 callcheat# Fork modepm2 start app.js --name my-api # Name process# Cluster modepm2 start app.js -i 0        # Will s">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-20T12:56:01.767Z">
+<meta property="og:updated_time" content="2019-04-21T14:00:30.652Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="node进程监控PM2">
-<meta name="twitter:description" content="pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。  cluster模块 node.js试运行在v8引擎上的，以单线程的方式运行，在多核心处理器的系统中并不能发挥其最大性能。可以使用cluster模块，下面是一个例子：  var cluster = require(&apos;cluster&apos;);  va">
+<meta name="twitter:description" content="pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。  官方文档 callcheat# Fork modepm2 start app.js --name my-api # Name process# Cluster modepm2 start app.js -i 0        # Will s">
 
 
 
@@ -312,6 +312,10 @@
         <blockquote>
 <p>pm2是什么？它是一个node的进程管理和监控工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。</p>
 </blockquote>
+<p><a href="http://pm2.keymetrics.io/docs/usage/quick-start/" target="_blank" rel="noopener">官方文档</a></p>
+<h3 id="callcheat"><a href="#callcheat" class="headerlink" title="callcheat"></a>callcheat</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Fork mode</span><br><span class="line">pm2 start app.js --name my-api # Name process</span><br><span class="line"></span><br><span class="line"># Cluster mode</span><br><span class="line">pm2 start app.js -i 0        # Will start maximum processes with LB depending on available CPUs</span><br><span class="line">pm2 start app.js -i max      # Same as above, but deprecated.</span><br><span class="line">pm2 scale app +3             # Scales `app` up by 3 workers</span><br><span class="line">pm2 scale app 2              # Scales `app` up or down to 2 workers total</span><br><span class="line"></span><br><span class="line"># Listing</span><br><span class="line"></span><br><span class="line">pm2 list               # Display all processes status</span><br><span class="line">pm2 jlist              # Print process list in raw JSON</span><br><span class="line">pm2 prettylist         # Print process list in beautified JSON</span><br><span class="line"></span><br><span class="line">pm2 describe 0         # Display all informations about a specific process</span><br><span class="line"></span><br><span class="line">pm2 monit              # Monitor all processes</span><br><span class="line"></span><br><span class="line"># Logs</span><br><span class="line"></span><br><span class="line">pm2 logs [--raw]       # Display all processes logs in streaming</span><br><span class="line">pm2 flush              # Empty all log files</span><br><span class="line">pm2 reloadLogs         # Reload all logs</span><br><span class="line"></span><br><span class="line"># Actions</span><br><span class="line"></span><br><span class="line">pm2 stop all           # Stop all processes</span><br><span class="line">pm2 restart all        # Restart all processes</span><br><span class="line"></span><br><span class="line">pm2 reload all         # Will 0s downtime reload (for NETWORKED apps)</span><br><span class="line"></span><br><span class="line">pm2 stop 0             # Stop specific process id</span><br><span class="line">pm2 restart 0          # Restart specific process id</span><br><span class="line"></span><br><span class="line">pm2 delete 0           # Will remove process from pm2 list</span><br><span class="line">pm2 delete all         # Will remove all processes from pm2 list</span><br><span class="line"></span><br><span class="line"># Misc</span><br><span class="line"></span><br><span class="line">pm2 reset &lt;process&gt;    # Reset meta data (restarted time...)</span><br><span class="line">pm2 updatePM2          # Update in memory pm2</span><br><span class="line">pm2 ping               # Ensure pm2 daemon has been launched</span><br><span class="line">pm2 sendSignal SIGUSR2 my-app # Send system signal to script</span><br><span class="line">pm2 start app.js --no-daemon</span><br><span class="line">pm2 start app.js --no-vizion</span><br><span class="line">pm2 start app.js --no-autorestart</span><br></pre></td></tr></table></figure>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><p><a href="http://pm2.keymetrics.io/docs/usage/log-management/#reloading-all-logs" target="_blank" rel="noopener">日志官方文档</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Display option for pm2 logs command</span><br><span class="line">pm2 logs -h</span><br><span class="line"></span><br><span class="line"># Display all apps logs</span><br><span class="line">pm2 logs</span><br><span class="line"></span><br><span class="line"># Display only logs about process containing &quot;api&quot; in their name</span><br><span class="line">pm2 logs /api/</span><br><span class="line"></span><br><span class="line"># It&apos;s a regex so you can filter with the normal syntax to filter with OR condition</span><br><span class="line">pm2 logs /server_[12]/</span><br><span class="line"></span><br><span class="line"># Display only api app logs</span><br><span class="line">pm2 logs api</span><br><span class="line"></span><br><span class="line"># Display X lines of api log file</span><br><span class="line">pm2 logs big-api --lines 1000</span><br></pre></td></tr></table></figure>
 <h3 id="cluster模块"><a href="#cluster模块" class="headerlink" title="cluster模块"></a>cluster模块</h3><blockquote>
 <p>node.js试运行在v8引擎上的，以单线程的方式运行，在多核心处理器的系统中并不能发挥其最大性能。可以使用cluster模块，下面<br>是一个例子：</p>
 </blockquote>
@@ -508,7 +512,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#cluster模块"><span class="nav-number">1.</span> <span class="nav-text">cluster模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pm2替代cluster模块"><span class="nav-number"></span> <span class="nav-text">pm2替代cluster模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PM2使用"><span class="nav-number"></span> <span class="nav-text">PM2使用</span></a></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#callcheat"><span class="nav-number">1.</span> <span class="nav-text">callcheat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cluster模块"><span class="nav-number">3.</span> <span class="nav-text">cluster模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pm2替代cluster模块"><span class="nav-number"></span> <span class="nav-text">pm2替代cluster模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PM2使用"><span class="nav-number"></span> <span class="nav-text">PM2使用</span></a></div>
             
 
           </div>
