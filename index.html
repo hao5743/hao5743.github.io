@@ -1773,138 +1773,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-10/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/09/2018-10-10/" itemprop="url">使用forever/pm2让node.js持久运行</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
-                2018-10-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这里我们讨论几种使node应用在后台运行的几种方式，简单的是<code>linux后台执行</code>，另外两种是使用进程管理工具<code>forever</code> <code>pm2</code>。</p>
-<h2 id="linux-nohup-amp-命令"><a href="#linux-nohup-amp-命令" class="headerlink" title="linux nohup &amp; 命令"></a>linux nohup &amp; 命令</h2><p>使用<code>&amp;</code>符号后台执行，并利用<code>nohup</code>命令实现进程禁止挂起</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nohup node app.js &amp;</span><br></pre></td></tr></table></figure>
-<h2 id="forever工具"><a href="#forever工具" class="headerlink" title="forever工具"></a>forever工具</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install forever -g   <span class="comment">#安装</span></span><br><span class="line">forever start app.js     <span class="comment">#启动应用</span></span><br><span class="line">forever stop app.js      <span class="comment">#关闭应用</span></span><br><span class="line">forever restartall       <span class="comment">#重启所有应用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#输出日志和错误</span></span><br><span class="line">forever start -l forever.log -o out.log -e err.log app.js   </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定forever信息输出文件，当然，默认它会放到~/.forever/forever.log</span></span><br><span class="line">forever start -l forever.log app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定app.js中的日志信息和错误日志输出文件，  </span></span><br><span class="line"><span class="comment"># -o 就是console.log输出的信息，-e 就是console.error输出的信息</span></span><br><span class="line">forever start -o out.log -e err.log app.js </span><br><span class="line"></span><br><span class="line"><span class="comment"># 追加日志，forever默认是不能覆盖上次的启动日志，  </span></span><br><span class="line"><span class="comment"># 所以如果第二次启动不加-a，则会不让运行  </span></span><br><span class="line">forever start -l forever.log -a app.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 监听当前文件夹下的所有文件改动（不太建议这样）  </span></span><br><span class="line">forever start -w app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有运行的服务 </span></span><br><span class="line">forever list  </span><br><span class="line"></span><br><span class="line"><span class="comment">######停止操作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止所有运行的node App  </span></span><br><span class="line">forever stopall  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 停止其中一个node App  </span></span><br><span class="line">forever stop app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 当然还可以这样  </span></span><br><span class="line"><span class="comment"># forever list 找到对应的id，然后：  </span></span><br><span class="line">forever stop [id]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发环境下  </span></span><br><span class="line">NODE_ENV=development forever start -l forever.log -e err.log -a app.js  </span><br><span class="line"><span class="comment"># 线上环境下  </span></span><br><span class="line">NODE_ENV=production forever start -l ~/.forever/forever.log -e ~/.forever/err.log -w -a app.js</span><br><span class="line"><span class="comment">#上面加上NODE_ENV为了让app.js辨认当前是什么环境用的</span></span><br><span class="line">The End</span><br></pre></td></tr></table></figure>
-<h2 id="PM2"><a href="#PM2" class="headerlink" title="PM2"></a>PM2</h2><p>PM2是一个内置的负载平衡器Node.js应用生产过程管理。它允许您永久地保存应用程序，并在不停机的情况下重新加载它们</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ npm install -g pm2</span><br><span class="line"><span class="comment"># 启动 --name tank是给这个进程取个名字</span></span><br><span class="line">$ pm2 start index.js --name tankName</span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用命令</span></span><br><span class="line"><span class="variable">$pm2</span> stop  &lt;app_name|id|all&gt;  停止</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> delete &lt;app_name|id|all&gt; 删除</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> restart &lt;app_name|id|all&gt; 重启</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> reload &lt;app_name|id|all&gt; 重载</span><br></pre></td></tr></table></figure>
-<p>跟多命令</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">$ pm2 start app.js -i 4 #后台运行pm2，启动4个app.js </span><br><span class="line">                                # 也可以把&apos;max&apos; 参数传递给 start</span><br><span class="line">                                # 正确的进程数目依赖于Cpu的核心数目</span><br><span class="line">$ pm2 start app.js --name my-api # 命名进程</span><br><span class="line">$ pm2 list               # 显示所有进程状态</span><br><span class="line">$ pm2 monit              # 监视所有进程</span><br><span class="line">$ pm2 logs               #  显示所有进程日志</span><br><span class="line">$ pm2 stop all           # 停止所有进程</span><br><span class="line">$ pm2 restart all        # 重启所有进程</span><br><span class="line">$ pm2 reload all         # 0秒停机重载进程 (用于 NETWORKED 进程)</span><br><span class="line">$ pm2 stop 0             # 停止指定的进程</span><br><span class="line">$ pm2 restart 0          # 重启指定的进程</span><br><span class="line">$ pm2 startup            # 产生 init 脚本 保持进程活着</span><br><span class="line">$ pm2 web                # 运行健壮的 computer API endpoint (http://localhost:9615)</span><br><span class="line">$ pm2 delete 0           # 杀死指定的进程</span><br><span class="line">$ pm2 delete all         # 杀死全部进程</span><br><span class="line"></span><br><span class="line">运行进程的不同方式：</span><br><span class="line">$ pm2 start app.js -i max  # 根据有效CPU数目启动最大进程数目</span><br><span class="line">$ pm2 start app.js -i 3      # 启动3个进程</span><br><span class="line">$ pm2 start app.js -x        #用fork模式启动 app.js 而不是使用 cluster</span><br><span class="line">$ pm2 start app.js -x -- -a 23   # 用fork模式启动 app.js 并且传递参数 (-a 23)</span><br><span class="line">$ pm2 start app.js --name serverone  # 启动一个进程并把它命名为 serverone</span><br><span class="line">$ pm2 stop serverone       # 停止 serverone 进程</span><br><span class="line">$ pm2 start app.json        # 启动进程, 在 app.json里设置选项</span><br><span class="line">$ pm2 start app.js -i max -- -a 23                   #在--之后给 app.js 传递参数</span><br><span class="line">$ pm2 start app.js -i max -e err.log -o out.log  # 启动 并 生成一个配置文件</span><br><span class="line">你也可以执行用其他语言编写的app  ( fork 模式):</span><br><span class="line">$ pm2 start my-bash-script.sh    -x --interpreter bash</span><br><span class="line">$ pm2 start my-python-script.py -x --interpreter python</span><br><span class="line"></span><br><span class="line">0秒停机重载:</span><br><span class="line">这项功能允许你重新载入代码而不用失去请求连接。</span><br><span class="line">注意：</span><br><span class="line">仅能用于web应用</span><br><span class="line">运行于Node 0.11.x版本</span><br><span class="line">运行于 cluster 模式（默认模式）</span><br><span class="line">$ pm2 reload all</span><br><span class="line"></span><br><span class="line">CoffeeScript:</span><br><span class="line">$ pm2 start my_app.coffee  #这就是全部</span><br><span class="line"></span><br><span class="line">PM2准备好为产品级服务了吗？</span><br><span class="line">只需在你的服务器上测试</span><br><span class="line">$ git clone https://github.com/Unitech/pm2.git</span><br><span class="line">$ cd pm2</span><br><span class="line">$ npm install  # 或者 npm install --dev ，如果devDependencies 没有安装</span><br><span class="line">$ npm test</span><br></pre></td></tr></table></figure>
-<p>错误日志位置：</p>
-<p>error log path  /root/.pm2/pids/anaweb-13.pid </p>
-<p>错误日志，出现启动 error找她就没错</p>
-<p>out log path    /root/.pm2/logs/anaweb-out-13.log </p>
-<p>参考1: <a href="https://cnodejs.org/topic/5021c2cff767cc9a51e684e3" target="_blank" rel="noopener">https://cnodejs.org/topic/5021c2cff767cc9a51e684e3</a><br>参考2: <a href="http://tcrct.iteye.com/blog/2043644" target="_blank" rel="noopener">http://tcrct.iteye.com/blog/2043644</a><br>forever github: <a href="https://github.com/foreverjs/forever" target="_blank" rel="noopener">https://github.com/foreverjs/forever</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-09/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2129,6 +1997,138 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">      &#123; &quot;_id&quot; : 1, name : &quot;Alice King&quot; , classAverage : 87.333333333333333 &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 2, name : &quot;Bob Jenkins&quot;, classAverage : &quot;83.52&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 3, name : &quot;Cathy Hart&quot;, classAverage: &quot;94.06&quot; &#125;,</span><br><span class="line">      &#123; &quot;_id&quot; : 4, name : &quot;Drew Williams&quot; , classAverage : 93 &#125;</span><br><span class="line">   ]</span><br></pre></td></tr></table></figure>
 <p>查询<code>classAverage</code>字段是BSON类型<code>string</code>或<code>double</code>的：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.grades.find( &#123; &quot;classAverage&quot; : &#123; $type : [ 2 , 1 ] &#125; &#125; );</span><br><span class="line">//等价于</span><br><span class="line">db.grades.find( &#123; &quot;classAverage&quot; : &#123; $type : [ &quot;string&quot; , &quot;double&quot; ] &#125; &#125; );</span><br><span class="line">//返回结果</span><br><span class="line">&#123; &quot;_id&quot; : 1, name : &quot;Alice King&quot; , classAverage : 87.333333333333333 &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 2, name : &quot;Bob Jenkins&quot;, classAverage : &quot;83.52&quot; &#125;</span><br><span class="line">&#123; &quot;_id&quot; : 3, name : &quot;Cathy Hart&quot;, classAverage: &quot;94.06&quot; &#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/09/2018-10-10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/09/2018-10-10/" itemprop="url">使用forever/pm2让node.js持久运行</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">
+                2018-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这里我们讨论几种使node应用在后台运行的几种方式，简单的是<code>linux后台执行</code>，另外两种是使用进程管理工具<code>forever</code> <code>pm2</code>。</p>
+<h2 id="linux-nohup-amp-命令"><a href="#linux-nohup-amp-命令" class="headerlink" title="linux nohup &amp; 命令"></a>linux nohup &amp; 命令</h2><p>使用<code>&amp;</code>符号后台执行，并利用<code>nohup</code>命令实现进程禁止挂起</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nohup node app.js &amp;</span><br></pre></td></tr></table></figure>
+<h2 id="forever工具"><a href="#forever工具" class="headerlink" title="forever工具"></a>forever工具</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install forever -g   <span class="comment">#安装</span></span><br><span class="line">forever start app.js     <span class="comment">#启动应用</span></span><br><span class="line">forever stop app.js      <span class="comment">#关闭应用</span></span><br><span class="line">forever restartall       <span class="comment">#重启所有应用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#输出日志和错误</span></span><br><span class="line">forever start -l forever.log -o out.log -e err.log app.js   </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定forever信息输出文件，当然，默认它会放到~/.forever/forever.log</span></span><br><span class="line">forever start -l forever.log app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定app.js中的日志信息和错误日志输出文件，  </span></span><br><span class="line"><span class="comment"># -o 就是console.log输出的信息，-e 就是console.error输出的信息</span></span><br><span class="line">forever start -o out.log -e err.log app.js </span><br><span class="line"></span><br><span class="line"><span class="comment"># 追加日志，forever默认是不能覆盖上次的启动日志，  </span></span><br><span class="line"><span class="comment"># 所以如果第二次启动不加-a，则会不让运行  </span></span><br><span class="line">forever start -l forever.log -a app.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 监听当前文件夹下的所有文件改动（不太建议这样）  </span></span><br><span class="line">forever start -w app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有运行的服务 </span></span><br><span class="line">forever list  </span><br><span class="line"></span><br><span class="line"><span class="comment">######停止操作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止所有运行的node App  </span></span><br><span class="line">forever stopall  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 停止其中一个node App  </span></span><br><span class="line">forever stop app.js  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 当然还可以这样  </span></span><br><span class="line"><span class="comment"># forever list 找到对应的id，然后：  </span></span><br><span class="line">forever stop [id]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发环境下  </span></span><br><span class="line">NODE_ENV=development forever start -l forever.log -e err.log -a app.js  </span><br><span class="line"><span class="comment"># 线上环境下  </span></span><br><span class="line">NODE_ENV=production forever start -l ~/.forever/forever.log -e ~/.forever/err.log -w -a app.js</span><br><span class="line"><span class="comment">#上面加上NODE_ENV为了让app.js辨认当前是什么环境用的</span></span><br><span class="line">The End</span><br></pre></td></tr></table></figure>
+<h2 id="PM2"><a href="#PM2" class="headerlink" title="PM2"></a>PM2</h2><p>PM2是一个内置的负载平衡器Node.js应用生产过程管理。它允许您永久地保存应用程序，并在不停机的情况下重新加载它们</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ npm install -g pm2</span><br><span class="line"><span class="comment"># 启动 --name tank是给这个进程取个名字</span></span><br><span class="line">$ pm2 start index.js --name tankName</span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用命令</span></span><br><span class="line"><span class="variable">$pm2</span> stop  &lt;app_name|id|all&gt;  停止</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> delete &lt;app_name|id|all&gt; 删除</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> restart &lt;app_name|id|all&gt; 重启</span><br><span class="line"></span><br><span class="line"><span class="variable">$pm2</span> reload &lt;app_name|id|all&gt; 重载</span><br></pre></td></tr></table></figure>
+<p>跟多命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">$ pm2 start app.js -i 4 #后台运行pm2，启动4个app.js </span><br><span class="line">                                # 也可以把&apos;max&apos; 参数传递给 start</span><br><span class="line">                                # 正确的进程数目依赖于Cpu的核心数目</span><br><span class="line">$ pm2 start app.js --name my-api # 命名进程</span><br><span class="line">$ pm2 list               # 显示所有进程状态</span><br><span class="line">$ pm2 monit              # 监视所有进程</span><br><span class="line">$ pm2 logs               #  显示所有进程日志</span><br><span class="line">$ pm2 stop all           # 停止所有进程</span><br><span class="line">$ pm2 restart all        # 重启所有进程</span><br><span class="line">$ pm2 reload all         # 0秒停机重载进程 (用于 NETWORKED 进程)</span><br><span class="line">$ pm2 stop 0             # 停止指定的进程</span><br><span class="line">$ pm2 restart 0          # 重启指定的进程</span><br><span class="line">$ pm2 startup            # 产生 init 脚本 保持进程活着</span><br><span class="line">$ pm2 web                # 运行健壮的 computer API endpoint (http://localhost:9615)</span><br><span class="line">$ pm2 delete 0           # 杀死指定的进程</span><br><span class="line">$ pm2 delete all         # 杀死全部进程</span><br><span class="line"></span><br><span class="line">运行进程的不同方式：</span><br><span class="line">$ pm2 start app.js -i max  # 根据有效CPU数目启动最大进程数目</span><br><span class="line">$ pm2 start app.js -i 3      # 启动3个进程</span><br><span class="line">$ pm2 start app.js -x        #用fork模式启动 app.js 而不是使用 cluster</span><br><span class="line">$ pm2 start app.js -x -- -a 23   # 用fork模式启动 app.js 并且传递参数 (-a 23)</span><br><span class="line">$ pm2 start app.js --name serverone  # 启动一个进程并把它命名为 serverone</span><br><span class="line">$ pm2 stop serverone       # 停止 serverone 进程</span><br><span class="line">$ pm2 start app.json        # 启动进程, 在 app.json里设置选项</span><br><span class="line">$ pm2 start app.js -i max -- -a 23                   #在--之后给 app.js 传递参数</span><br><span class="line">$ pm2 start app.js -i max -e err.log -o out.log  # 启动 并 生成一个配置文件</span><br><span class="line">你也可以执行用其他语言编写的app  ( fork 模式):</span><br><span class="line">$ pm2 start my-bash-script.sh    -x --interpreter bash</span><br><span class="line">$ pm2 start my-python-script.py -x --interpreter python</span><br><span class="line"></span><br><span class="line">0秒停机重载:</span><br><span class="line">这项功能允许你重新载入代码而不用失去请求连接。</span><br><span class="line">注意：</span><br><span class="line">仅能用于web应用</span><br><span class="line">运行于Node 0.11.x版本</span><br><span class="line">运行于 cluster 模式（默认模式）</span><br><span class="line">$ pm2 reload all</span><br><span class="line"></span><br><span class="line">CoffeeScript:</span><br><span class="line">$ pm2 start my_app.coffee  #这就是全部</span><br><span class="line"></span><br><span class="line">PM2准备好为产品级服务了吗？</span><br><span class="line">只需在你的服务器上测试</span><br><span class="line">$ git clone https://github.com/Unitech/pm2.git</span><br><span class="line">$ cd pm2</span><br><span class="line">$ npm install  # 或者 npm install --dev ，如果devDependencies 没有安装</span><br><span class="line">$ npm test</span><br></pre></td></tr></table></figure>
+<p>错误日志位置：</p>
+<p>error log path  /root/.pm2/pids/anaweb-13.pid </p>
+<p>错误日志，出现启动 error找她就没错</p>
+<p>out log path    /root/.pm2/logs/anaweb-out-13.log </p>
+<p>参考1: <a href="https://cnodejs.org/topic/5021c2cff767cc9a51e684e3" target="_blank" rel="noopener">https://cnodejs.org/topic/5021c2cff767cc9a51e684e3</a><br>参考2: <a href="http://tcrct.iteye.com/blog/2043644" target="_blank" rel="noopener">http://tcrct.iteye.com/blog/2043644</a><br>forever github: <a href="https://github.com/foreverjs/forever" target="_blank" rel="noopener">https://github.com/foreverjs/forever</a></p>
 
           
         
@@ -3105,135 +3105,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/2018-07-11-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ethan Hunt">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tx.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="易天行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/12/2018-07-11-2/" itemprop="url">mongo原子性和事务</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T00:00:00+08:00">
-                2018-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>关于mongodb原子性和事务的说明，大部分翻译自官方文档<code>(https://docs.mongodb.com/manual/tutorial)</code></p>
-</blockquote>
-<h1 id="原子性和事务"><a href="#原子性和事务" class="headerlink" title="原子性和事务"></a>原子性和事务</h1><p>在MongoDb中，写操作在<code>文档级别</code>是原子性的，即使该文档包含多个嵌入的子文档。</p>
-<p>当一次写操作修改多个文档时，对每个文档的更新时原子性的，但整个写入操作不是原子性的，而且中间可能会插入多个其他操作。</p>
-<h2 id="模拟事务"><a href="#模拟事务" class="headerlink" title="模拟事务"></a>模拟事务</h2><p>因为一个文档可以包含多个子文档，所以文档级别的原子性可以满足大部分的应用场景。如果你想把多个操作作为一个事务来处理，你可以实现一个<code>two-phase commit</code>。</p>
-<p>然而，<code>two-phase commit</code>仅仅可以提供类事务语义。使用它可以保证数据的一致性，但是在<code>two-phase commit</code>或回滚进行时可能会返回中间数据。关于two-phase commit的更多信息，请看这里<a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/" target="_blank" rel="noopener"> Perform Two Phase Commits</a></p>
-<h2 id="并发控制-Concurrency-Control"><a href="#并发控制-Concurrency-Control" class="headerlink" title="并发控制  Concurrency Control"></a>并发控制  Concurrency Control</h2><p>并发控制可以保证多个应用运行时的一致性，避免导致数据不一致或数据冲突问题。</p>
-<p>方法一是在一个有唯一数据值的字段上创建一个唯一索引<a href="https://docs.mongodb.com/manual/core/index-unique/#index-type-unique" target="_blank" rel="noopener">unique index</a>。这样可以防止插入或更新产生重复数据。在多个字段上创建唯一索引，来保证这多个字段组合值的唯一性。示例操作请看，<a href="https://docs.mongodb.com/manual/reference/method/db.collection.update/#update-with-unique-indexes" target="_blank" rel="noopener">update() and Unique Index</a>, <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/#upsert-and-unique-index" target="_blank" rel="noopener">findAndModify() and Unique Index</a>。</p>
-<p>方法二是，在查询条件上对指定字段的当前值进行判断。在写操作中，<code>two-phase commit</code>模式提供了一个变量，其中的查询条件包含了应用标识<a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/#phase-commits-concurrency" target="_blank" rel="noopener">application identifier</a>和写操作中数据的预期状态。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/2018-07-11-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3326,6 +3197,135 @@
 </ul>
 <h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nginx            <span class="comment">#打开 nginx</span></span><br><span class="line">nginx -s reload  <span class="comment">#重新加载配置</span></span><br><span class="line">nginx -s reopen  <span class="comment">#重启nginx</span></span><br><span class="line">nginx -s stop    <span class="comment">#停止nginx</span></span><br><span class="line">nginx -s quit    <span class="comment">#退出nginx</span></span><br><span class="line">nginx -t         <span class="comment">#测试配置是否有语法错误</span></span><br></pre></td></tr></table></figure>
 <h2 id="配置文件示例"><a href="#配置文件示例" class="headerlink" title="配置文件示例"></a>配置文件示例</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#运行用户</span></span><br><span class="line">user nobody;</span><br><span class="line"><span class="comment">#启动进程,通常设置成和cpu的数量相等</span></span><br><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line"><span class="comment">#全局错误日志及PID文件</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  info;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pid        logs/nginx.pid;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#工作模式及连接数上限</span></span><br><span class="line">events &#123;</span><br><span class="line">    <span class="comment">#epoll是多路复用IO(I/O Multiplexing)中的一种方式,</span></span><br><span class="line">    <span class="comment">#仅用于linux2.6以上内核,可以大大提高nginx的性能</span></span><br><span class="line">    use   epoll; </span><br><span class="line"></span><br><span class="line">    <span class="comment">#单个后台worker process进程的最大并发链接数    </span></span><br><span class="line">    worker_connections  1024;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 并发总数是 worker_processes 和 worker_connections 的乘积</span></span><br><span class="line">    <span class="comment"># 即 max_clients = worker_processes * worker_connections</span></span><br><span class="line">    <span class="comment"># 在设置了反向代理的情况下，max_clients = worker_processes * worker_connections / 4  为什么</span></span><br><span class="line">    <span class="comment"># 为什么上面反向代理要除以4，应该说是一个经验值</span></span><br><span class="line">    <span class="comment"># 根据以上条件，正常情况下的Nginx Server可以应付的最大连接数为：4 * 8000 = 32000</span></span><br><span class="line">    <span class="comment"># worker_connections 值的设置跟物理内存大小有关</span></span><br><span class="line">    <span class="comment"># 因为并发受IO约束，max_clients的值须小于系统可以打开的最大文件数</span></span><br><span class="line">    <span class="comment"># 而系统可以打开的最大文件数和内存大小成正比，一般1GB内存的机器上可以打开的文件数大约是10万左右</span></span><br><span class="line">    <span class="comment"># 我们来看看360M内存的VPS可以打开的文件句柄数是多少：</span></span><br><span class="line">    <span class="comment"># $ cat /proc/sys/fs/file-max</span></span><br><span class="line">    <span class="comment"># 输出 34336</span></span><br><span class="line">    <span class="comment"># 32000 &lt; 34336，即并发连接总数小于系统可以打开的文件句柄总数，这样就在操作系统可以承受的范围之内</span></span><br><span class="line">    <span class="comment"># 所以，worker_connections 的值需根据 worker_processes 进程数目和系统可以打开的最大文件总数进行适当地进行设置</span></span><br><span class="line">    <span class="comment"># 使得并发总数小于操作系统可以打开的最大文件数目</span></span><br><span class="line">    <span class="comment"># 其实质也就是根据主机的物理CPU和内存进行配置</span></span><br><span class="line">    <span class="comment"># 当然，理论上的并发总数可能会和实际有所偏差，因为主机还有其他的工作进程需要消耗系统资源。</span></span><br><span class="line">    <span class="comment"># ulimit -SHn 65535</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    <span class="comment">#设定mime类型,类型由mime.type文件定义</span></span><br><span class="line">    include    mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    <span class="comment">#设定日志格式</span></span><br><span class="line">    log_format  main  <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></span><br><span class="line">                      <span class="string">'$status $body_bytes_sent "$http_referer" '</span></span><br><span class="line">                      <span class="string">'"$http_user_agent" "$http_x_forwarded_for"'</span>;</span><br><span class="line"></span><br><span class="line">    access_log  logs/access.log  main;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#sendfile 指令指定 nginx 是否调用 sendfile 函数（zero copy 方式）来输出文件，</span></span><br><span class="line">    <span class="comment">#对于普通应用，必须设为 on,</span></span><br><span class="line">    <span class="comment">#如果用来进行下载等应用磁盘IO重负载应用，可设置为 off，</span></span><br><span class="line">    <span class="comment">#以平衡磁盘与网络I/O处理速度，降低系统的uptime.</span></span><br><span class="line">    sendfile     on;</span><br><span class="line">    <span class="comment">#tcp_nopush     on;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#连接超时时间</span></span><br><span class="line">    <span class="comment">#keepalive_timeout  0;</span></span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    tcp_nodelay     on;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#开启gzip压缩</span></span><br><span class="line">    gzip  on;</span><br><span class="line">    gzip_disable <span class="string">"MSIE [1-6]."</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#设定请求缓冲</span></span><br><span class="line">    client_header_buffer_size    128k;</span><br><span class="line">    large_client_header_buffers  4 128k;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">#设定虚拟主机配置</span></span><br><span class="line">    server &#123;</span><br><span class="line">        <span class="comment">#侦听80端口</span></span><br><span class="line">        listen    80;</span><br><span class="line">        <span class="comment">#定义使用 www.nginx.cn访问</span></span><br><span class="line">        server_name  www.nginx.cn;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#定义服务器的默认网站根目录位置</span></span><br><span class="line">        root html;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#设定本虚拟主机的访问日志</span></span><br><span class="line">        access_log  logs/nginx.access.log  main;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#默认请求</span></span><br><span class="line">        location / &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#定义首页索引文件的名称</span></span><br><span class="line">            index index.php index.html index.htm;   </span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 定义错误提示页面</span></span><br><span class="line">        error_page   500 502 503 504 /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#静态文件，nginx自己处理</span></span><br><span class="line">        location ~ ^/(images|javascript|js|css|flash|media|static)/ &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#过期30天，静态文件不怎么更新，过期可以设大一点，</span></span><br><span class="line">            <span class="comment">#如果频繁更新，则可以设置得小一点。</span></span><br><span class="line">            expires 30d;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#PHP 脚本请求全部转发到 FastCGI处理. 使用FastCGI默认配置.</span></span><br><span class="line">        location ~ .php$ &#123;</span><br><span class="line">            fastcgi_pass 127.0.0.1:9000;</span><br><span class="line">            fastcgi_index index.php;</span><br><span class="line">            fastcgi_param  SCRIPT_FILENAME  <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">            include fastcgi_params;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#禁止访问 .htxxx 文件</span></span><br><span class="line">            location ~ /.ht &#123;</span><br><span class="line">            deny all;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/2018-07-11-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/12/2018-07-11-2/" itemprop="url">mongo原子性和事务</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T00:00:00+08:00">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>关于mongodb原子性和事务的说明，大部分翻译自官方文档<code>(https://docs.mongodb.com/manual/tutorial)</code></p>
+</blockquote>
+<h1 id="原子性和事务"><a href="#原子性和事务" class="headerlink" title="原子性和事务"></a>原子性和事务</h1><p>在MongoDb中，写操作在<code>文档级别</code>是原子性的，即使该文档包含多个嵌入的子文档。</p>
+<p>当一次写操作修改多个文档时，对每个文档的更新时原子性的，但整个写入操作不是原子性的，而且中间可能会插入多个其他操作。</p>
+<h2 id="模拟事务"><a href="#模拟事务" class="headerlink" title="模拟事务"></a>模拟事务</h2><p>因为一个文档可以包含多个子文档，所以文档级别的原子性可以满足大部分的应用场景。如果你想把多个操作作为一个事务来处理，你可以实现一个<code>two-phase commit</code>。</p>
+<p>然而，<code>two-phase commit</code>仅仅可以提供类事务语义。使用它可以保证数据的一致性，但是在<code>two-phase commit</code>或回滚进行时可能会返回中间数据。关于two-phase commit的更多信息，请看这里<a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/" target="_blank" rel="noopener"> Perform Two Phase Commits</a></p>
+<h2 id="并发控制-Concurrency-Control"><a href="#并发控制-Concurrency-Control" class="headerlink" title="并发控制  Concurrency Control"></a>并发控制  Concurrency Control</h2><p>并发控制可以保证多个应用运行时的一致性，避免导致数据不一致或数据冲突问题。</p>
+<p>方法一是在一个有唯一数据值的字段上创建一个唯一索引<a href="https://docs.mongodb.com/manual/core/index-unique/#index-type-unique" target="_blank" rel="noopener">unique index</a>。这样可以防止插入或更新产生重复数据。在多个字段上创建唯一索引，来保证这多个字段组合值的唯一性。示例操作请看，<a href="https://docs.mongodb.com/manual/reference/method/db.collection.update/#update-with-unique-indexes" target="_blank" rel="noopener">update() and Unique Index</a>, <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/#upsert-and-unique-index" target="_blank" rel="noopener">findAndModify() and Unique Index</a>。</p>
+<p>方法二是，在查询条件上对指定字段的当前值进行判断。在写操作中，<code>two-phase commit</code>模式提供了一个变量，其中的查询条件包含了应用标识<a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/#phase-commits-concurrency" target="_blank" rel="noopener">application identifier</a>和写操作中数据的预期状态。</p>
 
           
         
