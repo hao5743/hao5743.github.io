@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="evernotecid://851D1360-9E5F-4949-9CED-AC96DA44F46E/appyinxiangcom/2703947/ENResource/p1967">
 <meta property="og:image" content="evernotecid://851D1360-9E5F-4949-9CED-AC96DA44F46E/appyinxiangcom/2703947/ENResource/p1968">
-<meta property="og:updated_time" content="2019-06-04T01:53:44.821Z">
+<meta property="og:updated_time" content="2019-06-04T02:11:14.171Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux日常命令记录2(一直更新)">
 <meta name="twitter:description" content="linux命令繁杂，确必不可少，这里用来总结日常用的命令记录，随时更新…  free 看内存free -s 3 # 持续刷新，每3sfree -m 以M展示free -g 以G展示free -h 更友好的展示，自动选择单位   total 本机的物理内存+swap used 已使用的内存和swap free 尚未分配的内存和swap shared 被共享的内存的大小，一般可以忽略 buff/ca">
@@ -352,6 +352,18 @@
 <p>那么为什么 free 命令不直接称为 cache 而非要写成 buff/cache？ </p>
 </blockquote>
 <p>这是因为缓冲区和页高速缓存的实现并非天生就是统一的。在 linux 内核 2.4 中才将它们统一。更早的内核中有两个独立的磁盘缓存：页高速缓存和缓冲区高速缓存。前者缓存页面，后者缓存缓冲区。当你知道了这些故事之后，输出中列的名称可能已经不再重要了。</p>
+<h3 id="ss-网络监控"><a href="#ss-网络监控" class="headerlink" title="ss 网络监控"></a>ss 网络监控</h3><p>ss命令用于显示socket状态，建议使用ss命令替代netstat部分命令,例如netsat -ant/lnt等.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">time netstat -lnp | wc -l</span><br><span class="line">time ss -lnp | wc -l</span><br></pre></td></tr></table></figure>
+<p><code>ss -tlnp | grep 3100</code></p>
+<ul>
+<li>-n 地址使用数字展示（端口默认展示为别名）</li>
+<li>-p 展示端口所在的进程信息</li>
+<li>-l 展示listening的端口</li>
+<li>-t TCP</li>
+<li>-u UDP</li>
+</ul>
+<p>或者</p>
+<p><code>ss -tlnp sport = :3100</code><br>sport = :3100<br>用于过滤</p>
 <h3 id="vmstat-机器综合监测mem-cpu-io"><a href="#vmstat-机器综合监测mem-cpu-io" class="headerlink" title="vmstat 机器综合监测mem,cpu,io"></a>vmstat 机器综合监测mem,cpu,io</h3><p><code>vmstat 1 1000</code> 每秒刷新一次，1000次</p>
 <p>字段含义说明：</p>
 <ul>
@@ -609,7 +621,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#free-看内存"><span class="nav-number">1.</span> <span class="nav-text">free 看内存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#另一种显示："><span class="nav-number">1.0.1.</span> <span class="nav-text">另一种显示：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vmstat-机器综合监测mem-cpu-io"><span class="nav-number">2.</span> <span class="nav-text">vmstat 机器综合监测mem,cpu,io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iostat-磁盘性能"><span class="nav-number">3.</span> <span class="nav-text">iostat 磁盘性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-进程统计"><span class="nav-number">4.</span> <span class="nav-text">ps 进程统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsof"><span class="nav-number">5.</span> <span class="nav-text">lsof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netstat-网络"><span class="nav-number">6.</span> <span class="nav-text">netstat 网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#top-实时监控os"><span class="nav-number">7.</span> <span class="nav-text">top 实时监控os</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ip-查看ip地址"><span class="nav-number">8.</span> <span class="nav-text">ip 查看ip地址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ls-展示文件创建时间"><span class="nav-number"></span> <span class="nav-text">ls 展示文件创建时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ps进程启动时间"><span class="nav-number"></span> <span class="nav-text">ps进程启动时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpu系统信息查看proc"><span class="nav-number"></span> <span class="nav-text">cpu系统信息查看proc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pidstat-展示进程资源占用统计"><span class="nav-number">1.</span> <span class="nav-text">pidstat 展示进程资源占用统计</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#free-看内存"><span class="nav-number">1.</span> <span class="nav-text">free 看内存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#另一种显示："><span class="nav-number">1.0.1.</span> <span class="nav-text">另一种显示：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ss-网络监控"><span class="nav-number">2.</span> <span class="nav-text">ss 网络监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vmstat-机器综合监测mem-cpu-io"><span class="nav-number">3.</span> <span class="nav-text">vmstat 机器综合监测mem,cpu,io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iostat-磁盘性能"><span class="nav-number">4.</span> <span class="nav-text">iostat 磁盘性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-进程统计"><span class="nav-number">5.</span> <span class="nav-text">ps 进程统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsof"><span class="nav-number">6.</span> <span class="nav-text">lsof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netstat-网络"><span class="nav-number">7.</span> <span class="nav-text">netstat 网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#top-实时监控os"><span class="nav-number">8.</span> <span class="nav-text">top 实时监控os</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ip-查看ip地址"><span class="nav-number">9.</span> <span class="nav-text">ip 查看ip地址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ls-展示文件创建时间"><span class="nav-number"></span> <span class="nav-text">ls 展示文件创建时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ps进程启动时间"><span class="nav-number"></span> <span class="nav-text">ps进程启动时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpu系统信息查看proc"><span class="nav-number"></span> <span class="nav-text">cpu系统信息查看proc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pidstat-展示进程资源占用统计"><span class="nav-number">1.</span> <span class="nav-text">pidstat 展示进程资源占用统计</span></a></li></ol></div>
             
 
           </div>
