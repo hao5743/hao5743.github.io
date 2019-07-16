@@ -242,6 +242,278 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/20/Angular-iframe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/20/Angular-iframe/" itemprop="url">Angular - iframe、DomSanitizer模块、单例</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-20T14:45:55+08:00">
+                2017-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Angular开发中的几个小知识点"><a href="#Angular开发中的几个小知识点" class="headerlink" title="Angular开发中的几个小知识点"></a>Angular开发中的几个小知识点</h1><h2 id="Angular使用iframe加载外部网站"><a href="#Angular使用iframe加载外部网站" class="headerlink" title="Angular使用iframe加载外部网站"></a>Angular使用iframe加载外部网站</h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>项目中，需要使用iframe来加载一个外部网页，但src被Angular的默认安全策略所禁止，无法加载网页。</p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>在Angular中，可以使用iframe用来加载一个外部链接地址，但是src需要使用<code>@angular/platform-browser</code>中的<code>DomSanitizer模块</code>中的<code>sanitizer.bypassSecurityTrustResourceUrl(url)</code>方法来特殊处理，因为Angular中有默认的安全规则会阻止链接的加载。</p>
+<p>一个例子：</p>
+<p>html:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--这样无法正常加载网页，被安全策略禁止--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">iframe</span> [<span class="attr">src</span>]=<span class="string">"link"</span> <span class="attr">width</span>=<span class="string">"100%"</span> <span class="attr">height</span>=<span class="string">"100%"</span> <span class="attr">frameborder</span>=<span class="string">"0"</span> <span class="attr">align</span>=<span class="string">"center"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--需要这样使用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">id</span>=<span class="string">'MainIframe'</span> [<span class="attr">src</span>]=<span class="string">"trust(link)"</span> <span class="attr">width</span>=<span class="string">"100%"</span> <span class="attr">height</span>=<span class="string">"100%"</span> <span class="attr">frameborder</span>=<span class="string">"0"</span> <span class="attr">align</span>=<span class="string">"center"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--或直接处理--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">id</span>=<span class="string">'MainIframe'</span> [<span class="attr">src</span>]=<span class="string">"sanitizer.bypassSecurityTrustResourceUrl(link)"</span> <span class="attr">width</span>=<span class="string">"100%"</span> <span class="attr">height</span>=<span class="string">"100%"</span> <span class="attr">frameborder</span>=<span class="string">"0"</span> <span class="attr">align</span>=<span class="string">"center"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>ts:</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//引入DomSanitizer模块</span></span><br><span class="line"><span class="keyword">import</span> &#123; DomSanitizer &#125; <span class="keyword">from</span> <span class="string">'@angular/platform-browser'</span>;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">link:<span class="built_in">string</span> = <span class="string">'http://www.baidu.com'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> sanitizer: DomSanitizer</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Hello IframeFull Component'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">trust(url) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.sanitizer.bypassSecurityTrustResourceUrl(url);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>测试时间：2017-04-26<br>使用Angular版本： 2.2.1</p>
+</blockquote>
+<h2 id="Angular单例"><a href="#Angular单例" class="headerlink" title="Angular单例"></a>Angular单例</h2><p>angular2一个单例的写法</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;Injectable&#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;UserInterface&#125; <span class="keyword">from</span> <span class="string">"../interface/index"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这是一个单例模式的config，用于共享全局变量</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Injectable</span>()</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> Config &#123;</span><br><span class="line">    <span class="keyword">public</span> mode = <span class="string">'dev'</span>;                         <span class="comment">//运行模式 dev or release</span></span><br><span class="line">    <span class="comment">//   public hostURL = 'https://cnodejs.org/api/v1';     //http请求前缀</span></span><br><span class="line">    <span class="keyword">public</span> hostURL = <span class="string">'http://ionichina.com/api/v1'</span>;         <span class="comment">//http请求前缀</span></span><br><span class="line">    <span class="comment">// public hostURL = 'http://localhost:8100/api';         //http请求前缀</span></span><br><span class="line">    <span class="keyword">public</span> isIonic = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> pageLimit = <span class="number">15</span>;                       <span class="comment">//每页多少</span></span><br><span class="line">    <span class="keyword">public</span> DRAFTS_URL = <span class="string">'/data/drafts.json'</span>;     <span class="comment">//草稿本地地址</span></span><br><span class="line">    <span class="keyword">public</span> token: <span class="built_in">string</span> = <span class="string">''</span>;                   <span class="comment">//如果已经登录，存放token，请和localstorage.get('token')同步</span></span><br><span class="line">    <span class="keyword">public</span> loginUser: UserInterface;             <span class="comment">//如果已经登录，存放登录用户信息，请和本地存储保持同步</span></span><br><span class="line">    <span class="keyword">static</span> instance: Config;</span><br><span class="line">    <span class="keyword">static</span> isCreating: <span class="built_in">Boolean</span> = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!Config.isCreating) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"You can't call new in Config Singleton instance!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> getInstance() &#123;</span><br><span class="line">        <span class="keyword">if</span> (Config.instance == <span class="literal">null</span>) &#123;</span><br><span class="line">            Config.isCreating = <span class="literal">true</span>;</span><br><span class="line">            Config.instance = <span class="keyword">new</span> Config();</span><br><span class="line">            Config.isCreating = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> Config.instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ionic2在scss中访问主题颜色"><a href="#ionic2在scss中访问主题颜色" class="headerlink" title="ionic2在scss中访问主题颜色"></a>ionic2在scss中访问主题颜色</h2><p>通过在<code>scss</code>中引用主题颜色，可以增加程序的可维护性，当程序的主题颜色更改时，引用的地方随之自动更改。</p>
+<p>使用<code>background-color: map-get($colors, primary)</code>来引用在主题中定义的颜色。</p>
+<p>示例：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.progress-inner</span> &#123;</span><br><span class="line">        <span class="attribute">min-width</span>: <span class="number">15%</span>;</span><br><span class="line">        <span class="attribute">white-space</span>: nowrap;</span><br><span class="line">        <span class="attribute">overflow</span>: hidden;</span><br><span class="line">        <span class="attribute">height</span>: <span class="number">4px</span>;</span><br><span class="line">        <span class="attribute">border-radius</span>: <span class="number">10px</span>;</span><br><span class="line">        <span class="attribute">background-color</span>: <span class="built_in">map-get</span>($colors, primary);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/11/Cordova应用中集成Crosswalk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ethan Hunt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tx.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="易天行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/11/Cordova应用中集成Crosswalk/" itemprop="url">Cordova应用中集成Crosswalk</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-11T15:06:20+08:00">
+                2017-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="在cordova应用中集成crosswalk"><a href="#在cordova应用中集成crosswalk" class="headerlink" title="在cordova应用中集成crosswalk"></a>在cordova应用中集成crosswalk</h1><p><code>Crosswalk</code>是一款开源的Web引擎，其基于 Chromium/Blink 的应用运行环境，对于混合开发的轻量级应用尤为受欢迎。</p>
+<p><code>crosswalk</code>是hybrid应用的运行时环境，它用来代替系统自带的<code>webview</code>，以保证应用行为的一致性（css一致，es6支持等），兼容性（完美支持WebRTC，WebAudio，Flexbox布局等）和提高流畅性（相比老旧安卓设备，因为它们自身的webview比较老旧）。</p>
+<p>参考链接：<br><a href="https://crosswalk-project.org/" target="_blank" rel="noopener">crosswalk官网</a><br><a href="https://www.npmjs.com/package/cordova-plugin-crosswalk-webview/" target="_blank" rel="noopener">官方npm插件</a><br><a href="https://crosswalk-project.org/documentation/cordova.html" target="_blank" rel="noopener">crosswalk官网 - cordova应用步骤</a></p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li><code>webview</code>不再依赖于安卓版本，因为每个Android版本WebView的表现都有差别，可以最大限度降低Android碎片化的影响，得到一致的，可预测的行为。</li>
+<li>兼容性更好，使用最新的Web技术及API，保证WebRTC, WebAudio, Web Components等</li>
+<li>性能更好，与旧版本系统的老webview相比</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>增大内存占用率，增加大约30MB</li>
+<li>增大APK包的大小，大约17MB</li>
+<li>增加安装后的磁盘占用空间，大约50MB</li>
+<li><code>Crosswalk WebView</code>的本地存储(IndexedDB, LocalStorage, etc)和系统webview的相互独立</li>
+</ul>
+<h3 id="安装crosswalk插件"><a href="#安装crosswalk插件" class="headerlink" title="安装crosswalk插件"></a>安装crosswalk插件</h3><p>ionic2或者cordova应用中安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cordova plugin add cordova-plugin-crosswalk-webview --save</span><br></pre></td></tr></table></figure>
+<p>构建：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cordova build android</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/29/windows下mongodb的安装和配置记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -4382,7 +4654,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-count">58</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
